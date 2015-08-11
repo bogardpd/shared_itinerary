@@ -2,6 +2,8 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.2.3'
 
+# Use bcrypt to hash passwords
+gem 'bcrypt', '3.1.7'
 # Use Bootstrap UI framework
 gem 'bootstrap-sass', '3.2.0.0'
 # Use SCSS for stylesheets
