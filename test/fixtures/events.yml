@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  event_name: MyText
+  arriving_timezone: MyText
+  departing_timezone: MyText
+  user: johndoe
+
+two:
+  event_name: MyText
+  arriving_timezone: MyText
+  departing_timezone: MyText
+  user: johndoe
+
+different_owner:
+  event_name: MyText
+  arriving_timezone: MyText
+  departing_timezone: MyText
+  user: archer

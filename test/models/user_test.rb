@@ -67,4 +67,12 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.authenticated?('')
   end
   
+  test "associated events should be destroyed" do
+    @user.save
+    @user.events.create!(event_name: "Convention", arriving_timezone: "EST", departing_timezone: "EST")
+    assert_difference 'Event.count', -1 do
+      @user.destroy
+    end
+  end
+  
 end

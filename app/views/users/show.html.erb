@@ -1,5 +1,19 @@
-<% provide(:title, @user.name) %>
-<h1><%= @user.name %></h1>
+<% provide(:title, "#{@user.name}'s Events") %>
+<h1><%= @user.name %>'s Events</h1>
 
+<% if current_user?(@user) %>
+<%= link_to "Create a new event", new_event_path, class: "btn btn-primary" %>
+<% end %>
 
-<%= @user.email %>
+<% if @user.events.any? %>
+<table class="table">
+	<thead>
+		<th>Event</th>
+	</thead>
+	<% @user.events.each do |event| %>
+		<tr>
+			<td><%= link_to(event.event_name, event_path(event)) %></td>
+		</tr>
+	<% end %>
+</table>
+<% end %>
