@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  traveler_name: MyText
+  traveler_note: MyText
+  pickup_info: MyText
+  is_arrival: false
+
+two:
+  traveler_name: MyText
+  traveler_note: MyText
+  pickup_info: MyText
+  is_arrival: false
