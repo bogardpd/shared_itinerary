@@ -3,6 +3,14 @@
 
 <% if current_user?(@event.user) %>
 <div class="center">
-	<%= link_to "Add itinerary to #{@event.event_name}", '#', class: "btn btn-primary" %> <%= link_to "Edit #{@event.event_name} information", edit_event_path(@event), class: "btn btn-primary" %> <%= link_to "Delete #{@event.event_name}", @event, method: :delete, data: { confirm: "Are you sure you want to delete #{@event.event_name}?"}, class: "btn btn-danger" %>
+	 <%= link_to "Edit #{@event.event_name} information", edit_event_path(@event), class: "btn btn-primary" %> <%= link_to "Delete #{@event.event_name}", @event, method: :delete, data: { confirm: "Are you sure you want to delete #{@event.event_name}?"}, class: "btn btn-danger" %>
 </div>
 <% end %>
+
+<h2>Arrivals</h2>
+
+<%= link_to "Add someone's arrival itinerary", new_section_path(event: @event, direction: :arrival), class: "btn btn-primary" %>
+
+<h2>Departures</h2>
+
+<%= link_to "Add someone's departure itinerary", new_section_path(event: @event, direction: :departure), class: "btn btn-primary" %>
