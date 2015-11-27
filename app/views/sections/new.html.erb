@@ -12,20 +12,21 @@
 			<%= f.label :traveler_note %> (department, nickname, etc.)
 			<%= f.text_field :traveler_note, class: 'form-control' %>
 			
-			<%= f.label :pickup_info %> (who is this traveler riding with from/to the airport?)
+			<%= f.label :pickup_info %> (who is this traveler riding with <%= @to_from_text %> the airport?)
 			<%= f.text_field :pickup_info, class: 'form-control' %>
 			
 			<% if @show_arrival_departure %>
-				<%= f.label :is_arrival %>
-				<%= f.radio_button(:is_arrival, "true") %> <%= f.label(:is_arrival, "Arrival") %>
-				<%= f.label :is_arrival %>
-				<%= f.radio_button(:is_arrival, "false") %> <%= f.label(:is_arrival, "Departure") %>
-				<!-- Fix radio button labels -->
+				<%= f.label :is_arrival, 'Arrival or Departure?' %>
+				<%= f.select :is_arrival, options_for_select([['Arrival', true],['Departure', false]]) %>
+				
 			<% else %>
+				<%= f.hidden_field :is_arrival, value: @is_arrival %>
 			
 			<% end %>
 			
-			<%= f.submit "Create my event", class: "btn btn-primary" %>
+			<p>You will be able to add flights after you create this itinerary.</p>
+			
+			<%= f.submit "Create itinerary", class: "btn btn-primary" %>
 			
 		<% end %>
 	</div>
