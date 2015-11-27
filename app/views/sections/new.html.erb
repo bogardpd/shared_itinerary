@@ -6,6 +6,8 @@
 		<%= form_for(@section) do |f| %>
 			<%= render 'shared/error_messages', object: f.object %>
 			
+			<%= f.hidden_field :event, value: params[:event] %>
+			
 			<%= f.label :traveler_name %>
 			<%= f.text_field :traveler_name, class: 'form-control' %>
 			
