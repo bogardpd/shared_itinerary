@@ -1,0 +1,30 @@
+<% if itineraries.any? %>
+<table class="table">
+	<thead>
+		<th>Traveler</th>
+		<th>Pickup Info</th>
+		<th>Flights</th>
+		<th>Tools</th>
+	</thead>
+	<% itineraries.each do |section| %>
+		<tr>
+			
+			<td>
+				<%= section.traveler_name %><br />
+				<%= section.traveler_note %>
+				
+			</td>
+			
+			<td>
+				<%= section.pickup_info %>
+			</td>
+			<td>
+				<%= link_to('Add Flight', '#', class: "btn btn-primary btn-sm") %>
+			</td>
+			<td width="50px">
+				<%= link_to('Edit', edit_section_path(section), class: "btn btn-primary btn-sm") %>
+			</td>
+		</tr>
+	<% end %>
+</table>
+<% end %>

@@ -4,6 +4,8 @@ class EventsController < ApplicationController
   
   def show
     @event = Event.find(params[:id])
+    @arrivals = @event.sections.where(is_arrival: true)
+    @departures = @event.sections.where(is_arrival: false)
   end
   
   def new

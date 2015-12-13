@@ -11,3 +11,4 @@ two:
   traveler_note: MyText
   pickup_info: MyText
   is_arrival: false
+  event: different_owner

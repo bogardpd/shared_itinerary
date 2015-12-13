@@ -20,4 +20,16 @@ class SectionsControllerTest < ActionController::TestCase
     end
     assert_redirected_to root_url
   end
+  
+  test "should redirect destroy for wrong section" do
+    log_in_as(users(:johndoe))
+    section = sections(:two)
+    assert_no_difference 'Section.count' do
+      delete :destroy, id: section
+    end
+    assert_redirected_to root_url
+  end
+  
 end
+
+
