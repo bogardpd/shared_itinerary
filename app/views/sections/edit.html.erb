@@ -9,6 +9,9 @@
 			<%= f.hidden_field :event, value: params[:event] %>
 			
 			<%= render 'form_fields', :f => f %>
+
+			<%= f.label :pickup_info %> (who is this traveler riding with <%= @to_from_text %> the airport?)
+			<%= f.text_field :pickup_info, class: 'form-control' %>
 			
 			<% if @show_arrival_departure %>
 				<%= f.label :is_arrival, 'Arrival or Departure?' %>

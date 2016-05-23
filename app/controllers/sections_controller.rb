@@ -35,6 +35,7 @@ class SectionsController < ApplicationController
   
   def edit
     @section = Section.find(params[:id])
+    @to_from_text = @section.is_arrival? ? "from" : "to"
   end
   
   def update
