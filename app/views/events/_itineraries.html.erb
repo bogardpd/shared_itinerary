@@ -1,17 +1,17 @@
 <% if itineraries.any? %>
 <table class="table">
 	<thead>
-		<th>Traveler</th>
-		<th>Pickup Info</th>
-		<th>Flights</th>
-		<th>Tools</th>
+		<th class="event-traveler">Traveler</th>
+		<th class="event-pickup-info">Pickup Info</th>
+		<th class="event-flights">Flights</th>
+		<th class="event-tools">Tools</th>
 	</thead>
 	<% itineraries.each do |section| %>
 		<tr>
 			
 			<td>
 				<%= section.traveler_name %><br />
-				<%= section.traveler_note %>
+				<span class="traveler-note"><%= section.traveler_note %></span>
 				
 			</td>
 			

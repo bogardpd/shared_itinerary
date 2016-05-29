@@ -1,6 +1,8 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
+$color-light: hsl(0,0,50%);
+
 /* mixins, variables, etc. */
 
 @mixin box_sizing {
@@ -150,4 +152,27 @@ input {
 		padding: 10px 0;
 		border-bottom: 1px solid $gray-lighter;
 	}
+}
+
+/* Events */
+
+span.traveler-note {
+	font-weight: 300;
+	color: $color-light;
+}
+
+th.event-traveler {
+	width: 20%;
+}
+
+th.event-pickup-info {
+	width: 20%;
+}
+
+th.event-flights {
+	width: 50%;
+}
+
+th.event-tools {
+	width: 10%;
 }
