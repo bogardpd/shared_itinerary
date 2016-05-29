@@ -14,5 +14,6 @@ Rails.application.routes.draw do
   resources :users
   resources :events
   resources :sections
+  resources :flights
   
 end

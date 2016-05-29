@@ -19,7 +19,7 @@
 				<%= section.pickup_info %>
 			</td>
 			<td>
-				<%= link_to('Add Flight', '#', class: "btn btn-primary btn-sm") %>
+				<%= link_to('Add Flight', new_flight_path(section: section), class: "btn btn-primary btn-sm") %>
 			</td>
 			<td width="50px">
 				<%= link_to('Edit', edit_section_path(section), class: "btn btn-primary btn-sm") %>
