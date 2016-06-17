@@ -15,7 +15,7 @@ module ApplicationHelper
   end
   
   def short_time(dt)
-    dt.strftime("%H:%m")
+    dt.strftime("%H:%M")
   end
   
   def flight_times(dep, arr)

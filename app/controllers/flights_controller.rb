@@ -16,8 +16,32 @@ class FlightsController < ApplicationController
       flash[:success] = "Flight created!"
       redirect_to event_path(current_section.event)
     else
-      render 'static_pages/home'
+      render 'new'
     end
+  end
+  
+  def edit
+    @flight= Flight.find(params[:id])
+    @timezone = @flight.section.is_arrival? ? @flight.section.event.arriving_timezone :  @flight.section.event.departing_timezone
+  end
+  
+  def update
+    @flight = Flight.find(params[:id])
+    if @flight.update_attributes(flight_params)
+      flash[:success] = "Flight updated!"
+      redirect_to @flight.section.event
+    else
+      @timezone = @flight.section.is_arrival? ? @flight.section.event.arriving_timezone :  @flight.section.event.departing_timezone
+      render 'edit'
+    end
+  end
+  
+  def destroy
+    @flight = Flight.find(params[:id])
+    current_event = @flight.section.event
+    @flight.destroy
+    flash[:success] = "Flight deleted!"
+    redirect_to current_event
   end
   
   private
@@ -27,8 +51,8 @@ class FlightsController < ApplicationController
     end
     
     def correct_user
-      @flight = current_user.events.flights.find_by(id: params[:id])
-      redirect_to root_url if @flight.nil?
+      #@flight = current_user.events.sections.find_by(id: params[:id])
+      redirect_to root_url if Flight.find(params[:id]).section.event.user != current_user
     end
   
 end

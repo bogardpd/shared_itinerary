@@ -20,7 +20,7 @@
 			</td>
 			
 			<td>
-        <% section.flights.each_with_index do |flight, index| %>
+        <% section.flights.order(:departure_datetime).each_with_index do |flight, index| %>
           <div class="flight">
             <% if current_user?(@event.user) %>
               <div class="btn-group-vertical edit-button">
