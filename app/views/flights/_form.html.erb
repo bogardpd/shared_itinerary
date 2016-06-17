@@ -1,0 +1,32 @@
+<div class="row">
+	<div class="col-md-6 col-md-offset-3">
+		<%= form_for(@flight) do |f| %>
+      
+      <%= f.label :airline_iata, "Airline code" %> / <%= f.label :flight_number %>
+      <div class="form-group form-inline">
+        <div class="input-group">
+          <%= f.text_field :airline_iata, class: 'form-control', maxlength: 2, style: 'text-transform:uppercase;width:4em', placeholder: 'AA' %>
+        </div>
+        <div class="input-group">
+          <%= f.text_field :flight_number, class: 'form-control', maxlength: 4, style: 'text-transform:uppercase;width:5em', placeholder: '1234' %>
+        </div>
+      </div>
+      
+      <%= f.label :departure_airport_iata, "Departure airport code" %>
+      <%= f.text_field :departure_airport_iata, class: 'form-control', maxlength: 3, style: 'text-transform:uppercase;width:5em', placeholder: 'AAA' %>
+          
+      <%= f.label :departure_datetime, "Departure date and time (#{@timezone})" %>
+      <%= f.datetime_field :departure_datetime, type: 'datetime-local', class: 'form-control date-field', placeholder: "yyyy/mm/dd hh:mm" %>
+      
+      <%= f.label :arrival_airport_iata, "Arrival airport code" %>
+      <%= f.text_field :arrival_airport_iata, class: 'form-control', maxlength: 3, style: 'text-transform:uppercase;width:5em', placeholder: 'AAA' %>
+          
+      <%= f.label :arrival_datetime, "Arrival date and time (#{@timezone})" %>
+      <%= f.datetime_field :arrival_datetime, type: 'datetime-local', class: 'form-control date-field', placeholder: "yyyy/mm/dd hh:mm" %>
+      
+      <%= f.submit yield(:form_button), class: "btn btn-primary" %>
+      
+    <% end %>
+    
+  </div>
+</div>

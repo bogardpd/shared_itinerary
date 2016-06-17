@@ -2,19 +2,23 @@
 <h1><%= @event.event_name %></h1>
 
 <% if current_user?(@event.user) %>
-<div class="center">
+  <div class="center">
 	 <%= link_to "Edit #{@event.event_name} information", edit_event_path(@event), class: "btn btn-primary" %> 
-</div>
+  </div>
 <% end %>
 
 <h2>Arrivals</h2>
 
-<%= link_to "Add an arrival itinerary", new_section_path(event: @event, direction: :arrival), class: "btn btn-primary" %>
+<% if current_user?(@event.user) %>
+  <%= link_to "Add a traveler’s arrival itinerary", new_section_path(event: @event, direction: :arrival), class: "btn btn-primary" %>
+<% end %>
 
 <%= render 'itineraries', itineraries: @arrivals %>
 
 <h2>Departures</h2>
 
-<%= link_to "Add a departure itinerary", new_section_path(event: @event, direction: :departure), class: "btn btn-primary" %>
+<% if current_user?(@event.user) %>
+  <%= link_to "Add a traveler’s departure itinerary", new_section_path(event: @event, direction: :departure), class: "btn btn-primary" %>
+<% end %>
 
 <%= render 'itineraries', itineraries: @departures %>

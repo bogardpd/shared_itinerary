@@ -9,5 +9,24 @@ module ApplicationHelper
       page_title + " - " + base_title
     end
   end
+  
+  def short_datetime(dt)
+    dt.strftime("%a %b %-d %H:%M")
+  end
+  
+  def short_time(dt)
+    dt.strftime("%H:%m")
+  end
+  
+  def flight_times(dep, arr)
+    html = short_datetime(dep)
+    html+= " &ndash; "
+    if Time.at(dep).to_date === Time.at(arr).to_date
+      html += short_time(arr)
+    else 
+      html += short_datetime(arr)
+    end
+    html.html_safe
+  end
 
 end

@@ -1,7 +1,7 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
-$color-light: hsl(0,0,50%);
+$color-light: hsl(0,0,70%);
 
 /* mixins, variables, etc. */
 
@@ -109,10 +109,6 @@ input, textarea, select, .uneditable-input {
 	@include box_sizing;
 }
 
-input {
-	height: auto !important;
-}
-
 .checkbox {
 	margin-top: -10px;
 	margin-bottom: 10px;
@@ -120,6 +116,10 @@ input {
 		margin-left: 20px;
 		font-weight: normal;
 	}
+}
+
+.date-field {
+  width: 225px;
 }
 
 #session_remember_me {
@@ -156,23 +156,54 @@ input {
 
 /* Events */
 
+.edit-button {
+  float: right;
+  height: 50px;
+  margin-right: 10px;
+}
+
+a.edit-link {
+  font-size: 75%;
+}
+
+a.inline-link {
+  margin-left: 1.5em;
+}
+
+div.flight {
+  margin-bottom: 10px;
+}
+
+span.traveler-name {
+  font-weight: 700;
+}
+
 span.traveler-note {
-	font-weight: 300;
 	color: $color-light;
+  font-style: italic;
+}
+
+span.flight-time {
+  font-weight: 700;
+}
+
+span.flight-timezone {
+  font-size: 75%;
+  color: $color-light;
+}
+
+span.flight-number {
+  color: $color-light;
 }
 
 th.event-traveler {
-	width: 20%;
+	width: 25%;
 }
 
 th.event-pickup-info {
-	width: 20%;
+	width: 25%;
 }
 
 th.event-flights {
 	width: 50%;
-}
-
-th.event-tools {
-	width: 10%;
 }

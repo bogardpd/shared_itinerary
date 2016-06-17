@@ -1,29 +1,53 @@
 <% if itineraries.any? %>
-<table class="table">
+<table class="table table-striped">
 	<thead>
 		<th class="event-traveler">Traveler</th>
-		<th class="event-pickup-info">Pickup Info</th>
 		<th class="event-flights">Flights</th>
-		<th class="event-tools">Tools</th>
+		<th class="event-pickup-info">Pickup Info</th>
 	</thead>
 	<% itineraries.each do |section| %>
 		<tr>
 			
 			<td>
-				<%= section.traveler_name %><br />
+				<span class="traveler-name"><%= section.traveler_name %></span>
+        <% if current_user?(@event.user) %>
+          <div class="edit-button">
+            <%= link_to("<span class=\"glyphicon glyphicon-pencil\"></span> <span class=\"glyphicon glyphicon-user\"></span>".html_safe, edit_section_path(section), title: "Edit #{section.traveler_name}", class: "btn btn-default") %>
+          </div>
+        <% end %>
+        <br />
 				<span class="traveler-note"><%= section.traveler_note %></span>
-				
 			</td>
 			
 			<td>
+        <% section.flights.each_with_index do |flight, index| %>
+          <div class="flight">
+            <% if current_user?(@event.user) %>
+              <div class="btn-group-vertical edit-button">
+                <%= link_to("<span class=\"glyphicon glyphicon-pencil\"></span> <span class=\"glyphicon glyphicon-plane\"></span>".html_safe, edit_flight_path(flight), title: "Edit #{flight.airline_iata} #{flight.flight_number}", class: "btn btn-default") %>
+                <% if index == section.flights.size - 1 %>
+                  <%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-plane\"></span>".html_safe, new_flight_path(section: section), title: "Add a new flight to #{section.traveler_name}’s itinerary", class: "btn btn-default") %>
+                <% end %>
+              </div>
+            <% end %>
+              
+            <span class="flight-time"><%= flight_times(flight.departure_datetime, flight.arrival_datetime) %></span>
+            <span class="flight-timezone"><%= section.timezone %></span>
+            <br/>
+            <span class="flight-airports"><%= flight.departure_airport_iata %> &ndash; <%= flight.arrival_airport_iata %></span><br/>
+            <span class="flight-number"><%= flight.airline_iata %> <%= flight.flight_number %></span>
+          </div>
+        <% end %>
+				<% if current_user?(@event.user) && section.flights.empty? %>
+          <%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-plane\"></span>&ensp;Add a flight".html_safe, new_flight_path(section: section), title: "Add a new flight to #{section.traveler_name}’s itinerary", class: "btn btn-default") %>
+          
+        <% end %>
+			</td>
+      
+			<td>
 				<%= section.pickup_info %>
 			</td>
-			<td>
-				<%= link_to('Add Flight', new_flight_path(section: section), class: "btn btn-primary btn-sm") %>
-			</td>
-			<td width="50px">
-				<%= link_to('Edit', edit_section_path(section), class: "btn btn-primary btn-sm") %>
-			</td>
+      
 		</tr>
 	<% end %>
 </table>
