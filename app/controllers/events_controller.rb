@@ -75,7 +75,7 @@ class EventsController < ApplicationController
                         flight.arrival_airport_iata,
                         flight.arrival_datetime])
         end
-        flights_array.push([ section.traveler_name, flights, true ]) #figure out the true
+        flights_array.push([ section.traveler_name, flights ])
       end
       return flights_array
     end
