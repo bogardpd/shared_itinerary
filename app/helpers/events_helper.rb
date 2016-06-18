@@ -17,7 +17,7 @@ module EventsHelper
     @arrow_point_length = 5
     @flight_bar_height = 30
     @flight_bar_spacing = 5
-    @flight_bar_line_break_width = 40
+    @flight_bar_line_break_width = 50 # If flight bar width is less than this, add a line break
     @image_padding = 10
     @name_width = 130
     @name_padding = 10
