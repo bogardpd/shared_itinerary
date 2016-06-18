@@ -191,7 +191,8 @@ module EventsHelper
   def draw_person_row(person, this_date, row_index, hue)
   	prev_flight = nil
 		
-  	concat "<text x=\"#{@image_padding + @name_width - @name_padding}\" y=\"#{row_top(row_index) + (@flight_bar_height / 2)}\" class=\"svg_person_name\">#{person[:name]}</text>\n".html_safe
+  	concat "<text x=\"#{@image_padding + @name_width - @name_padding}\" y=\"#{row_top(row_index) + (@flight_bar_height * 0.25)}\" class=\"svg_person_name\">#{person[:name]}\n</text>\n".html_safe
+  	concat "<text x=\"#{@image_padding + @name_width - @name_padding}\" y=\"#{row_top(row_index) + (@flight_bar_height * 0.75)}\" class=\"svg_person_nickname\">#{person[:nickname]}\n</text>\n".html_safe
 	
   	person[:flights].each_with_index do |flight, flight_index|
   		concat draw_flight_bar(row_index, hue, flight, this_date)

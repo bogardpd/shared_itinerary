@@ -76,6 +76,7 @@ class EventsController < ApplicationController
         end
         flights_array.push({
           name:                   section.traveler_name,
+          nickname:               section.traveler_note, 
           flights:                flights,
           section_departure_time: flights.first[:departure_time],
           section_arrival_time:   flights.last[:arrival_time]
