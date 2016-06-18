@@ -3,10 +3,6 @@ module EventsHelper
   def initialize_settings
     # Settable
     
-    @row_hue = Hash.new
-    @row_hue["TUS"] = 0
-    @row_hue["PHX"] = 180
-
     @lightness_ff_lt = '40%' # Flight fill, layover text
     @lightness_lf_ft = '80%' # Layover fill, flight text
     @lightness_stroke = '30%'
@@ -22,39 +18,38 @@ module EventsHelper
     @name_width = 130
     @name_padding = 40 # Distance between name and chart
     @pixels_per_hour = 40
-    @time_label_height = 18
     @time_label_padding = 5
     
     # Derived:
 
     @image_width = @name_width + (24*@pixels_per_hour) + 2*@image_padding + @time_label_padding + @airport_right_buffer
-    @chart_top = @image_padding + (2 * @time_label_height) + @time_label_padding
+    @chart_top = @image_padding + @time_label_padding
     @chart_left = @image_padding + @name_width
     @chart_right = @chart_left + (24 * @pixels_per_hour)
+    
   end
   
   def draw_charts
   	initialize_settings
         
     # Determine earliest and latest dates
-  	incoming_date_range = get_date_range(@incoming_flights)
-  	returning_date_range = get_date_range(@returning_flights)
+  	date_range = [get_date_range(@flights[0]), get_date_range(@flights[1])]
 	
     concat "<h2>Incoming Flights</h2>\n".html_safe
 	
-  	for d in incoming_date_range[0]..incoming_date_range[1]
-  		draw_date_chart(d,@incoming_flights,true)
+  	for d in date_range[0][0]..date_range[0][1]
+  		draw_date_chart(d, @flights[0], true, @timezones[0])
   	end
 	
   	concat "<h2>Returning Flights</h2>\n".html_safe
 	
-  	for d in returning_date_range[0]..returning_date_range[1]
-  		draw_date_chart(d,@returning_flights,false)
+  	for d in date_range[1][0]..date_range[1][1]
+  		draw_date_chart(d, @flights[1], false, @timezones[1])
   	end
   end
 
 
-  def draw_date_chart(date, flight_array, arriving)
+  def draw_date_chart(date, flight_array, arriving, timezone)
 	
   	this_date = date
 	
@@ -74,12 +69,14 @@ module EventsHelper
 	
   		chart_height = (@flight_bar_height + 2 * @flight_bar_spacing) * number_of_rows
   		image_height = @chart_top + chart_height + @image_padding
-
+      
+      concat "<h3>#{this_date.strftime("%A, %B %-d, %Y")} (#{timezone})</h3>\n".html_safe
+      
   		concat "<svg width=\"#{@image_width}\" height=\"#{image_height}\">\n\n".html_safe
   		concat "<rect width=\"#{@image_width}\" height=\"#{image_height}\" class=\"svg_background\" />\n".html_safe
 	
-  		concat "<text x=\"#{@image_padding}\" y=\"#{@image_padding}\" class=\"svg_time_date_label\">#{this_date.strftime("%A, %B %-d, %Y")}</text>\n".html_safe
-  		concat "<text x=\"#{@image_padding + @name_width + (12 * @pixels_per_hour)}\" y=\"#{@image_padding +  @time_label_height}\" text-anchor=\"middle\" class=\"svg_time_zone_label\">#{@time_zone}</text>\n".html_safe
+  		#concat "<text x=\"#{@image_padding}\" y=\"#{@image_padding}\" class=\"svg_time_date_label\">#{this_date.strftime("%A, %B %-d, %Y")} (#{timezone})</text>\n".html_safe
+  		#concat "<text x=\"#{@image_padding + @name_width + (12 * @pixels_per_hour)}\" y=\"#{@image_padding +  @time_label_height}\" text-anchor=\"middle\" class=\"svg_time_zone_label\">#{@timezone}</text>\n".html_safe
 	
   		# Draw chart grid:
 	

@@ -7,9 +7,24 @@ class EventsController < ApplicationController
     @arrivals = @event.sections.where(is_arrival: true)
     @departures = @event.sections.where(is_arrival: false)
     
-    @incoming_flights = section_array(@arrivals, true)
-    @returning_flights = section_array(@departures, false)
+    @flights = [section_array(@arrivals, true), section_array(@departures, false)]
+    @timezones = [@event.arriving_timezone, @event.departing_timezone]
     
+    # Generate hues:
+    
+    key_airports = Set.new
+    @row_hue = Hash.new
+    
+    @flights.each do |flight|
+      flight.each do |section|
+        key_airports.add(section[:key_airport])
+      end
+    end
+    hue_step = 360/key_airports.length
+    key_airports.each_with_index do |airport, index|
+      @row_hue[airport] = index*hue_step
+    end
+      
     rescue ActiveRecord::RecordNotFound
       flash[:warning] = "We couldnʼt find an event with an ID of #{params[:id]}."
       redirect_to current_user
@@ -74,12 +89,14 @@ class EventsController < ApplicationController
             arrival_time:      flight.arrival_datetime
           })
         end
+        key_airport = is_arrival ? flights.last[:arrival_airport] : flights.first[:departure_airport]
         flights_array.push({
           name:                   section.traveler_name,
           nickname:               section.traveler_note, 
           flights:                flights,
           section_departure_time: flights.first[:departure_time],
-          section_arrival_time:   flights.last[:arrival_time]
+          section_arrival_time:   flights.last[:arrival_time],
+          key_airport:            key_airport 
         })  
       end
       
