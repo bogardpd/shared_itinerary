@@ -21,7 +21,7 @@ module ApplicationHelper
   def flight_times(dep, arr)
     html = short_datetime(dep)
     html+= " &ndash; "
-    if Time.at(dep).to_date === Time.at(arr).to_date
+    if Time.at(dep).utc.to_date === Time.at(arr).utc.to_date
       html += short_time(arr)
     else 
       html += short_datetime(arr)
