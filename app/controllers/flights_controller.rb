@@ -16,6 +16,7 @@ class FlightsController < ApplicationController
       flash[:success] = "Flight created!"
       redirect_to event_path(current_section.event)
     else
+      @timezone = current_section.is_arrival? ? current_section.event.arriving_timezone : current_section.event.departing_timezone
       render 'new'
     end
   end
