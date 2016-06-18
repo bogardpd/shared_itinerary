@@ -7,11 +7,8 @@ class EventsController < ApplicationController
     @arrivals = @event.sections.where(is_arrival: true)
     @departures = @event.sections.where(is_arrival: false)
     
-    #@arrive_list = Hash.new
-    #@depart_list = Hash.new
-    
-    @incoming_flights = section_array(@arrivals)
-    @returning_flights = section_array(@departures)
+    @incoming_flights = section_array(@arrivals, true)
+    @returning_flights = section_array(@departures, false)
     
     rescue ActiveRecord::RecordNotFound
       flash[:warning] = "We couldnʼt find an event with an ID of #{params[:id]}."
@@ -63,20 +60,34 @@ class EventsController < ApplicationController
     end
     
     # Accepts a collection of trip sections and formats them in an array.
-    def section_array(sections_collection)
+    def section_array(sections_collection, is_arrival)
       flights_array = Array.new
       sections_collection.each do |section|
         flights = Array.new
         section.flights.order(:departure_datetime).each do |flight|
-          flights.push([flight.airline_iata,
-                        flight.flight_number,
-                        flight.departure_airport_iata,
-                        flight.departure_datetime,
-                        flight.arrival_airport_iata,
-                        flight.arrival_datetime])
+          flights.push({
+            airline:           flight.airline_iata,
+            flight_number:     flight.flight_number,
+            departure_airport: flight.departure_airport_iata,
+            departure_time:    flight.departure_datetime,
+            arrival_airport:   flight.arrival_airport_iata,
+            arrival_time:      flight.arrival_datetime
+          })
         end
-        flights_array.push([ section.traveler_name, flights ])
+        flights_array.push({
+          name:                   section.traveler_name,
+          flights:                flights,
+          section_departure_time: flights.first[:departure_time],
+          section_arrival_time:   flights.last[:arrival_time]
+        })  
       end
+      
+      if is_arrival
+        flights_array.sort_by! { |h| [h[:section_arrival_time], h[:section_departure_time]] }
+      else
+        flights_array.sort_by! { |h| [h[:section_departure_time], h[:section_arrival_time]] }
+      end
+      
       return flights_array
     end
   
