@@ -81,6 +81,7 @@ class EventsController < ApplicationController
         flights = Array.new
         section.flights.order(:departure_datetime).each do |flight|
           flights.push({
+            id:                flight.id,
             airline:           flight.airline_iata,
             flight_number:     flight.flight_number,
             departure_airport: flight.departure_airport_iata,
@@ -91,9 +92,13 @@ class EventsController < ApplicationController
         end
         if flights.any?
           key_airport = is_arrival ? flights.last[:arrival_airport] : flights.first[:departure_airport]
+          timezone = is_arrival ? @event.arriving_timezone : @event.departing_timezone
           flights_array.push({
+            id:                     section.id,  
             name:                   section.traveler_name,
-            nickname:               section.traveler_note, 
+            note:                   section.traveler_note,
+            pickup_info:            section.pickup_info,
+            timezone:               timezone,  
             flights:                flights,
             section_departure_time: flights.first[:departure_time],
             section_arrival_time:   flights.last[:arrival_time],

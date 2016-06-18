@@ -139,10 +139,10 @@ module EventsHelper
 	
   	if display_flight_number
   		if width < @flight_bar_line_break_width
-  			html += "<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height * 0.3}\" class=\"svg_flight_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\">#{flight[:airline]}</text>\n"
-  			html += "<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height * 0.7}\" class=\"svg_flight_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\">#{flight[:flight_number]}</text>\n"
+  			html += "<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height * 0.41}\" class=\"svg_flight_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\">#{flight[:airline]}</text>\n"
+  			html += "<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height * 0.81}\" class=\"svg_flight_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\">#{flight[:flight_number]}</text>\n"
   		else
-  			html += "<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height / 2}\" class=\"svg_flight_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\">#{flight[:airline]} #{flight[:flight_number]}</text>\n"
+  			html += "<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height*0.61}\" class=\"svg_flight_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\">#{flight[:airline]} #{flight[:flight_number]}</text>\n"
   		end
   	end
   	html.html_safe
@@ -180,7 +180,7 @@ module EventsHelper
   	end
 	
   	if display_layover_airport
-  		html += "<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height / 2}\" class=\"svg_layover_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_ff_lt})\">#{flight_1[:arrival_airport]}</text>\n"
+  		html += "<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height*0.61}\" class=\"svg_layover_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_ff_lt})\">#{flight_1[:arrival_airport]}</text>\n"
   	end
   	html.html_safe
   end
@@ -188,8 +188,8 @@ module EventsHelper
   def draw_person_row(person, this_date, row_index, hue)
   	prev_flight = nil
 		
-  	concat "<text x=\"#{@image_padding}\" y=\"#{row_top(row_index) + (@flight_bar_height * 0.25)}\" class=\"svg_person_name\">#{person[:name]}\n</text>\n".html_safe
-  	concat "<text x=\"#{@image_padding}\" y=\"#{row_top(row_index) + (@flight_bar_height * 0.75)}\" class=\"svg_person_nickname\">#{person[:nickname]}\n</text>\n".html_safe
+  	concat "<text x=\"#{@image_padding}\" y=\"#{row_top(row_index) + (@flight_bar_height * 0.4)}\" class=\"svg_person_name\">#{person[:name]}\n</text>\n".html_safe
+  	concat "<text x=\"#{@image_padding}\" y=\"#{row_top(row_index) + (@flight_bar_height * 0.9)}\" class=\"svg_person_nickname\">#{person[:note]}\n</text>\n".html_safe
 	
   	person[:flights].each_with_index do |flight, flight_index|
   		concat draw_flight_bar(row_index, hue, flight, this_date)
@@ -208,13 +208,13 @@ module EventsHelper
   	section_right = @name_width + @image_padding + (end_time.hour*@pixels_per_hour) + (end_time.min*@pixels_per_hour/60) + @airport_padding
 	
   	if person[:flights].first[:departure_time].to_date == this_date
-  		concat "<text x=\"#{section_left}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.25}\" class=\"svg_airport_label svg_airport_block_start\">#{person[:flights].first[:departure_airport]}</text>\n".html_safe
-  		concat "<text x=\"#{section_left}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.75}\" class=\"svg_time_label svg_airport_block_start\">#{person[:flights].first[:departure_time].strftime("%l:%M%P").chomp('m')}</text>\n".html_safe
+  		concat "<text x=\"#{section_left}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.42}\" class=\"svg_airport_label svg_airport_block_start\">#{person[:flights].first[:departure_airport]}</text>\n".html_safe
+  		concat "<text x=\"#{section_left}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.92}\" class=\"svg_time_label svg_airport_block_start\">#{person[:flights].first[:departure_time].strftime("%l:%M%P").chomp('m')}</text>\n".html_safe
   	end
 	
   	if person[:flights].last[:arrival_time].to_date == this_date
-  		concat "<text x=\"#{section_right}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.25}\" class=\"svg_airport_label svg_airport_block_end\">#{person[:flights].last[:arrival_airport]}</text>\n".html_safe
-  		concat "<text x=\"#{section_right}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.75}\" class=\"svg_time_label svg_airport_block_end\">#{person[:flights].last[:arrival_time].strftime("%l:%M%P").chomp('m')}</text>\n".html_safe
+  		concat "<text x=\"#{section_right}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.42}\" class=\"svg_airport_label svg_airport_block_end\">#{person[:flights].last[:arrival_airport]}</text>\n".html_safe
+  		concat "<text x=\"#{section_right}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.92}\" class=\"svg_time_label svg_airport_block_end\">#{person[:flights].last[:arrival_time].strftime("%l:%M%P").chomp('m')}</text>\n".html_safe
   	end
 	
   end

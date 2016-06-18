@@ -9,18 +9,20 @@
 
 <% draw_charts %>
 
-<h2>Arrivals</h2>
+<hr />
+
+<h2>Incoming Flight Details</h2>
 
 <% if current_user?(@event.user) %>
   <%= link_to "<span class=\"glyphicon glyphicon-plus\"></span> Add a traveler’s arrival itinerary".html_safe, new_section_path(event: @event, direction: :arrival), class: "btn btn-success" %>
 <% end %>
 
-<%= render 'itineraries', itineraries: @arrivals %>
+<%= render 'itineraries', itineraries: @flights[0] %>
 
-<h2>Departures</h2>
+<h2>Returning Flight Details</h2>
 
 <% if current_user?(@event.user) %>
   <%= link_to "<span class=\"glyphicon glyphicon-plus\"></span> Add a traveler’s departure itinerary".html_safe, new_section_path(event: @event, direction: :departure), class: "btn btn-success" %>
 <% end %>
 
-<%= render 'itineraries', itineraries: @departures %>
+<%= render 'itineraries', itineraries: @flights[1] %>
