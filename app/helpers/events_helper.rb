@@ -96,18 +96,17 @@ module EventsHelper
   		row_index = 0;
   		flight_array.each do |person|
   			# Make sure this person has flights on this date, and if so, draw a row for them:
-  			unless ((person[1].last)[5]).to_date < this_date || ((person[1].first)[3]).to_date > this_date
+  			if person[1].any? && (person[1].first)[3].to_date <= this_date && (person[1].last)[5].to_date >= this_date
   				# Get hue:
   				if arriving
   					this_hue = @row_hue[((person[1].last)[4])]
   				else
   					this_hue = @row_hue[((person[1].first)[2])]
   				end
-			
+		
   				draw_person_row(person, this_date, row_index, this_hue)
   				row_index += 1
-  			end
-		
+        end		
   		end
 	
   		concat "</svg>\n".html_safe
