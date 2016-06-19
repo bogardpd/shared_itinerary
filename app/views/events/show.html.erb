@@ -1,4 +1,5 @@
 <% provide(:title, @event.event_name)%>
+<% provide(:meta_description, "See when everyone arrives at and departs from #{@event.event_name}.")%>
 <h1><%= @event.event_name %></h1>
 
 <% if current_user?(@event.user) %>

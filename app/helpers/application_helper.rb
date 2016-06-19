@@ -10,6 +10,15 @@ module ApplicationHelper
     end
   end
   
+  # Returns the meta description on a per-page basis.
+  def meta_description(page_meta_description = '')
+    if page_meta_description.empty?
+      ""
+    else
+      "<meta name=\"description\" content=\"#{page_meta_description}\" />".html_safe
+    end
+  end
+  
   def short_datetime(dt)
     dt.strftime("%a %b %-d %H:%M")
   end
