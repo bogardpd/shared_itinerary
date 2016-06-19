@@ -6,12 +6,12 @@ class SectionsController < ApplicationController
     @section = Event.find(params[:event]).sections.build
     case params[:direction]
     when "arrival"
-      @title_text = "Add a New Arrival Itinerary"
+      @title_text = "Add a New Incoming Itinerary"
       @to_from_text = "from"
       @is_arrival = true
       @show_arrival_departure = false
     when "departure"
-      @title_text = "Add a New Departure Itinerary"
+      @title_text = "Add a New Returning Itinerary"
       @to_from_text = "to"
       @is_arrival = false
       @show_arrival_departure = false
@@ -35,7 +35,14 @@ class SectionsController < ApplicationController
   
   def edit
     @section = Section.find(params[:id])
-    @to_from_text = @section.is_arrival? ? "from" : "to"
+    if @section.is_arrival?
+      @to_from_text = "from"
+      @title_text = "Edit Incoming Itinerary"
+    else 
+      @to_from_text = "to"
+      @title_text = "Edit Returning Itinerary"
+    end
+    
   end
   
   def update
