@@ -12,6 +12,8 @@ class Flight < ActiveRecord::Base
   before_save { self.airline_iata = airline_iata.upcase }
   before_save { self.departure_airport_iata = departure_airport_iata.upcase }
   before_save { self.arrival_airport_iata = arrival_airport_iata.upcase }
+  before_save { self.departure_datetime = Time.parse(departure_datetime.to_s) }
+  before_save { self.arrival_datetime = Time.parse(arrival_datetime.to_s)}
   
   def departure_is_before_arrival
     errors[:base] << "The flight's departure must come before its arrival" unless self.departure_datetime && self.arrival_datetime && self.departure_datetime < self.arrival_datetime
