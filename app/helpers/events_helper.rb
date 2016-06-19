@@ -37,7 +37,7 @@ module EventsHelper
 	
     concat "<h2>Incoming Flights</h2>\n".html_safe
 	  
-    if @flights[0].any?
+    if @flights[0].any? && date_range[0][0] && date_range[0][1]
     	for d in date_range[0][0]..date_range[0][1]
     		draw_date_chart(d, @flights[0], true, @timezones[0])
     	end
@@ -47,7 +47,7 @@ module EventsHelper
 	
   	concat "<h2>Returning Flights</h2>\n".html_safe
 	  
-    if @flights[1].any?
+    if @flights[1].any? && date_range[1][0] && date_range[1][1]
     	for d in date_range[1][0]..date_range[1][1]
     		draw_date_chart(d, @flights[1], false, @timezones[1])
     	end

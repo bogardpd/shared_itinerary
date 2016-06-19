@@ -21,6 +21,7 @@ class EventsController < ApplicationController
         key_airports.add(section[:key_airport])
       end
     end
+    key_airports.reject!(&:nil?)
     hue_step = key_airports.length > 0 ? 360/key_airports.length : 0
     key_airports.each_with_index do |airport, index|
       @row_hue[airport] = index*hue_step
@@ -118,28 +119,31 @@ class EventsController < ApplicationController
             arrival_time:      flight.arrival_datetime
           })
         end
+        dep_time = arr_time = Time.new
         if flights.any?
           key_airport = is_arrival ? flights.last[:arrival_airport] : flights.first[:departure_airport]
           timezone = is_arrival ? @event.arriving_timezone : @event.departing_timezone
-          flights_array.push({
-            id:                     section.id,  
-            name:                   section.traveler_name,
-            note:                   section.traveler_note,
-            pickup_info:            section.pickup_info,
-            timezone:               timezone,  
-            flights:                flights,
-            section_departure_time: flights.first[:departure_time],
-            section_arrival_time:   flights.last[:arrival_time],
-            key_airport:            key_airport 
-          })  
+          dep_time = flights.first[:departure_time]
+          arr_time = flights.last[:arrival_time]
         end
-        
-        if is_arrival
-          flights_array.sort_by! { |h| [h[:section_arrival_time], h[:section_departure_time]] }
-        else
-          flights_array.sort_by! { |h| [h[:section_departure_time], h[:section_arrival_time]] }
-        end
-        
+        flights_array.push({
+          id:                     section.id,  
+          name:                   section.traveler_name,
+          note:                   section.traveler_note,
+          pickup_info:            section.pickup_info,
+          timezone:               timezone,  
+          flights:                flights,
+          section_departure_time: dep_time,
+          section_arrival_time:   arr_time,
+          key_airport:            key_airport 
+        })  
+            
+      end
+      
+      if is_arrival
+        flights_array.sort_by! { |h| [h[:section_arrival_time], h[:section_departure_time]] }
+      else
+        flights_array.sort_by! { |h| [h[:section_departure_time], h[:section_arrival_time]] }
       end
             
       return flights_array

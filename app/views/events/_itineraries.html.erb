@@ -39,7 +39,7 @@
           </div>
         <% end %>
 				<% if current_user?(@event.user) && section[:flights].empty? %>
-          <%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-plane\"></span>&ensp;Add a flight".html_safe, new_flight_path(section: section), title: "Add a new flight to #{section.traveler_name}’s itinerary", class: "btn btn-default") %>
+          <%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-plane\"></span>&ensp;Add a flight".html_safe, new_flight_path(section: section[:id]), title: "Add a new flight to #{section[:name]}’s itinerary", class: "btn btn-default") %>
           
         <% end %>
 			</td>
