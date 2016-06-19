@@ -1,6 +1,7 @@
 class EventsController < ApplicationController
-  before_action :logged_in_user, only: [:new, :create, :edit, :update, :destroy]
-  before_action :correct_user, only: [:edit, :update, :destroy]
+  before_action :logged_in_user, only: [:new, :create, :edit, :update, :share_link, :destroy]
+  before_action :correct_user, only: [:edit, :update, :share_link, :destroy]
+  before_action :correct_user_or_share_link, only: [:show]
   
   def show
     @event = Event.find(params[:id])
@@ -20,10 +21,12 @@ class EventsController < ApplicationController
         key_airports.add(section[:key_airport])
       end
     end
-    hue_step = 360/key_airports.length
+    hue_step = key_airports.length > 0 ? 360/key_airports.length : 0
     key_airports.each_with_index do |airport, index|
       @row_hue[airport] = index*hue_step
     end
+    
+    @share_link = "#{request.base_url}/events/#{params[:id]}/#{@event.share_link}"
       
     rescue ActiveRecord::RecordNotFound
       flash[:warning] = "We couldnʼt find an event with an ID of #{params[:id]}."
@@ -35,7 +38,7 @@ class EventsController < ApplicationController
   end
   
   def create
-    @event = current_user.events.build(event_params)
+    @event = current_user.events.build(event_params.merge(share_link: SecureRandom.hex(8)))
     if @event.save
       flash[:success] = "Event created!"
       redirect_to user_path(current_user)
@@ -57,6 +60,19 @@ class EventsController < ApplicationController
     end
   end
   
+  def share_link
+    share_text = SecureRandom.hex(8)
+    @event = Event.find(params[:id])
+    if @event.update_attributes(share_link: share_text)
+      redirect_to @event
+    else
+      redirect_to @event
+    end
+    rescue ActiveRecord::RecordNotFound
+      flash[:warning] = "We couldnʼt find an event with an ID of #{params[:id]}."
+      redirect_to current_user
+  end
+  
   def destroy
     @event.destroy
     flash[:success] = "Event deleted!"
@@ -72,6 +88,18 @@ class EventsController < ApplicationController
     def correct_user
       @event = current_user.events.find_by(id: params[:id])
       redirect_to root_url if @event.nil?
+    end
+    
+    def correct_user_or_share_link
+      if params[:share_link].nil? || params[:share_link] != Event.find(params[:id]).share_link
+        if logged_in?
+          correct_user
+        else
+          store_location
+          flash[:danger] = "Please log in."
+          redirect_to login_url
+        end
+      end
     end
     
     # Accepts a collection of trip sections and formats them in an array.

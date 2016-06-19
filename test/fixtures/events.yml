@@ -5,15 +5,18 @@ one:
   arriving_timezone: MyText
   departing_timezone: MyText
   user: johndoe
+  share_link: c0ffee
 
 two:
   event_name: MyText
   arriving_timezone: MyText
   departing_timezone: MyText
   user: johndoe
+  share_link: e234
 
 different_owner:
   event_name: MyText
   arriving_timezone: MyText
   departing_timezone: MyText
   user: archer
+  share_link: a123

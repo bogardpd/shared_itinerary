@@ -36,16 +36,24 @@ module EventsHelper
   	date_range = [get_date_range(@flights[0]), get_date_range(@flights[1])]
 	
     concat "<h2>Incoming Flights</h2>\n".html_safe
-	
-  	for d in date_range[0][0]..date_range[0][1]
-  		draw_date_chart(d, @flights[0], true, @timezones[0])
-  	end
+	  
+    if @flights[0].any?
+    	for d in date_range[0][0]..date_range[0][1]
+    		draw_date_chart(d, @flights[0], true, @timezones[0])
+    	end
+    else
+      concat "<p>When incoming flights are added, they will show up here.</p>".html_safe
+    end
 	
   	concat "<h2>Returning Flights</h2>\n".html_safe
-	
-  	for d in date_range[1][0]..date_range[1][1]
-  		draw_date_chart(d, @flights[1], false, @timezones[1])
-  	end
+	  
+    if @flights[1].any?
+    	for d in date_range[1][0]..date_range[1][1]
+    		draw_date_chart(d, @flights[1], false, @timezones[1])
+    	end
+    else
+      concat "<p>When returning flights are added, they will show up here.</p>".html_safe
+    end
   end
 
 

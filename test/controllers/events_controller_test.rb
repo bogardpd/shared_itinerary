@@ -13,16 +13,12 @@ class EventsControllerTest < ActionController::TestCase
     assert_redirected_to login_url
   end
   
-  # Write test for redirect update when not logged in
-  
   test "should redirect destroy when not logged in" do
     assert_no_difference 'Event.count' do
       delete :destroy, id: @event
     end
     assert_redirected_to login_url
   end
-  
-  # Write test for redirect update for wrong event
   
   test "should redirect destroy for wrong event" do
     log_in_as(users(:johndoe))
@@ -32,4 +28,38 @@ class EventsControllerTest < ActionController::TestCase
     end
     assert_redirected_to root_url
   end
+  
+  test "should redirect show when not logged in and with no share link" do
+    get :show, id: @event
+    assert_redirected_to login_url
+  end
+  
+  test "should redirect show when logged in as wrong user and with no share link" do
+    log_in_as(users(:archer))
+    get :show, id: @event
+    assert_redirected_to root_url
+  end
+  
+  test "should redirect show when not logged in and with wrong share link" do
+    get :show, id: @event, share_link: "badc0ffee"
+    assert_redirected_to login_url
+  end
+  
+  test "should redirect show when logged in as wrong user with wrong share link" do
+    log_in_as(users(:archer))
+    get :show, id: @event, share_link: "badc0ffee"
+    assert_redirected_to root_url
+  end
+  
+  test "should allow show when not logged in and with correct share link" do
+    get :show, id: @event, share_link: "c0ffee"
+    assert_response :success
+  end
+  
+  test "should allow show when logged in as wrong user with correct share link" do
+    log_in_as(users(:archer))
+    get :show, id: @event, share_link: "c0ffee"
+    assert_response :success
+  end
+  
 end
