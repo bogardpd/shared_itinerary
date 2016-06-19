@@ -27,7 +27,7 @@ class EventsController < ApplicationController
       @row_hue[airport] = index*hue_step
     end
     
-    @share_link = "#{request.base_url}/events/#{params[:id]}/#{@event.share_link}"
+    @share_link = "#{request.base_url}/events/#{params[:id]}/share/#{@event.share_link}"
       
     rescue ActiveRecord::RecordNotFound
       flash[:warning] = "We couldnʼt find an event with an ID of #{params[:id]}."

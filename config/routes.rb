@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   
   post    'share_link/:id', to: 'events#share_link', as: 'share_link'
   
-  get     'events/:id/:share_link' => 'events#show'
+  get     'events/:id/share/:share_link' => 'events#show'
   
   resources :users
   resources :events
