@@ -4,6 +4,7 @@ class EventsController < ApplicationController
   before_action :correct_user_or_share_link, only: [:show]
   
   def show
+    
     @event = Event.find(params[:id])
     @arrivals = @event.sections.where(is_arrival: true)
     @departures = @event.sections.where(is_arrival: false)
@@ -83,7 +84,7 @@ class EventsController < ApplicationController
   private
   
     def event_params
-      params.require(:event).permit(:event_name, :arriving_timezone, :departing_timezone)
+      params.require(:event).permit(:event_name, :arriving_timezone, :departing_timezone, :note)
     end
     
     def correct_user

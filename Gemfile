@@ -22,6 +22,8 @@ gem 'turbolinks', '2.3.0'
 gem 'jbuilder', '2.2.3'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '0.4.0', group: :doc
+# Use redcarpet for markdown formatting
+gem 'redcarpet'
 
 group :development, :test do
   # Use sqlite3 as the database for Active Record

@@ -6,4 +6,6 @@
 
 <hr />
 
-<%= link_to "<span class=\"glyphicon glyphicon-trash\"></span> Delete this flight".html_safe, @flight, method: :delete, class: "btn btn-danger", data: { confirm: "Are you sure you want to delete this flight?" }, role: "button" %>
+<div class="delete-button">
+  <%= link_to "<span class=\"glyphicon glyphicon-trash\"></span> Delete this flight".html_safe, @flight, method: :delete, class: "btn btn-danger", data: { confirm: "Are you sure you want to delete this flight?" }, role: "button" %>
+</div>

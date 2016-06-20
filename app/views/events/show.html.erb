@@ -1,11 +1,8 @@
 <% provide(:title, @event.event_name)%>
 <% provide(:meta_description, "See when everyone arrives at and departs from #{@event.event_name}.")%>
-<h1><%= @event.event_name %></h1>
 
 <% if current_user?(@event.user) %>
   <div class="row center">
-   
-  
 
   <%= form_for(:event, url: share_link_path, html: { class: "form-inline" } ) do |f| %>
     
@@ -26,6 +23,12 @@
     
   <% end %>
   </div>
+<% end %>
+
+<h1><%= @event.event_name %></h1>
+
+<% if @event.note? %>
+  <div class="alert alert-info"><%= markdown_text(@event.note) %></div>
 <% end %>
 
 <% draw_charts %>

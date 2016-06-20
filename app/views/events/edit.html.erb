@@ -1,21 +1,10 @@
 <% provide(:title, 'Edit My Event')%>
+<% provide(:form_button, 'Update my event')%>
 <h1>Edit <%= @event.event_name %></h1>
 
-<div class="row">
-	<div class="col-md-6 col-md-offset-3">
-		<%= form_for(@event) do |f| %>
-			<%= render 'shared/error_messages', object: f.object %>
+<%= render 'form' %>
 			
-			<%= render 'form_fields', :f => f %>
-			
-			<%= f.submit "Update my event", class: "btn btn-primary" %>
-			
-		<% end %>
-		
-		
-	</div>
-</div>
 <hr />
-<div class="center">
-	<%= link_to "Delete this entire #{@event.event_name} event", @event, method: :delete, data: { confirm: "Are you sure you want to delete #{@event.event_name}? This will also delete all #{@event.event_name} itineraries!"}, class: "btn btn-danger" %>
+<div class="delete-button">
+	<%= link_to "<span class=\"glyphicon glyphicon-trash\"></span> Delete this entire #{@event.event_name} event".html_safe, @event, method: :delete, data: { confirm: "Are you sure you want to delete #{@event.event_name}? This will also delete all #{@event.event_name} itineraries!"}, class: "btn btn-danger" %>
 </div>
