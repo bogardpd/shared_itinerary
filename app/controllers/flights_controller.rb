@@ -13,7 +13,7 @@ class FlightsController < ApplicationController
     current_section = Section.find(session[:current_section])
     @flight = current_section.flights.build(flight_params)
     if @flight.save
-      flash[:success] = "Flight created!"
+      flash[:success] = "Flight created! Would you like to <a href=\"#s-#{current_section.id}\">jump to this flight’s itinerary</a>?"
       redirect_to event_path(current_section.event)
     else
       @timezone = current_section.is_arrival? ? current_section.event.arriving_timezone : current_section.event.departing_timezone
@@ -29,7 +29,7 @@ class FlightsController < ApplicationController
   def update
     @flight = Flight.find(params[:id])
     if @flight.update_attributes(flight_params)
-      flash[:success] = "Flight updated!"
+      flash[:success] = "Flight updated! Would you like to <a href=\"#s-#{@flight.section.id}\">jump to this flight’s itinerary</a>?"
       redirect_to @flight.section.event
     else
       @timezone = @flight.section.is_arrival? ? @flight.section.event.arriving_timezone :  @flight.section.event.departing_timezone
@@ -52,7 +52,6 @@ class FlightsController < ApplicationController
     end
     
     def correct_user
-      #@flight = current_user.events.sections.find_by(id: params[:id])
       redirect_to root_url if Flight.find(params[:id]).section.event.user != current_user
     end
   

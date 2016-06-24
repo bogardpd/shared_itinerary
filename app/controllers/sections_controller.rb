@@ -26,7 +26,7 @@ class SectionsController < ApplicationController
     current_event = Event.find(params[:section][:event])
     @section = current_event.sections.build(section_params)
     if @section.save
-      flash[:success] = "Itinerary created!"
+      flash[:success] = "Itinerary created! Would you like to <a href=\"#s-#{@section.id}\">jump to this itinerary</a>?"
       redirect_to event_path(current_event)
     else
       render 'static_pages/home'
@@ -48,7 +48,7 @@ class SectionsController < ApplicationController
   def update
     @section = Section.find(params[:id])
     if @section.update_attributes(section_params)
-      flash[:success] = "Traveler info updated!"
+      flash[:success] = "Traveler info updated! Would you like to <a href=\"#s-#{@section.id}\">jump to this traveler’s itinerary</a>?"
       redirect_to @section.event
     else
       render 'edit'

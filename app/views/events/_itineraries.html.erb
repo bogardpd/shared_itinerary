@@ -6,7 +6,7 @@
 		<th class="event-pickup-info">Pickup Info</th>
 	</thead>
 	<% itineraries.each do |section| %>
-		<tr>
+		<tr id="s-<%= section[:id] %>">
 			
 			<td>
 				<span class="traveler-name"><%= section[:name] %></span>
