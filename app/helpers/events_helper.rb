@@ -89,9 +89,6 @@ module EventsHelper
   		concat "<svg width=\"#{@image_width}\" height=\"#{image_height}\">\n\n".html_safe
   		concat "<rect width=\"#{@image_width}\" height=\"#{image_height}\" class=\"svg_background\" />\n".html_safe
 	
-  		#concat "<text x=\"#{@image_padding}\" y=\"#{@image_padding}\" class=\"svg_time_date_label\">#{this_date.strftime("%A, %B %-d, %Y")} (#{timezone})</text>\n".html_safe
-  		#concat "<text x=\"#{@image_padding + @name_width + (12 * @pixels_per_hour)}\" y=\"#{@image_padding +  @time_label_height}\" text-anchor=\"middle\" class=\"svg_time_zone_label\">#{@timezone}</text>\n".html_safe
-	
   		# Draw chart grid:
 	
   		for x in 0..number_of_rows
