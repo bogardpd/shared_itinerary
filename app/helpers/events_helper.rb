@@ -20,6 +20,7 @@ module EventsHelper
     @flight_bar_height = 30
     @flight_bar_spacing = 5
     @flight_bar_line_break_width = 50 # If flight bar width is less than this, add a line break
+    @flight_bar_no_text_width = 23 # If flight bar width is less than this, do not display text
     @image_padding = 10
     @name_width = 130
     @name_padding = 40 # Distance between name and chart
@@ -94,7 +95,7 @@ module EventsHelper
   		for x in 0..number_of_rows
   			concat "<line x1=\"#{@image_padding}\" y1=\"#{@chart_top + x * (@flight_bar_height + @flight_bar_spacing * 2)}\" x2=\"#{@image_padding + @name_width + 24 * @pixels_per_hour}\" y2=\"#{@chart_top + x * (@flight_bar_height + @flight_bar_spacing * 2)}\" class=\"svg_gridline_minor\" />\n".html_safe 
   		end
-	
+      
   		for x in 0..24
   			concat "<text x=\"#{@image_padding + @name_width + (x * @pixels_per_hour)}\" y=\"#{@chart_top - @time_label_padding}\" text-anchor=\"middle\" class=\"svg_time_label\">#{time_label(x)}</text>\n".html_safe
   			concat "<line x1=\"#{@image_padding + @name_width + (x * @pixels_per_hour)}\" y1=\"#{@chart_top}\" x2=\"#{@image_padding + @name_width + (x * @pixels_per_hour)}\" y2=\"#{@chart_top + chart_height + 1}\" class=\"#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}\" />\n".html_safe
@@ -149,12 +150,14 @@ module EventsHelper
   	end
 	
   	if display_flight_number
-  		if width < @flight_bar_line_break_width
-  			html += "<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height * 0.41}\" class=\"svg_flight_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\">#{flight[:airline]}</text>\n"
-  			html += "<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height * 0.81}\" class=\"svg_flight_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\">#{flight[:flight_number]}</text>\n"
-  		else
-  			html += "<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height*0.61}\" class=\"svg_flight_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\">#{flight[:airline]} #{flight[:flight_number]}</text>\n"
-  		end
+  		if width >= @flight_bar_no_text_width
+        if width < @flight_bar_line_break_width
+    			html += "<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height * 0.41}\" class=\"svg_flight_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\">#{flight[:airline]}</text>\n"
+    			html += "<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height * 0.81}\" class=\"svg_flight_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\">#{flight[:flight_number]}</text>\n"
+    		else
+    			html += "<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height*0.61}\" class=\"svg_flight_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\">#{flight[:airline]} #{flight[:flight_number]}</text>\n"
+    		end
+      end
   	end
   	html.html_safe
   end
