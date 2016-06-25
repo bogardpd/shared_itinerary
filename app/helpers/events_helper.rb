@@ -122,47 +122,57 @@ module EventsHelper
   end
 
   def draw_flight_bar(row, hue, flight, this_date)
-  	display_flight_number = true
   	start_time = flight[:departure_time]
   	end_time = flight[:arrival_time]
   	left_side = @name_width + @image_padding + (start_time.hour*@pixels_per_hour) + (start_time.min*@pixels_per_hour/60)
   	right_side = @name_width + @image_padding + (end_time.hour*@pixels_per_hour) + (end_time.min*@pixels_per_hour/60)
   	width = right_side - left_side
-  	html = ""
+    time_diff = Hash.new
+    time_diff[:minute] = (((flight[:arrival_time]-flight[:departure_time]) / 60) % 60).to_i
+    time_diff[:hour] = ((flight[:arrival_time]-flight[:departure_time]) / 3600).to_i
+		
+    html = "<g id=\"flight#{flight[:id]}\" cursor=\"default\">\n"
+    
+    html += bar_tooltip("#{flight[:airline]} Flight #{flight[:flight_number]}",
+                        flight[:departure_time],
+                        flight[:arrival_time],
+                        flight[:timezone]
+                        )
+    
   	if flight[:departure_time].to_date == this_date && flight[:arrival_time].to_date == this_date
   		# Flight starts and ends today
-  		html += "<rect x=\"#{left_side}\" y=\"#{row_top(row)}\" width=\"#{width}\" height=\"#{@flight_bar_height}\" class=\"svg_bar\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_ff_lt})\" stroke=\"hsl(#{hue},#{@saturation},#{@lightness_stroke})\" />\n"
+      html += "\t<rect x=\"#{left_side}\" y=\"#{row_top(row)}\" width=\"#{width}\" height=\"#{@flight_bar_height}\" class=\"svg_bar\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_ff_lt})\" stroke=\"hsl(#{hue},#{@saturation},#{@lightness_stroke})\" />\n"
+
   	elsif flight[:departure_time].to_date == this_date && flight[:arrival_time].to_date > this_date
   		# Flight starts today and ends tomorrow
-  		html += "<polygon points=\"#{left_side},#{row_top(row)} #{@chart_right},#{row_top(row)} #{@chart_right + @arrow_point_length},#{row_top(row) + @flight_bar_height/2} #{@chart_right},#{row_top(row) + @flight_bar_height} #{left_side},#{row_top(row) + @flight_bar_height}\" class=\"svg_bar\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_ff_lt})\" stroke=\"hsl(#{hue},#{@saturation},#{@lightness_stroke})\" />\n"
+  		html += "\t<polygon id=\"flight#{flight[:id]}\" points=\"#{left_side},#{row_top(row)} #{@chart_right},#{row_top(row)} #{@chart_right + @arrow_point_length},#{row_top(row) + @flight_bar_height/2} #{@chart_right},#{row_top(row) + @flight_bar_height} #{left_side},#{row_top(row) + @flight_bar_height}\" class=\"svg_bar\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_ff_lt})\" stroke=\"hsl(#{hue},#{@saturation},#{@lightness_stroke})\" />\n"
   		right_side = @chart_right
   		width = right_side - left_side
   	elsif flight[:departure_time].to_date < this_date && flight[:arrival_time].to_date == this_date
   		# Flight starts yesterday and ends today
-  		html += "<polygon points=\"#{@chart_left},#{row_top(row)} #{right_side},#{row_top(row)} #{right_side},#{row_top(row) + @flight_bar_height} #{@chart_left},#{row_top(row) + @flight_bar_height} #{@chart_left - @arrow_point_length},#{row_top(row) + @flight_bar_height/2}\" class=\"svg_bar\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_ff_lt})\" stroke=\"hsl(#{hue},#{@saturation},#{@lightness_stroke})\" />\n"
+  		html += "\t<polygon id=\"flight#{flight[:id]}\" points=\"#{@chart_left},#{row_top(row)} #{right_side},#{row_top(row)} #{right_side},#{row_top(row) + @flight_bar_height} #{@chart_left},#{row_top(row) + @flight_bar_height} #{@chart_left - @arrow_point_length},#{row_top(row) + @flight_bar_height/2}\" class=\"svg_bar\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_ff_lt})\" stroke=\"hsl(#{hue},#{@saturation},#{@lightness_stroke})\" />\n"
   		left_side = @chart_left
   		width = right_side - left_side
   	else
   		# No part of the flight occurs today, so do not draw anything
-  		display_flight_number = false
+      return nil
   	end
-	
-  	if display_flight_number
-  		if width >= @flight_bar_no_text_width
-        if width < @flight_bar_line_break_width
-    			html += "<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height * 0.41}\" class=\"svg_flight_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\">#{flight[:airline]}</text>\n"
-    			html += "<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height * 0.81}\" class=\"svg_flight_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\">#{flight[:flight_number]}</text>\n"
-    		else
-    			html += "<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height*0.61}\" class=\"svg_flight_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\">#{flight[:airline]} #{flight[:flight_number]}</text>\n"
-    		end
-      end
-  	end
-  	html.html_safe
+    
+    # Draw flight numbers:  	
+		if width >= @flight_bar_no_text_width
+      if width < @flight_bar_line_break_width
+  			html += "\t<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height * 0.41}\" class=\"svg_flight_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\">#{flight[:airline]}</text>\n"
+  			html += "\t<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height * 0.81}\" class=\"svg_flight_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\">#{flight[:flight_number]}</text>\n"
+  		else
+  			html += "\t<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height*0.61}\" class=\"svg_flight_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\">#{flight[:airline]} #{flight[:flight_number]}</text>\n"
+  		end
+    end
+    html += "</g>\n"
+    
+    html.html_safe
   end
-
+  
   def draw_layover_bar(row, hue, flight_1, flight_2, this_date)
-  	display_layover_airport = true
-  	html = ""
 
   	start_date = (flight_1[:arrival_time]).to_date
   	end_date = (flight_2[:departure_time]).to_date
@@ -172,28 +182,37 @@ module EventsHelper
   	left_side = @name_width + @image_padding + (start_time.hour*@pixels_per_hour) + (start_time.min*@pixels_per_hour/60)
   	right_side = @name_width + @image_padding + (end_time.hour*@pixels_per_hour) + (end_time.min*@pixels_per_hour/60)
   	width = right_side - left_side
-	
+	  
+    html = "<g cursor=\"default\">\t"
+    
+    html += bar_tooltip("Layover at #{flight_1[:arrival_airport]}",
+                        flight_1[:arrival_time],
+                        flight_2[:departure_time],
+                        flight_1[:timezone]
+                        )
+    
   	if start_date == this_date && end_date == this_date
   		# Layover starts and ends today
-  		html = "<rect x=\"#{left_side}\" y=\"#{row_top(row)}\" width=\"#{width}\" height=\"#{@flight_bar_height}\" class=\"svg_bar\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\"  stroke=\"hsl(#{hue},#{@saturation},#{@lightness_stroke})\" />\n"
+  		html += "\t<rect x=\"#{left_side}\" y=\"#{row_top(row)}\" width=\"#{width}\" height=\"#{@flight_bar_height}\" class=\"svg_bar\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\"  stroke=\"hsl(#{hue},#{@saturation},#{@lightness_stroke})\" />\n"
   	elsif start_date == this_date && end_date > this_date
   		# Layover starts today and ends tomorrow
-  		html += "<polygon points=\"#{left_side},#{row_top(row)} #{@chart_right},#{row_top(row)} #{@chart_right + @arrow_point_length},#{row_top(row) + @flight_bar_height/2} #{@chart_right},#{row_top(row) + @flight_bar_height} #{left_side},#{row_top(row) + @flight_bar_height}\" class=\"svg_bar\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\" stroke=\"hsl(#{hue},#{@saturation},#{@lightness_stroke})\" />\n"
+  		html += "\t<polygon points=\"#{left_side},#{row_top(row)} #{@chart_right},#{row_top(row)} #{@chart_right + @arrow_point_length},#{row_top(row) + @flight_bar_height/2} #{@chart_right},#{row_top(row) + @flight_bar_height} #{left_side},#{row_top(row) + @flight_bar_height}\" class=\"svg_bar\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\" stroke=\"hsl(#{hue},#{@saturation},#{@lightness_stroke})\" />\n"
   		right_side = @chart_right
   		width = right_side - left_side
   	elsif start_date < this_date && end_date == this_date
   		# Layover starts yesterday and ends today
-  		html += "<polygon points=\"#{@chart_left},#{row_top(row)} #{right_side},#{row_top(row)} #{right_side},#{row_top(row) + @flight_bar_height} #{@chart_left},#{row_top(row) + @flight_bar_height} #{@chart_left - @arrow_point_length},#{row_top(row) + @flight_bar_height/2}\" class=\"svg_bar\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\" stroke=\"hsl(#{hue},#{@saturation},#{@lightness_stroke})\" />\n"
+  		html += "\t<polygon points=\"#{@chart_left},#{row_top(row)} #{right_side},#{row_top(row)} #{right_side},#{row_top(row) + @flight_bar_height} #{@chart_left},#{row_top(row) + @flight_bar_height} #{@chart_left - @arrow_point_length},#{row_top(row) + @flight_bar_height/2}\" class=\"svg_bar\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_lf_ft})\" stroke=\"hsl(#{hue},#{@saturation},#{@lightness_stroke})\" />\n"
   		left_side = @chart_left
   		width = right_side - left_side
   	else
   		# No part of the layover occurs today, so do not draw anything
-  		display_layover_airport = false
+  		return nil
   	end
 	
-  	if display_layover_airport
-  		html += "<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height*0.61}\" class=\"svg_layover_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_ff_lt})\">#{flight_1[:arrival_airport]}</text>\n"
-  	end
+  	html += "\t<text x=\"#{(left_side + right_side) / 2}\" y=\"#{row_top(row) + @flight_bar_height*0.61}\" class=\"svg_layover_text\" fill=\"hsl(#{hue},#{@saturation},#{@lightness_ff_lt})\">#{flight_1[:arrival_airport]}</text>\n"
+  	
+    html += "</g>\n"
+    
   	html.html_safe
   end
 
@@ -221,12 +240,12 @@ module EventsHelper
 	
   	if person[:flights].first[:departure_time].to_date == this_date
   		concat "<text x=\"#{section_left}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.42}\" class=\"svg_airport_label svg_airport_block_start\">#{person[:flights].first[:departure_airport]}</text>\n".html_safe
-  		concat "<text x=\"#{section_left}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.92}\" class=\"svg_time_label svg_airport_block_start\">#{person[:flights].first[:departure_time].strftime("%l:%M%P").chomp('m')}</text>\n".html_safe
+  		concat "<text x=\"#{section_left}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.92}\" class=\"svg_time_label svg_airport_block_start\">#{format_time_short(person[:flights].first[:departure_time])}</text>\n".html_safe
   	end
 	
   	if person[:flights].last[:arrival_time].to_date == this_date
   		concat "<text x=\"#{section_right}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.42}\" class=\"svg_airport_label svg_airport_block_end\">#{person[:flights].last[:arrival_airport]}</text>\n".html_safe
-  		concat "<text x=\"#{section_right}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.92}\" class=\"svg_time_label svg_airport_block_end\">#{person[:flights].last[:arrival_time].strftime("%l:%M%P").chomp('m')}</text>\n".html_safe
+  		concat "<text x=\"#{section_right}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.92}\" class=\"svg_time_label svg_airport_block_end\">#{format_time_short(person[:flights].last[:arrival_time])}</text>\n".html_safe
   	end
 	
   end
@@ -267,6 +286,30 @@ module EventsHelper
     
     return date_range
   end
+  
+  # Takes two Time objects and returns a string showing the start time, end time, and duration in hours and minutes.
+  def bar_tooltip(description, start_time, end_time, timezone)
+    diff_hour = ((end_time - start_time) / 3600).to_i
+    diff_minute = (((end_time - start_time) / 60) % 60).to_i
+    
+    html = "<title>"
+    html += "#{description} \n"
+    html += "#{format_time(start_time)} – #{format_time(end_time)} #{timezone} \n"
+    html += "(#{diff_hour}h #{diff_minute}m)\n"
+    html += "</title>\n"
+    
+    return html
+  end
+  
+  def format_time(time)
+      time.strftime("%l:%M%P").strip
+  end
+    
+  def format_time_short(time)
+    time.strftime("%l:%M%P").chomp('m')
+  end
+  
+  
   
   
 end

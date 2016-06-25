@@ -117,7 +117,8 @@ class EventsController < ApplicationController
             departure_airport: flight.departure_airport_iata,
             departure_time:    flight.departure_datetime,
             arrival_airport:   flight.arrival_airport_iata,
-            arrival_time:      flight.arrival_datetime
+            arrival_time:      flight.arrival_datetime,
+            timezone:          section.timezone
           })
         end
         dep_time = arr_time = Time.new
