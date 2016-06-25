@@ -7,13 +7,13 @@ module EventsHelper
   end
   
   def initialize_settings
-    # Settable
-    
+    # Settable colors:
     @lightness_ff_lt = '40%' # Flight fill, layover text
     @lightness_lf_ft = '80%' # Layover fill, flight text
     @lightness_stroke = '30%'
     @saturation = '50%'
-
+    
+    # Settable distances (all values in pixels):
     @airport_padding = 3
     @airport_right_buffer = 48
     @arrow_point_length = 5
@@ -23,12 +23,10 @@ module EventsHelper
     @flight_bar_no_text_width = 23 # If flight bar width is less than this, do not display text
     @image_padding = 10
     @name_width = 130
-    @name_padding = 40 # Distance between name and chart
     @pixels_per_hour = 40
     @time_label_padding = 5
     
     # Derived:
-
     @image_width = @name_width + (24*@pixels_per_hour) + 2*@image_padding + @time_label_padding + @airport_right_buffer
     @chart_top = @image_padding + @time_label_padding
     @chart_left = @image_padding + @name_width
