@@ -306,7 +306,7 @@ module EventsHelper
     html = "<title>"
     html += "#{description} \n"
     html += "#{format_time(start_time)} – #{format_time(end_time)} #{timezone} \n"
-    html += "(#{diff_hour}h #{diff_minute}m)\n"
+    html += "(#{diff_hour}h #{diff_minute}m)"
     html += "</title>\n"
     
     return html
