@@ -68,17 +68,16 @@ p {
 /* header */
 
 #logo {
-	float: left;
-	margin-right: 10px;
-	font-size: 1.7em;
-	color: white;
-	text-transform: uppercase;
-	padding-top: 9px;
-	font-weight: bold;
+  font-size: 1.8em;
+  font-weight: 300;
 	&:hover {
-		color: white;
 		text-decoration: none;
 	}
+  img {
+    margin-top: -5px;
+    width: 32px;
+    height: 32px;
+  }
 }
 
 /* footer */
