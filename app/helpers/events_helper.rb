@@ -79,7 +79,7 @@ module EventsHelper
       
       concat "<h3>#{this_date.strftime("%A, %B %-d, %Y")} (#{timezone})</h3>\n".html_safe
       
-  		concat "<svg width=\"#{@image_width}\" height=\"#{image_height}\">\n\n".html_safe
+  		concat "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"#{@image_width}\" height=\"#{image_height}\">\n\n".html_safe
   		concat "<rect width=\"#{@image_width}\" height=\"#{image_height}\" class=\"svg_background\" />\n".html_safe
 	
   		# Draw chart grid:
@@ -225,9 +225,11 @@ module EventsHelper
 
   def draw_person_row(person, this_date, row_index, hue)
   	prev_flight = nil
-    		
-  	concat "<text x=\"#{@image_padding}\" y=\"#{row_top(row_index) + (@flight_bar_height * 0.4)}\" class=\"svg_person_name\">#{person[:name]}\n</text>\n".html_safe
+    
+    concat "<a xlink:href=\"#s-#{person[:id]}\">".html_safe
+  	concat "<text x=\"#{@image_padding}\" y=\"#{row_top(row_index) + (@flight_bar_height * 0.4)}\" class=\"svg_person_name\">#{person[:name]}\n</text>".html_safe
   	concat "<text x=\"#{@image_padding}\" y=\"#{row_top(row_index) + (@flight_bar_height * 0.9)}\" class=\"svg_person_nickname\">#{person[:note]}\n</text>\n".html_safe
+    concat "</a>\n".html_safe
 	
   	person[:flights].each_with_index do |flight, flight_index|
   		concat draw_flight_bar(row_index, hue, flight, this_date)
