@@ -22,7 +22,7 @@ class EventsController < ApplicationController
         key_airports.add(section[:key_airport])
       end
     end
-    key_airports.reject!(&:nil?)
+    key_airports.reject!(&:blank?)
     hue_step = key_airports.length > 0 ? 360/key_airports.length : 0
     key_airports.each_with_index do |airport, index|
       @row_hue[airport] = index*hue_step
@@ -137,7 +137,7 @@ class EventsController < ApplicationController
           flights:                flights,
           section_departure_time: dep_time,
           section_arrival_time:   arr_time,
-          key_airport:            key_airport 
+          key_airport:            key_airport || ""
         })  
             
       end
