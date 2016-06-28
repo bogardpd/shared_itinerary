@@ -9,7 +9,7 @@ module EventsHelper
   def initialize_settings
     # Settable colors:
     @lightness_ff_lt = '40%' # Flight fill, layover text
-    @lightness_lf_ft = '80%' # Layover fill, flight text
+    @lightness_lf_ft = '90%' # Layover fill, flight text
     @lightness_stroke = '30%'
     @saturation = '50%'
     
@@ -21,9 +21,9 @@ module EventsHelper
     @flight_bar_spacing = 5
     @flight_bar_line_break_width = 50 # If flight bar width is less than this, add a line break
     @flight_bar_no_text_width = 23 # If flight bar width is less than this, do not display text
-    @image_padding = 10
+    @image_padding = 15
     @name_width = 130
-    @pixels_per_hour = 40
+    @pixels_per_hour = 38.5
     @time_label_padding = 5
     
     # Derived:
@@ -85,7 +85,8 @@ module EventsHelper
   		# Draw chart grid:
 	
   		for x in 0..number_of_rows
-  			concat "<line x1=\"#{@image_padding}\" y1=\"#{@chart_top + x * (@flight_bar_height + @flight_bar_spacing * 2)}\" x2=\"#{@image_padding + @name_width + 24 * @pixels_per_hour}\" y2=\"#{@chart_top + x * (@flight_bar_height + @flight_bar_spacing * 2)}\" class=\"svg_gridline_minor\" />\n".html_safe 
+  			majmin = x == 0 ? "major" : "minor"
+        concat "<line x1=\"#{@image_padding}\" y1=\"#{@chart_top + x * (@flight_bar_height + @flight_bar_spacing * 2)}\" x2=\"#{@image_padding + @name_width + 24 * @pixels_per_hour}\" y2=\"#{@chart_top + x * (@flight_bar_height + @flight_bar_spacing * 2)}\" class=\"svg_gridline_#{majmin}_horizontal\" />\n".html_safe 
   		end
       
   		for x in 0..24
