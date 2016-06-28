@@ -143,9 +143,9 @@ class EventsController < ApplicationController
       end
       
       if is_arrival
-        flights_array.sort_by! { |h| [h[:section_arrival_time], h[:section_departure_time]] }
+        flights_array.sort_by! { |h| [h[:key_airport], h[:section_arrival_time], h[:section_departure_time]] }
       else
-        flights_array.sort_by! { |h| [h[:section_departure_time], h[:section_arrival_time]] }
+        flights_array.sort_by! { |h| [h[:key_airport], h[:section_departure_time], h[:section_arrival_time]] }
       end
             
       return flights_array
