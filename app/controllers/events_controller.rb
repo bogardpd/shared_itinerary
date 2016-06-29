@@ -15,11 +15,15 @@ class EventsController < ApplicationController
     # Generate hues:
     
     key_airports = Set.new
+    airlines = Array.new
     @row_hue = Hash.new
     
-    @flights.each do |flight|
-      flight.each do |section|
+    @flights.each do |flight_directions|
+      flight_directions.each do |section|
         key_airports.add(section[:key_airport])
+        section[:flights].each do |flight|
+          airlines.push(flight[:airline])
+        end
       end
     end
     key_airports.reject!(&:blank?)
@@ -27,12 +31,27 @@ class EventsController < ApplicationController
     key_airports.each_with_index do |airport, index|
       @row_hue[airport] = index*hue_step
     end
+    airlines = airlines.uniq.join(',')
+    
+    # Get airline codes
+    @airline_codes = Hash.new
+    require 'net/http'
+    require 'json'    
+    uri = URI("https://iatacodes.org/api/v6/airlines?api_key=2f4ed00b-0ecf-489b-8e3e-907729d6f661&code=#{airlines}")
+    response = Net::HTTP.get(uri)
+    response_data = JSON.parse(response)["response"]
+    response_data.each do |resp|
+      @airline_codes[resp["code"]] = resp["name"]
+    end  
     
     @share_link = url_for(share_link: @event.share_link)
       
     rescue ActiveRecord::RecordNotFound
       flash[:warning] = "We couldnʼt find an event with an ID of #{params[:id]}."
       redirect_to current_user
+      
+    rescue Errno::ECONNREFUSED
+      
   end
   
   def new

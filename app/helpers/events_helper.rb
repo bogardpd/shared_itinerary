@@ -128,7 +128,7 @@ module EventsHelper
 		
     html = "<g id=\"flight#{flight[:id]}\" cursor=\"default\">\n"
     
-    html += bar_tooltip("#{flight[:airline]} Flight #{flight[:flight_number]}",
+    html += bar_tooltip("#{airline_name(flight[:airline])} #{flight[:flight_number]}",
                         flight[:departure_time],
                         flight[:arrival_time],
                         flight[:timezone]
@@ -321,6 +321,14 @@ module EventsHelper
     
   def format_time_short(time)
     time.strftime("%l:%M%P").chomp('m')
+  end
+  
+  def airline_name(code)
+    if @airline_codes[code]
+      @airline_codes[code]
+    else
+      code
+    end
   end
   
     
