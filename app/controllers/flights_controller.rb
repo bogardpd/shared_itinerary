@@ -41,7 +41,7 @@ class FlightsController < ApplicationController
     @flight = Flight.find(params[:id])
     current_event = @flight.section.event
     @flight.destroy
-    flash[:success] = "Flight deleted!"
+    flash[:success] = "Flight deleted! Flight updated! Would you like to <a href=\"#s-#{@flight.section.id}\">jump to the deleted flight’s itinerary</a>?"
     redirect_to current_event
   end
   
