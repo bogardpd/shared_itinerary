@@ -7,13 +7,16 @@ class FlightsController < ApplicationController
     @flight = Flight.new
     @timezone = @section.is_arrival? ? @section.event.arriving_timezone : @section.event.departing_timezone
     session[:current_section] = @section.id
+    
+    rescue ActiveRecord::RecordNotFound
+      redirect_to current_user
   end
   
   def create
     current_section = Section.find(session[:current_section])
     @flight = current_section.flights.build(flight_params)
     if @flight.save
-      flash[:success] = "Flight created! Would you like to <a href=\"#s-#{current_section.id}\">jump to this flight’s itinerary</a>?"
+      flash[:success] = "Flight created! #{view_context.link_to("Jump to this flight’s itinerary", "#s-#{current_section.id}", class: "btn btn-default")} #{view_context.link_to(%Q[<span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-plane"></span>&ensp;Add another flight].html_safe, new_flight_path(section: current_section.id), class: "btn btn-default")}"
       redirect_to event_path(current_section.event)
     else
       @timezone = current_section.is_arrival? ? current_section.event.arriving_timezone : current_section.event.departing_timezone
@@ -29,7 +32,7 @@ class FlightsController < ApplicationController
   def update
     @flight = Flight.find(params[:id])
     if @flight.update_attributes(flight_params)
-      flash[:success] = "Flight updated! Would you like to <a href=\"#s-#{@flight.section.id}\">jump to this flight’s itinerary</a>?"
+      flash[:success] = "Flight updated! #{view_context.link_to("Jump to this flight’s itinerary", "#s-#{@flight.section.id}", class: "btn btn-default")}"
       redirect_to @flight.section.event
     else
       @timezone = @flight.section.is_arrival? ? @flight.section.event.arriving_timezone :  @flight.section.event.departing_timezone
@@ -41,7 +44,7 @@ class FlightsController < ApplicationController
     @flight = Flight.find(params[:id])
     current_event = @flight.section.event
     @flight.destroy
-    flash[:success] = "Flight deleted! Flight updated! Would you like to <a href=\"#s-#{@flight.section.id}\">jump to the deleted flight’s itinerary</a>?"
+    flash[:success] = "Flight deleted! #{view_context.link_to("Jump to the deleted flight’s itinerary", "#s-#{@flight.section.id}", class: "btn btn-default")}"
     redirect_to current_event
   end
   

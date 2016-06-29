@@ -26,7 +26,7 @@ class SectionsController < ApplicationController
     current_event = Event.find(params[:section][:event])
     @section = current_event.sections.build(section_params)
     if @section.save
-      flash[:success] = "Itinerary created! Would you like to <a href=\"#s-#{@section.id}\">jump to this itinerary</a>?"
+      flash[:success] = "Itinerary created! #{view_context.link_to("Jump to this itinerary", "#s-#{@section.id}", class: "btn btn-default")} #{view_context.link_to(%Q[<span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-plane"></span>&ensp;Add a flight].html_safe, new_flight_path(section: @section.id), class: "btn btn-default")}"
       redirect_to event_path(current_event)
     else
       render 'static_pages/home'
@@ -48,7 +48,7 @@ class SectionsController < ApplicationController
   def update
     @section = Section.find(params[:id])
     if @section.update_attributes(section_params)
-      flash[:success] = "Traveler info updated! Would you like to <a href=\"#s-#{@section.id}\">jump to this traveler’s itinerary</a>?"
+      flash[:success] = "Traveler info updated! #{view_context.link_to("Jump to this traveler’s itinerary", "#s-#{@section.id}", class: "btn btn-default")}"
       redirect_to @section.event
     else
       render 'edit'
