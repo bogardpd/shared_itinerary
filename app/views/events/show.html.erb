@@ -28,7 +28,7 @@
 <h1><%= @event.event_name %></h1>
 
 <% if @event.note? %>
-  <div class="alert alert-info"><%= markdown_text(@event.note) %></div>
+  <div class="alert alert-info event-info"><%= markdown_text(@event.note) %></div>
 <% end %>
 
 <% draw_charts %>
