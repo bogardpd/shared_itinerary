@@ -128,11 +128,11 @@ module EventsHelper
 		
     html = "<g id=\"flight#{flight[:id]}\" cursor=\"default\">\n"
     
-    html += bar_tooltip("#{airline_name(flight[:airline])} #{flight[:flight_number]}",
-                        flight[:departure_time],
-                        flight[:arrival_time],
-                        flight[:timezone]
-                        )
+    html += "<title>"
+    html += "#{airline_name(flight[:airline])} #{flight[:flight_number]} \n"
+    html += "#{airport_name(flight[:departure_airport])} – #{airport_name(flight[:arrival_airport])} \n"
+    html += time_range(start_time, end_time, flight[:timezone])
+    html += "</title>\n"
     
   	if flight[:departure_time].to_date == this_date && flight[:arrival_time].to_date == this_date
   		# Flight starts and ends today
@@ -186,11 +186,12 @@ module EventsHelper
 	  
     html = "<g cursor=\"default\">\t"
     
-    html += bar_tooltip("Layover at #{flight_1[:arrival_airport]}",
-                        flight_1[:arrival_time],
-                        flight_2[:departure_time],
-                        flight_1[:timezone]
-                        )
+    html += "<title>"
+    html += "Layover at #{airport_name(flight_1[:arrival_airport])} \n"
+    html += time_range(start_time, end_time, flight_1[:timezone])
+    html += "</title>\n"
+    
+    
     
   	if start_date == this_date && end_date == this_date
   		# Layover starts and ends today
@@ -248,13 +249,19 @@ module EventsHelper
   	section_right = @name_width + @image_padding + (end_time.hour*@pixels_per_hour) + (end_time.min*@pixels_per_hour/60) + @airport_padding
 	
   	if person[:flights].first[:departure_time].to_date == this_date
-  		concat "<text x=\"#{section_left}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.42}\" class=\"svg_airport_label svg_airport_block_start\">#{person[:flights].first[:departure_airport]}</text>\n".html_safe
+  		concat "<g cursor=\"default\">\n".html_safe
+      concat "<title>#{airport_name(person[:flights].first[:departure_airport])}</title>\n".html_safe
+      concat "<text x=\"#{section_left}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.42}\" class=\"svg_airport_label svg_airport_block_start\">#{person[:flights].first[:departure_airport]}</text>\n".html_safe
   		concat "<text x=\"#{section_left}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.92}\" class=\"svg_time_label svg_airport_block_start\">#{format_time_short(person[:flights].first[:departure_time])}</text>\n".html_safe
+      concat "</g>\n".html_safe
   	end
 	
   	if person[:flights].last[:arrival_time].to_date == this_date
+  		concat "<g cursor=\"default\">\n".html_safe
+      concat "<title>#{airport_name(person[:flights].last[:arrival_airport])}</title>\n".html_safe
   		concat "<text x=\"#{section_right}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.42}\" class=\"svg_airport_label svg_airport_block_end\">#{person[:flights].last[:arrival_airport]}</text>\n".html_safe
   		concat "<text x=\"#{section_right}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.92}\" class=\"svg_time_label svg_airport_block_end\">#{format_time_short(person[:flights].last[:arrival_time])}</text>\n".html_safe
+      concat "</g>\n".html_safe
   	end
 	
   end
@@ -301,18 +308,29 @@ module EventsHelper
     (person[:flights].any? && (person[:flights].first)[:departure_time].to_date <= this_date && (person[:flights].last)[:arrival_time].to_date >= this_date)
   end
   
-  # Takes two Time objects and returns a string showing the start time, end time, and duration in hours and minutes.
-  def bar_tooltip(description, start_time, end_time, timezone)
+  # Takes an airline code, and returns an airline name if available.
+  def airline_name(code)
+    if @airline_codes[code]
+      @airline_codes[code]
+    else
+      code
+    end
+  end
+  
+  # Takes an airport code, and returns the airport name (if available) and code.
+  def airport_name(code)
+    if @airport_codes[code]
+      "#{@airport_codes[code]} (#{code})"
+    else
+      code
+    end
+  end
+  
+  # Takes two times, and returns a string showing the elapsed time in hours and minutes.
+  def elapsed_time(start_time, end_time)
     diff_hour = ((end_time - start_time) / 3600).to_i
     diff_minute = (((end_time - start_time) / 60) % 60).to_i
-    
-    html = "<title>"
-    html += "#{description} \n"
-    html += "#{format_time(start_time)} – #{format_time(end_time)} #{timezone} \n"
-    html += "(#{diff_hour}h #{diff_minute}m)"
-    html += "</title>\n"
-    
-    return html
+    "#{diff_hour}h #{diff_minute}m"
   end
   
   def format_time(time)
@@ -323,12 +341,10 @@ module EventsHelper
     time.strftime("%l:%M%P").chomp('m')
   end
   
-  def airline_name(code)
-    if @airline_codes[code]
-      @airline_codes[code]
-    else
-      code
-    end
+  # Returns a string containing a time range and elapsed time.
+  def time_range(start_time, end_time, timezone)
+    html = "#{format_time(start_time)} – #{format_time(end_time)} #{timezone} "
+    html += "(#{elapsed_time(start_time, end_time)})"
   end
   
     

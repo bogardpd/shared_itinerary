@@ -16,6 +16,7 @@ class EventsController < ApplicationController
     
     key_airports = Set.new
     airlines = Array.new
+    airports = Array.new
     @row_hue = Hash.new
     
     @flights.each do |flight_directions|
@@ -23,6 +24,8 @@ class EventsController < ApplicationController
         key_airports.add(section[:key_airport])
         section[:flights].each do |flight|
           airlines.push(flight[:airline])
+          airports.push(flight[:departure_airport])
+          airports.push(flight[:arrival_airport])
         end
       end
     end
@@ -32,20 +35,30 @@ class EventsController < ApplicationController
       @row_hue[airport] = index*hue_step
     end
     airlines = airlines.uniq.join(',')
+    airports = airports.uniq.join(',')
+    
+    require 'net/http'
+    require 'json'  
     
     # Get airline codes
-    @airline_codes = Hash.new
-    require 'net/http'
-    require 'json'    
+    @airline_codes = Hash.new  
     uri = URI("https://iatacodes.org/api/v6/airlines?api_key=2f4ed00b-0ecf-489b-8e3e-907729d6f661&code=#{airlines}")
     response = Net::HTTP.get(uri)
     response_data = JSON.parse(response)["response"]
     response_data.each do |resp|
       @airline_codes[resp["code"]] = resp["name"]
-    end  
+    end
+    
+    @airport_codes = Hash.new
+    uri = URI("https://iatacodes.org/api/v6/airports?api_key=2f4ed00b-0ecf-489b-8e3e-907729d6f661&code=#{airports}")
+    response = Net::HTTP.get(uri)
+    response_data = JSON.parse(response)["response"]
+    response_data.each do |resp|
+      @airport_codes[resp["code"]] = resp["name"]
+    end
     
     @share_link = url_for(share_link: @event.share_link)
-      
+        
     rescue ActiveRecord::RecordNotFound
       flash[:warning] = "We couldnʼt find an event with an ID of #{params[:id]}."
       redirect_to current_user
