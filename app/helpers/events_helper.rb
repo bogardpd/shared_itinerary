@@ -66,12 +66,21 @@ module EventsHelper
 	
   	this_date = date
 	
-  	# Determine number of rows:
-  	number_of_rows = 0
+  	# Determine number of rows, and create array of key airports so we can identify when airports change:
+  	
+    person_key_airports = Array.new
   	flight_array.each do |person|
-  		number_of_rows += 1 if person_has_flight_on_date?(person, this_date)
-  	end
-	
+  		#number_of_rows += 1 if person_has_flight_on_date?(person, this_date)
+      if person_has_flight_on_date?(person, this_date)
+        if arriving
+          person_key_airports.push((person[:flights].last)[:arrival_airport])
+        else
+          person_key_airports.push((person[:flights].first)[:departure_airport])
+        end
+      end
+  	end	  
+    number_of_rows = person_key_airports.length
+    
   	if number_of_rows > 0
 	
   		chart_height = (@flight_bar_height + 2 * @flight_bar_spacing) * number_of_rows
@@ -83,9 +92,14 @@ module EventsHelper
   		concat "<rect width=\"#{@image_width}\" height=\"#{image_height}\" class=\"svg_background\" />\n".html_safe
 	
   		# Draw chart grid:
-	
+	    
+      prior_key_airport = nil
   		for x in 0..number_of_rows
-  			majmin = x == 0 ? "major" : "minor"
+  			#majmin = x == 0 ? "major" : "minor"
+          current_key_airport = person_key_airports[x]
+        majmin = current_key_airport == prior_key_airport ? "minor" : "major"
+        prior_key_airport = current_key_airport
+        
         concat "<line x1=\"#{@image_padding}\" y1=\"#{@chart_top + x * (@flight_bar_height + @flight_bar_spacing * 2)}\" x2=\"#{@image_padding + @name_width + 24 * @pixels_per_hour}\" y2=\"#{@chart_top + x * (@flight_bar_height + @flight_bar_spacing * 2)}\" class=\"svg_gridline_#{majmin}_horizontal\" />\n".html_safe 
   		end
       
