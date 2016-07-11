@@ -302,7 +302,7 @@ module EventsHelper
     end
   end
   
-  # Takes a date and two times, and returns an array containing a string of the SVG polygon points for a time bar, the left side of the bar, and the right side of the bar.
+  # Takes a date and two times, and returns a hash containing a string of the SVG polygon points for a time bar, the left side of the bar, and the right side of the bar.
   def bar_points(this_date, start_time, end_time, row)
     
     points = Array.new
@@ -346,10 +346,6 @@ module EventsHelper
     
     return {points: points.join(" "), left: left_side, right: right_side}
     
-  end
-  
-  def my_function
-    return [1, 2, 3]
   end
   
   # Takes two times, and returns a string showing the elapsed time in hours and minutes.
