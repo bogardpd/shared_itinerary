@@ -295,7 +295,7 @@ module EventsHelper
   
   # Takes an airport code, and returns the airport name (if available) and code.
   def airport_name(code)
-    if @airport_codes[code]
+    if @airport_codes && @airport_codes[code]
       "#{@airport_codes[code]} (#{code})"
     else
       code

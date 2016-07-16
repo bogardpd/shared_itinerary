@@ -65,6 +65,8 @@ class EventsController < ApplicationController
       
     rescue Errno::ECONNREFUSED
       
+    rescue SocketError
+      
   end
   
   def new
