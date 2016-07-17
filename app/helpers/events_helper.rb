@@ -1,37 +1,43 @@
 module EventsHelper
   
-  def markdown_text(md_text)
-    # Initializes a Markdown parser
-    markdown ||= Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true)
-    markdown.render(md_text).html_safe
-  end
-  
-  def initialize_settings
+    def initialize_settings
     # Settable colors:
-    @lightness_ff_lt = '40%' # Flight fill, layover text
-    @lightness_lf_ft = '90%' # Layover fill, flight text
-    @lightness_stroke = '30%'
-    @saturation = '50%'
-    @bar_opacity = '0.9'
+    @lightness_ff_lt             = '40%' # Flight fill, layover text
+    @lightness_lf_ft             = '90%' # Layover fill, flight text
+    @lightness_stroke            = '30%'
+    @saturation                  = '50%'
+    @bar_opacity                 = '0.9'
     
     # Settable distances (all values in pixels):
-    @airport_padding = 3
-    @airport_right_buffer = 48
-    @arrow_point_length = 5
-    @flight_bar_height = 30
-    @flight_bar_spacing = 5
+    @image_padding               = 15
+                                 
+    @legend_width                = 140
+    @legend_height               = 30
+    @legend_box_size             = 16
+    
+    @time_axis_height            = 20
+    @time_axis_padding           = 5
+    
+    @name_width                  = 130
+    @name_height                 = 40
+    
+    @hour_width                  = 38.5
+    
+    @flight_bar_height           = 30
+    @flight_bar_arrow_width      = 5
+    @flight_bar_buffer_width     = 48
     @flight_bar_line_break_width = 50 # If flight bar width is less than this, add a line break
-    @flight_bar_no_text_width = 23 # If flight bar width is less than this, do not display text
-    @image_padding = 15
-    @name_width = 130
-    @pixels_per_hour = 38.5
-    @time_label_padding = 5
+    @flight_bar_no_text_width    = 23 # If flight bar width is less than this, do not display text
+    
+    @airport_margin              = 3
     
     # Derived:
-    @image_width = @name_width + (24*@pixels_per_hour) + 2*@image_padding + @time_label_padding + @airport_right_buffer
-    @chart_top = @image_padding + @time_label_padding
+    @image_width = @name_width + (24*@hour_width) + 2*@image_padding + @time_axis_padding + @flight_bar_buffer_width
+    @flight_bar_margin = (@name_height - @flight_bar_height) / 2
+    
+    @chart_top = @image_padding + @legend_height + @time_axis_height
     @chart_left = @image_padding + @name_width
-    @chart_right = @chart_left + (24 * @pixels_per_hour)
+    @chart_right = @chart_left + (24 * @hour_width)
     
   end
   
@@ -71,8 +77,7 @@ module EventsHelper
   	
     person_key_airports = Array.new
   	flight_array.each do |person|
-  		#number_of_rows += 1 if person_has_flight_on_date?(person, this_date)
-      if person_has_flight_on_date?(person, this_date)
+  		if person_has_flight_on_date?(person, this_date)
         if arriving
           person_key_airports.push((person[:flights].last)[:arrival_airport])
         else
@@ -84,29 +89,42 @@ module EventsHelper
     
   	if number_of_rows > 0
 	
-  		chart_height = (@flight_bar_height + 2 * @flight_bar_spacing) * number_of_rows
+  		chart_height = @name_height * number_of_rows
   		image_height = @chart_top + chart_height + @image_padding
       
       concat "<h3>#{this_date.strftime("%A, %B %-d, %Y")} (#{timezone})</h3>\n".html_safe
       
   		concat "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"#{@image_width}\" height=\"#{image_height}\">\n\n".html_safe
   		concat "<rect width=\"#{@image_width}\" height=\"#{image_height}\" class=\"svg_background\" />\n".html_safe
-	
+	    
+      # Draw legend:
+      
+      @row_hue.each_with_index do |(airport, hue), index|
+        legend_left = @chart_right - ((@row_hue.length - index) * @legend_width)
+        text_left = legend_left + (@legend_box_size * 1.25)
+        arriving_departing = arriving ? "Arriving at" : "Departing from"
+    		concat "<g cursor=\"default\">\n".html_safe
+        concat "<title>#{airport_name(airport)}</title>\n".html_safe
+        concat %Q(<rect width="#{@legend_box_size}" height="#{@legend_box_size}" x="#{legend_left}" y="#{@image_padding}" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" fill-opacity="#{@bar_opacity}" stroke="hsl(#{hue},#{@saturation},#{@lightness_stroke})" stroke-opacity="#{@bar_opacity}"/>\n).html_safe
+        concat %Q(<text x="#{text_left}" y="#{@image_padding + @legend_box_size*0.75}" text-anchor="start">#{arriving_departing} #{airport}</text>\n).html_safe
+        concat "</g>"
+        
+      end
+      
   		# Draw chart grid:
 	    
       prior_key_airport = nil
   		for x in 0..number_of_rows
-  			#majmin = x == 0 ? "major" : "minor"
           current_key_airport = person_key_airports[x]
         majmin = current_key_airport == prior_key_airport ? "minor" : "major"
         prior_key_airport = current_key_airport
         
-        concat "<line x1=\"#{@image_padding}\" y1=\"#{@chart_top + x * (@flight_bar_height + @flight_bar_spacing * 2)}\" x2=\"#{@image_padding + @name_width + 24 * @pixels_per_hour}\" y2=\"#{@chart_top + x * (@flight_bar_height + @flight_bar_spacing * 2)}\" class=\"svg_gridline_#{majmin}_horizontal\" />\n".html_safe 
+        concat "<line x1=\"#{@image_padding}\" y1=\"#{@chart_top + x * @name_height}\" x2=\"#{@image_padding + @name_width + 24 * @hour_width}\" y2=\"#{@chart_top + x * @name_height}\" class=\"svg_gridline_#{majmin}_horizontal\" />\n".html_safe 
   		end
       
   		for x in 0..24
-  			concat "<text x=\"#{@image_padding + @name_width + (x * @pixels_per_hour)}\" y=\"#{@chart_top - @time_label_padding}\" text-anchor=\"middle\" class=\"svg_time_label\">#{time_label(x)}</text>\n".html_safe
-  			concat "<line x1=\"#{@image_padding + @name_width + (x * @pixels_per_hour)}\" y1=\"#{@chart_top}\" x2=\"#{@image_padding + @name_width + (x * @pixels_per_hour)}\" y2=\"#{@chart_top + chart_height + 1}\" class=\"#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}\" />\n".html_safe
+  			concat "<text x=\"#{@image_padding + @name_width + (x * @hour_width)}\" y=\"#{@chart_top - @time_axis_padding}\" text-anchor=\"middle\" class=\"svg_time_label\">#{time_label(x)}</text>\n".html_safe
+  			concat "<line x1=\"#{@image_padding + @name_width + (x * @hour_width)}\" y1=\"#{@chart_top}\" x2=\"#{@image_padding + @name_width + (x * @hour_width)}\" y2=\"#{@chart_top + chart_height + 1}\" class=\"#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}\" />\n".html_safe
   		end
 	
   		# Draw flight bars:
@@ -158,10 +176,10 @@ module EventsHelper
     # Draw flight number:  	
 		if width >= @flight_bar_no_text_width
       if width < @flight_bar_line_break_width
-  			html += %Q(\t<text x="#{(left_side + right_side) / 2}" y="#{row_top(row) + @flight_bar_height * 0.41}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" fill-opacity="#{@bar_opacity}">#{flight[:airline]}</text>\n)
-  			html += %Q(\t<text x="#{(left_side + right_side) / 2}" y="#{row_top(row) + @flight_bar_height * 0.81}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" fill-opacity="#{@bar_opacity}">#{flight[:flight_number]}</text>\n)
+  			html += %Q(\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height * 0.41}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" fill-opacity="#{@bar_opacity}">#{flight[:airline]}</text>\n)
+  			html += %Q(\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height * 0.81}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" fill-opacity="#{@bar_opacity}">#{flight[:flight_number]}</text>\n)
   		else
-  			html += %Q(\t<text x="#{(left_side + right_side) / 2}" y="#{row_top(row) + @flight_bar_height*0.61}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" fill-opacity="#{@bar_opacity}">#{flight[:airline]} #{flight[:flight_number]}</text>\n)
+  			html += %Q(\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*0.61}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" fill-opacity="#{@bar_opacity}">#{flight[:airline]} #{flight[:flight_number]}</text>\n)
   		end
     end
     html += "</g>\n"
@@ -193,7 +211,7 @@ module EventsHelper
     html += %Q(\t<polygon points="#{points}" class="svg_bar" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" stroke="hsl(#{hue},#{@saturation},#{@lightness_stroke})" fill-opacity="#{@bar_opacity}" stroke-opacity="#{@bar_opacity}" />\n)
 	
     # Draw layover airport label:
-  	html += %Q(\t<text x="#{(left_side + right_side) / 2}" y="#{row_top(row) + @flight_bar_height*0.61}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" fill-opacity="#{@bar_opacity}">#{flight_1[:arrival_airport]}</text>\n)
+  	html += %Q(\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*0.61}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" fill-opacity="#{@bar_opacity}">#{flight_1[:arrival_airport]}</text>\n)
   	
     html += "</g>\n"
     
@@ -204,8 +222,8 @@ module EventsHelper
   	prev_flight = nil
     
     concat "<a xlink:href=\"#s-#{person[:id]}\">".html_safe
-  	concat "<text x=\"#{@image_padding}\" y=\"#{row_top(row_index) + (@flight_bar_height * 0.4)}\" class=\"svg_person_name\">#{person[:name]}\n</text>".html_safe
-  	concat "<text x=\"#{@image_padding}\" y=\"#{row_top(row_index) + (@flight_bar_height * 0.9)}\" class=\"svg_person_nickname\">#{person[:note]}\n</text>\n".html_safe
+  	concat "<text x=\"#{@image_padding}\" y=\"#{flight_bar_top(row_index) + (@flight_bar_height * 0.4)}\" class=\"svg_person_name\">#{person[:name]}\n</text>".html_safe
+  	concat "<text x=\"#{@image_padding}\" y=\"#{flight_bar_top(row_index) + (@flight_bar_height * 0.9)}\" class=\"svg_person_nickname\">#{person[:note]}\n</text>\n".html_safe
     concat "</a>\n".html_safe
 	
   	person[:flights].each_with_index do |flight, flight_index|
@@ -221,29 +239,30 @@ module EventsHelper
   	start_time = (person[:flights].first)[:departure_time]
   	end_time = (person[:flights].last)[:arrival_time]
 	
-  	section_left = @name_width + @image_padding + (start_time.hour*@pixels_per_hour) + (start_time.min*@pixels_per_hour/60) - @airport_padding
-  	section_right = @name_width + @image_padding + (end_time.hour*@pixels_per_hour) + (end_time.min*@pixels_per_hour/60) + @airport_padding
+  	section_left = @name_width + @image_padding + (start_time.hour*@hour_width) + (start_time.min*@hour_width/60) - @airport_margin
+  	section_right = @name_width + @image_padding + (end_time.hour*@hour_width) + (end_time.min*@hour_width/60) + @airport_margin
 	
   	if person[:flights].first[:departure_time].to_date == this_date
   		concat "<g cursor=\"default\">\n".html_safe
       concat "<title>#{airport_name(person[:flights].first[:departure_airport])}</title>\n".html_safe
-      concat "<text x=\"#{section_left}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.42}\" class=\"svg_airport_label svg_airport_block_start\">#{person[:flights].first[:departure_airport]}</text>\n".html_safe
-  		concat "<text x=\"#{section_left}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.92}\" class=\"svg_time_label svg_airport_block_start\">#{format_time_short(person[:flights].first[:departure_time])}</text>\n".html_safe
+      concat "<text x=\"#{section_left}\" y=\"#{flight_bar_top(row_index) + @flight_bar_height * 0.42}\" class=\"svg_airport_label svg_airport_block_start\">#{person[:flights].first[:departure_airport]}</text>\n".html_safe
+  		concat "<text x=\"#{section_left}\" y=\"#{flight_bar_top(row_index) + @flight_bar_height * 0.92}\" class=\"svg_time_label svg_airport_block_start\">#{format_time_short(person[:flights].first[:departure_time])}</text>\n".html_safe
       concat "</g>\n".html_safe
   	end
 	
   	if person[:flights].last[:arrival_time].to_date == this_date
   		concat "<g cursor=\"default\">\n".html_safe
       concat "<title>#{airport_name(person[:flights].last[:arrival_airport])}</title>\n".html_safe
-  		concat "<text x=\"#{section_right}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.42}\" class=\"svg_airport_label svg_airport_block_end\">#{person[:flights].last[:arrival_airport]}</text>\n".html_safe
-  		concat "<text x=\"#{section_right}\" y=\"#{row_top(row_index) + @flight_bar_height * 0.92}\" class=\"svg_time_label svg_airport_block_end\">#{format_time_short(person[:flights].last[:arrival_time])}</text>\n".html_safe
+  		concat "<text x=\"#{section_right}\" y=\"#{flight_bar_top(row_index) + @flight_bar_height * 0.42}\" class=\"svg_airport_label svg_airport_block_end\">#{person[:flights].last[:arrival_airport]}</text>\n".html_safe
+  		concat "<text x=\"#{section_right}\" y=\"#{flight_bar_top(row_index) + @flight_bar_height * 0.92}\" class=\"svg_time_label svg_airport_block_end\">#{format_time_short(person[:flights].last[:arrival_time])}</text>\n".html_safe
       concat "</g>\n".html_safe
   	end
 	
   end
-
-  def row_top(row_number)
-  	return (@chart_top + @flight_bar_spacing + (row_number * (2 * @flight_bar_spacing + @flight_bar_height)))
+  
+  # Returns the y position of the top of the flight bar of a given row
+  def flight_bar_top(row_number)
+  	return @chart_top + (row_number * @name_height) + @flight_bar_margin
   end
 
   def time_label(hour)
@@ -306,21 +325,21 @@ module EventsHelper
   def bar_points(this_date, start_time, end_time, row)
     
     points = Array.new
-    top = row_top(row)
+    top = flight_bar_top(row)
     middle = top + @flight_bar_height/2
     bottom = top + @flight_bar_height
     
     # Check if bar starts today or before today
     if start_time.to_date == this_date
       # Draw left bar edge
-      left_side = @chart_left + (start_time.hour*@pixels_per_hour) + (start_time.min*@pixels_per_hour/60)
+      left_side = @chart_left + (start_time.hour*@hour_width) + (start_time.min*@hour_width/60)
       points.push("#{left_side},#{bottom}")
       points.push("#{left_side},#{top}")
     elsif start_time.to_date < this_date
       # Draw left arrow edge
       left_side = @chart_left
       points.push("#{left_side},#{bottom}")
-      points.push("#{left_side - @arrow_point_length},#{middle}")
+      points.push("#{left_side - @flight_bar_arrow_width},#{middle}")
       points.push("#{left_side},#{top}")
     else
       # This bar should not be drawn today
@@ -330,14 +349,14 @@ module EventsHelper
     # Check if bar ends today or after today
     if end_time.to_date == this_date
       # Draw right bar edge
-      right_side = @chart_left + (end_time.hour*@pixels_per_hour) + (end_time.min*@pixels_per_hour/60)
+      right_side = @chart_left + (end_time.hour*@hour_width) + (end_time.min*@hour_width/60)
       points.push("#{right_side},#{top}")
       points.push("#{right_side},#{bottom}")
     elsif end_time.to_date > this_date
       # Draw right arrow edge
       right_side = @chart_right
       points.push("#{right_side},#{top}")
-      points.push("#{right_side + @arrow_point_length},#{middle}")
+      points.push("#{right_side + @flight_bar_arrow_width},#{middle}")
       points.push("#{right_side},#{bottom}")
     else
       # This bar should not be drawn today
@@ -367,6 +386,12 @@ module EventsHelper
   def time_range(start_time, end_time, timezone)
     html = "#{format_time(start_time)} – #{format_time(end_time)} #{timezone} "
     html += "(#{elapsed_time(start_time, end_time)})"
+  end
+  
+  def markdown_text(md_text)
+    # Initializes a Markdown parser
+    markdown ||= Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true)
+    markdown.render(md_text).html_safe
   end
   
     

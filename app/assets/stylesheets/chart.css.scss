@@ -11,6 +11,7 @@ svg {font-family: 'Lato', sans-serif; font-size: 12px;}
 .svg_gridline_major_horizontal {stroke-width: 1; stroke: hsl(0,0%,85%); shape-rendering: crispEdges;}
 .svg_gridline_minor_horizontal {stroke-width: 1; stroke: hsl(0,0%,95%); shape-rendering: crispEdges;}
 .svg_layover_text {font-size: 10px; text-anchor: middle; dominant-baseline: baseline;}
+.svg_legend_text {font-size: 12px; fill: hsl(0,0,30%);}
 .svg_person_name {fill: hsl(0,0%,30%);font-size: 13px; font-weight: 700; text-anchor: start; dominant-baseline: baseline;}
 .svg_person_nickname {fill: hsl(0,0%,60%);font-size: 12px; font-weight: 400; font-style: italic; text-anchor: start; dominant-baseline: baseline;}
 .svg_time_label {fill: hsl(0,0%,60%);font-size: 11px; font-variant: small-caps;}
