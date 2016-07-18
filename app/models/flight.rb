@@ -1,5 +1,6 @@
 class Flight < ActiveRecord::Base
   belongs_to :section
+  belongs_to :airline
   validates :airline_iata, presence: true
   validates :flight_number, presence: true
   validates :departure_airport_iata, presence: true

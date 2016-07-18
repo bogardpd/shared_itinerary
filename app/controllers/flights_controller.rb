@@ -13,6 +13,8 @@ class FlightsController < ApplicationController
   end
   
   def create
+    params[:flight][:airline_id] = Airline.find_or_create_by!(:iata_code => params[:flight][:airline_iata].upcase).id
+    
     current_section = Section.find(session[:current_section])
     @flight = current_section.flights.build(flight_params)
     if @flight.save
@@ -30,6 +32,8 @@ class FlightsController < ApplicationController
   end
   
   def update
+    params[:flight][:airline_id] = Airline.find_or_create_by!(:iata_code => params[:flight][:airline_iata].upcase).id
+    
     @flight = Flight.find(params[:id])
     if @flight.update_attributes(flight_params)
       flash[:success] = "Flight updated! #{view_context.link_to("Jump to this flight’s itinerary", "#s-#{@flight.section.id}", class: "btn btn-default")}"
@@ -51,7 +55,7 @@ class FlightsController < ApplicationController
   private
   
     def flight_params
-      params.require(:flight).permit(:airline_iata, :flight_number, :departure_datetime, :departure_airport_iata, :arrival_datetime, :arrival_airport_iata)
+      params.require(:flight).permit(:airline_iata, :flight_number, :departure_datetime, :departure_airport_iata, :arrival_datetime, :arrival_airport_iata, :airline_id)
     end
     
     def correct_user

@@ -1,0 +1,25 @@
+<% provide(:title, "TEST")%>
+<% provide(:meta_description, "See when everyone arrives at and departs from #{@event.event_name}.")%>
+
+<h1>TEST</h1>
+
+<% [@arrivals, @departures].each do |sections| %>
+<ul>
+  <% sections.each do |section| %>
+  <li><%= section[:section].traveler_name %> / <%= section[:key_airport] %> / <%= section[:key_time] %></li>
+  <ul>
+    <% section[:flights].each do |flight| %>
+    <li>
+      <%= flight.airline.formatted_name if flight.airline %> <%= flight.flight_number %> - 
+      <% if section[:section].is_arrival? %>
+        Arrives at <%= flight.arrival_datetime %>
+      <% else %>
+        Departs at <%= flight.departure_datetime %>
+      <% end %>
+    </li>
+    <% end %>
+  </ul>
+  <% end %>
+</ul>
+<hr/>
+<% end %>

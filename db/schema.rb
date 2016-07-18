@@ -11,7 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160620003356) do
+ActiveRecord::Schema.define(version: 20160717213656) do
+
+  create_table "airlines", force: :cascade do |t|
+    t.string "iata_code"
+    t.string "name"
+  end
+
+  add_index "airlines", ["iata_code"], name: "index_airlines_on_iata_code", unique: true
 
   create_table "events", force: :cascade do |t|
     t.text     "event_name"
@@ -36,6 +43,7 @@ ActiveRecord::Schema.define(version: 20160620003356) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
     t.integer  "section_id"
+    t.integer  "airline_id"
   end
 
   create_table "sections", force: :cascade do |t|

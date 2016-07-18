@@ -6,6 +6,9 @@
 				<% if logged_in? %>
 					<li><%= link_to "My Events", current_user %></li>
 					<li><%= link_to "Settings", edit_user_path(current_user) %></li>
+          <% if current_user.admin? %>
+            <li><%= link_to "Admin", admin_path %></li>
+          <% end %>
 					<li><%= link_to "Log out", logout_path, method: "delete" %></li>
 				<% else %>
 					<li><%= link_to("Create your own itinerary", signup_path) %></li>
