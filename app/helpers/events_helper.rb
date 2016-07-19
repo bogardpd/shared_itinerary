@@ -107,7 +107,7 @@ module EventsHelper
         concat "<title>#{airport_name(airport)}</title>\n".html_safe
         concat %Q(<rect width="#{@legend_box_size}" height="#{@legend_box_size}" x="#{legend_left}" y="#{@image_padding}" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" fill-opacity="#{@bar_opacity}" stroke="hsl(#{hue},#{@saturation},#{@lightness_stroke})" stroke-opacity="#{@bar_opacity}"/>\n).html_safe
         concat %Q(<text x="#{text_left}" y="#{@image_padding + @legend_box_size*0.75}" text-anchor="start">#{arriving_departing} #{airport}</text>\n).html_safe
-        concat "</g>"
+        concat "</g>\n".html_safe
         
       end
       
