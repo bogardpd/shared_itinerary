@@ -35,27 +35,41 @@ class EventsController < ApplicationController
   def show
     
     @event = Event.find(params[:id])
-    @arrivals = @event.sections.where(is_arrival: true)
-    @departures = @event.sections.where(is_arrival: false)
     
-    @flights = [section_array(@arrivals, true), section_array(@departures, false)]
+    # Create arrival and departure arrays:
+    @arrivals = Array.new
+    @departures = Array.new
+    @event.sections.each do |section|
+      if section.is_arrival?
+        flight_list = section.flights.order(:arrival_datetime)
+        flight_any = (flight_list.length > 0)
+        @arrivals.push(  section:     section,
+                         flights:     flight_list,
+                         key_airport: flight_any ? flight_list.last.arrival_airport_iata : "",
+                         key_time:    flight_any ? flight_list.last.arrival_datetime : nil,
+                         alt_time:    flight_any ? flight_list.first.departure_datetime : nil)
+      else
+        flight_list = section.flights.order(:departure_datetime)
+        flight_any = (flight_list.length > 0)
+        @departures.push(section:     section,
+                         flights:     flight_list,
+                         key_airport: flight_any ? flight_list.first.departure_airport_iata : "",
+                         key_time:    flight_any ? flight_list.first.departure_datetime : nil,
+                         alt_time:    flight_any ? flight_list.last.arrival_datetime : nil)
+      end
+    end
+    @arrivals.sort_by!   { |h| [h[:key_airport], h[:key_time], h[:alt_time]] }
+    @departures.sort_by! { |h| [h[:key_airport], h[:key_time], h[:alt_time]] }
+    
     @timezones = [@event.arriving_timezone, @event.departing_timezone]
     
-    # Generate hues:
-    
     key_airports = Set.new
-    airlines = Array.new
-    airports = Array.new
+    
     @row_hue = Hash.new
     
-    @flights.each do |flight_directions|
-      flight_directions.each do |section|
+    [@arrivals, @departures].each do |section_directions|
+      section_directions.each do |section|
         key_airports.add(section[:key_airport])
-        section[:flights].each do |flight|
-          airlines.push(flight[:airline])
-          airports.push(flight[:departure_airport])
-          airports.push(flight[:arrival_airport])
-        end
       end
     end
     key_airports.reject!(&:blank?)
@@ -63,33 +77,7 @@ class EventsController < ApplicationController
     key_airports.each_with_index do |airport, index|
       @row_hue[airport] = index*hue_step
     end
-    airlines = airlines.uniq.join(',')
-    airports = airports.uniq.join(',')
     
-    require 'net/http'
-    require 'json'  
-    
-    # Get airline codes
-    @airline_codes = Hash.new  
-=begin
-    uri = URI("https://iatacodes.org/api/v6/airlines?api_key=2f4ed00b-0ecf-489b-8e3e-907729d6f661&code=#{airlines}")
-    response = Net::HTTP.get(uri)
-    response_data = JSON.parse(response)["response"]
-    response_data.each do |resp|
-      @airline_codes[resp["code"]] = resp["name"]
-    end
-=end    
-    @airport_codes = Hash.new
-
-=begin
-    uri = URI("https://iatacodes.org/api/v6/airports?api_key=2f4ed00b-0ecf-489b-8e3e-907729d6f661&code=#{airports}")
-    response = Net::HTTP.get(uri)
-    response_data = JSON.parse(response)["response"]
-    response_data.each do |resp|
-      @airport_codes[resp["code"]] = resp["name"]
-    end
-=end
-        
     @share_link = url_for(share_link: @event.share_link)
         
     rescue ActiveRecord::RecordNotFound

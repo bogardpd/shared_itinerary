@@ -41,7 +41,7 @@
   <%= link_to "<span class=\"glyphicon glyphicon-plus\"></span> Add a traveler’s incoming itinerary".html_safe, new_section_path(event: @event, direction: :arrival), class: "btn btn-success" %>
 <% end %>
 
-<%= render 'itineraries', itineraries: @flights[0] %>
+<%= render 'itineraries', itineraries: @arrivals %>
 
 <h2>Returning Flight Details</h2>
 
@@ -49,4 +49,4 @@
   <%= link_to "<span class=\"glyphicon glyphicon-plus\"></span> Add a traveler’s returning itinerary".html_safe, new_section_path(event: @event, direction: :departure), class: "btn btn-success" %>
 <% end %>
 
-<%= render 'itineraries', itineraries: @flights[1] %>
+<%= render 'itineraries', itineraries: @departures %>

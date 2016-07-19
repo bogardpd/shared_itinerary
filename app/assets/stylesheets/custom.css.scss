@@ -189,6 +189,21 @@ div.delete-button {
   margin-top: 40px;
 }
 
+/* Admin */
+
+a.admin-attention {
+  font-weight: 700;
+}
+
+span.unread {
+  background-color: red;
+  color: white;
+  font-size: 90%;
+  font-weight: 400;
+  padding: 0.1em 0.5em;
+  border-radius: 1em;
+}
+
 /* Users index */
 
 .users {

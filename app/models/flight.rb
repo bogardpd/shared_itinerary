@@ -20,4 +20,12 @@ class Flight < ActiveRecord::Base
     errors[:base] << "The flight's departure must come before its arrival" unless self.departure_datetime && self.arrival_datetime && self.departure_datetime < self.arrival_datetime
   end
   
+  def airline_iata
+    self.airline ? self.airline.iata_code : ""
+  end
+  
+  def airline_name
+    self.airline ? self.airline.formatted_name : ""
+  end 
+  
 end

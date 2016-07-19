@@ -1,5 +1,5 @@
 <% if itineraries.any? %>
-<table class="table table-striped">
+<table class="table">
 	<thead>
 		<th class="event-traveler">Traveler</th>
 		<th class="event-flights">Flights</th>
@@ -9,14 +9,14 @@
 		<tr id="s-<%= section[:id] %>">
 			
 			<td>
-				<span class="traveler-name"><%= section[:name] %></span>
+				<span class="traveler-name"><%= section[:section].traveler_name %></span>
         <% if current_user?(@event.user) %>
           <div class="edit-button">
-            <%= link_to("<span class=\"glyphicon glyphicon-pencil\"></span> <span class=\"glyphicon glyphicon-user\"></span>".html_safe, edit_section_path(section[:id]), title: "Edit #{section[:name]}", class: "btn btn-default") %>
+            <%= link_to("<span class=\"glyphicon glyphicon-pencil\"></span> <span class=\"glyphicon glyphicon-user\"></span>".html_safe, edit_section_path(section), title: "Edit #{section[:section].traveler_name}", class: "btn btn-default") %>
           </div>
         <% end %>
         <br />
-				<span class="traveler-note"><%= section[:note] %></span>
+				<span class="traveler-note"><%= section[:section].traveler_note %></span>
 			</td>
 			
 			<td>
@@ -24,22 +24,22 @@
           <div class="flight">
             <% if current_user?(@event.user) %>
               <div class="btn-group-vertical edit-button">
-                <%= link_to("<span class=\"glyphicon glyphicon-pencil\"></span> <span class=\"glyphicon glyphicon-plane\"></span>".html_safe, edit_flight_path(flight[:id]), title: "Edit #{flight[:airline]} #{flight[:flight_number]}", class: "btn btn-default") %>
+                <%= link_to("<span class=\"glyphicon glyphicon-pencil\"></span> <span class=\"glyphicon glyphicon-plane\"></span>".html_safe, edit_flight_path(flight[:id]), title: "Edit #{flight.airline_name} #{flight[:flight_number]}", class: "btn btn-default") %>
                 <% if index == section[:flights].size - 1 %>
-                  <%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-plane\"></span>".html_safe, new_flight_path(section: section[:id]), title: "Add a new flight to #{section[:name]}’s itinerary", class: "btn btn-default") %>
+                  <%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-plane\"></span>".html_safe, new_flight_path(section: section[:id]), title: "Add a new flight to #{section[:section].traveler_name}’s itinerary", class: "btn btn-default") %>
                 <% end %>
               </div>
             <% end %>
               
-            <span class="flight-time"><%= flight_times(flight[:departure_time], flight[:arrival_time]) %></span>
+            <span class="flight-time"><%= flight_times(flight.departure_datetime, flight.arrival_datetime) %></span>
             <span class="flight-timezone"><%= section[:timezone] %></span>
             <br/>
-            <span class="flight-airports"><%= flight[:departure_airport] %> &ndash; <%= flight[:arrival_airport] %></span><br/>
-            <span class="flight-number"><%= airline_name(flight[:airline]) %> <%= flight[:flight_number] %></span>
+            <span class="flight-airports"><%= flight.departure_airport_iata %> &ndash; <%= flight.arrival_airport_iata %></span><br/>
+            <span class="flight-number"><%= flight.airline_name %> <%= flight.flight_number %></span>
           </div>
         <% end %>
 				<% if current_user?(@event.user) && section[:flights].empty? %>
-          <%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-plane\"></span>&ensp;Add a flight".html_safe, new_flight_path(section: section[:id]), title: "Add a new flight to #{section[:name]}’s itinerary", class: "btn btn-default") %>
+          <%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-plane\"></span>&ensp;Add a flight".html_safe, new_flight_path(section: section[:id]), title: "Add a new flight to #{section[:section].traveler_name}’s itinerary", class: "btn btn-default") %>
           
         <% end %>
 			</td>
