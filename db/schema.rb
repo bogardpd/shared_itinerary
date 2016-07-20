@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160720005754) do
+ActiveRecord::Schema.define(version: 20160720010808) do
 
   create_table "airlines", force: :cascade do |t|
     t.string "iata_code"
@@ -53,6 +53,8 @@ ActiveRecord::Schema.define(version: 20160720005754) do
     t.datetime "updated_at",             null: false
     t.integer  "section_id"
     t.integer  "airline_id"
+    t.integer  "departure_airport_id"
+    t.integer  "arrival_airport_id"
   end
 
   create_table "sections", force: :cascade do |t|
