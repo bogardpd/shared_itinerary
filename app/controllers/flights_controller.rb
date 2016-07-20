@@ -13,7 +13,7 @@ class FlightsController < ApplicationController
   end
   
   def create
-    params[:flight][:airline_id] = Airline.find_or_create_by!(:iata_code => params[:flight][:airline_iata].upcase).id
+    convert_iata_codes_to_ids
     
     current_section = Section.find(session[:current_section])
     @flight = current_section.flights.build(flight_params)
@@ -32,7 +32,7 @@ class FlightsController < ApplicationController
   end
   
   def update
-    params[:flight][:airline_id] = Airline.find_or_create_by!(:iata_code => params[:flight][:airline_iata].upcase).id
+    convert_iata_codes_to_ids
     
     @flight = Flight.find(params[:id])
     if @flight.update_attributes(flight_params)
@@ -55,11 +55,17 @@ class FlightsController < ApplicationController
   private
   
     def flight_params
-      params.require(:flight).permit(:airline_id, :flight_number, :departure_datetime, :departure_airport_iata, :arrival_datetime, :arrival_airport_iata)
+      params.require(:flight).permit(:airline_id, :flight_number, :departure_datetime, :departure_airport_iata, :departure_airport_id, :arrival_datetime, :arrival_airport_iata, :arrival_airport_id)
     end
     
     def correct_user
       redirect_to root_url if Flight.find(params[:id]).section.event.user != current_user
+    end
+    
+    def convert_iata_codes_to_ids
+      params[:flight][:airline_id] = Airline.find_or_create_by!(:iata_code => params[:flight][:airline_iata].upcase).id
+      params[:flight][:departure_airport_id] = Airport.find_or_create_by!(:iata_code => params[:flight][:departure_airport_iata].upcase).id
+      params[:flight][:arrival_airport_id] = Airport.find_or_create_by!(:iata_code => params[:flight][:arrival_airport_iata].upcase).id
     end
   
 end
