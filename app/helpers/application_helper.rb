@@ -39,7 +39,7 @@ module ApplicationHelper
   end
   
   def admin_link
-    count = Airline.where(name: nil).count
+    count = Airline.where(name: nil).count + Airport.where(name: nil).count
     if count > 0
       link_to(%Q(Admin <span class="unread">#{count}</span>).html_safe, admin_path, class: "admin-attention")
     else

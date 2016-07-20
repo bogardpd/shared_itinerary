@@ -1,0 +1,23 @@
+<% provide(:title, 'Airports')%>
+<h1>Airports</h1>
+
+<div class="row">
+<div class="col-md-6 col-md-offset-3">
+  
+<table class="table">
+  <thead>
+    <th>IATA Code</th>
+    <th>City</th>
+    <th>Edit</th>
+  </thead>
+<% @airports.each do |airport| %>
+  <tr>
+    <td><%= airport.iata_code %></td>
+    <td><%= airport.name %></td>
+    <td><%= link_to "Edit", edit_airport_path(airport) %>
+  </tr>
+<% end %>
+</table>
+
+</div>
+</div>

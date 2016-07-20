@@ -3,7 +3,7 @@ class AirlinesController < ApplicationController
   before_action :admin_user, only: [:index, :edit, :update]
   
   def index
-    @airlines = Airline.all.order(:name)
+    @airlines = Airline.all.order(:name, :iata_code)
   end
   
   def edit

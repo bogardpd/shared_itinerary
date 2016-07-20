@@ -19,7 +19,6 @@ Rails.application.routes.draw do
   resources :sections
   resources :flights
   resources :airlines, only: [:index, :edit, :update]
-  
-  get 'events/show2/:id' => 'events#show2'
+  resources :airports, only: [:index, :edit, :update]
   
 end
