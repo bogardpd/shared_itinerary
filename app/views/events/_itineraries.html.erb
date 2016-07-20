@@ -12,7 +12,7 @@
 				<span class="traveler-name"><%= section[:section].traveler_name %></span>
         <% if current_user?(@event.user) %>
           <div class="edit-button">
-            <%= link_to("<span class=\"glyphicon glyphicon-pencil\"></span> <span class=\"glyphicon glyphicon-user\"></span>".html_safe, edit_section_path(section), title: "Edit #{section[:section].traveler_name}", class: "btn btn-default") %>
+            <%= link_to("<span class=\"glyphicon glyphicon-pencil\"></span> <span class=\"glyphicon glyphicon-user\"></span>".html_safe, edit_section_path(section[:section]), title: "Edit #{section[:section].traveler_name}", class: "btn btn-default") %>
           </div>
         <% end %>
         <br />
@@ -26,7 +26,7 @@
               <div class="btn-group-vertical edit-button">
                 <%= link_to("<span class=\"glyphicon glyphicon-pencil\"></span> <span class=\"glyphicon glyphicon-plane\"></span>".html_safe, edit_flight_path(flight[:id]), title: "Edit #{flight.airline_name} #{flight[:flight_number]}", class: "btn btn-default") %>
                 <% if index == section[:flights].size - 1 %>
-                  <%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-plane\"></span>".html_safe, new_flight_path(section: section[:id]), title: "Add a new flight to #{section[:section].traveler_name}’s itinerary", class: "btn btn-default") %>
+                  <%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-plane\"></span>".html_safe, new_flight_path(section: section[:section]), title: "Add a new flight to #{section[:section].traveler_name}’s itinerary", class: "btn btn-default") %>
                 <% end %>
               </div>
             <% end %>
@@ -39,7 +39,7 @@
           </div>
         <% end %>
 				<% if current_user?(@event.user) && section[:flights].empty? %>
-          <%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-plane\"></span>&ensp;Add a flight".html_safe, new_flight_path(section: section[:id]), title: "Add a new flight to #{section[:section].traveler_name}’s itinerary", class: "btn btn-default") %>
+          <%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-plane\"></span>&ensp;Add a flight".html_safe, new_flight_path(section: section[:section]), title: "Add a new flight to #{section[:section].traveler_name}’s itinerary", class: "btn btn-default") %>
           
         <% end %>
 			</td>

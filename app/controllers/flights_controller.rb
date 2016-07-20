@@ -55,7 +55,7 @@ class FlightsController < ApplicationController
   private
   
     def flight_params
-      params.require(:flight).permit(:airline_iata, :flight_number, :departure_datetime, :departure_airport_iata, :arrival_datetime, :arrival_airport_iata, :airline_id)
+      params.require(:flight).permit(:airline_id, :flight_number, :departure_datetime, :departure_airport_iata, :arrival_datetime, :arrival_airport_iata)
     end
     
     def correct_user
