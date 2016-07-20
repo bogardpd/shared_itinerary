@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160717213656) do
+ActiveRecord::Schema.define(version: 20160720005754) do
 
   create_table "airlines", force: :cascade do |t|
     t.string "iata_code"
@@ -19,6 +19,15 @@ ActiveRecord::Schema.define(version: 20160717213656) do
   end
 
   add_index "airlines", ["iata_code"], name: "index_airlines_on_iata_code", unique: true
+
+  create_table "airports", force: :cascade do |t|
+    t.string   "iata_code"
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "airports", ["iata_code"], name: "index_airports_on_iata_code", unique: true
 
   create_table "events", force: :cascade do |t|
     t.text     "event_name"
