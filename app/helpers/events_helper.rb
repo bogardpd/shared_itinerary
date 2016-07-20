@@ -104,7 +104,7 @@ module EventsHelper
         text_left = legend_left + (@legend_box_size * 1.25)
         arriving_departing = arriving ? "Arriving at" : "Departing from"
     		concat "<g cursor=\"default\">\n".html_safe
-        concat "<title>#{airport_name(airport)}</title>\n".html_safe
+        concat "<title>#{airport}</title>\n".html_safe
         concat %Q(<rect width="#{@legend_box_size}" height="#{@legend_box_size}" x="#{legend_left}" y="#{@image_padding}" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" fill-opacity="#{@bar_opacity}" stroke="hsl(#{hue},#{@saturation},#{@lightness_stroke})" stroke-opacity="#{@bar_opacity}"/>\n).html_safe
         concat %Q(<text x="#{text_left}" y="#{@image_padding + @legend_box_size*0.75}" text-anchor="start">#{arriving_departing} #{airport}</text>\n).html_safe
         concat "</g>\n".html_safe
@@ -132,14 +132,8 @@ module EventsHelper
   		flight_array.each do |person|
   			# Make sure this person has flights on this date, and if so, draw a row for them:
   			if person_has_flight_on_date?(person, this_date)	          
-          # Get hue:
-  				if arriving
-  					this_hue = @row_hue[(person[:flights].last.arrival_airport_iata)]
-  				else
-  					this_hue = @row_hue[(person[:flights].first.departure_airport_iata)]
-  				end
-		
-  				draw_person_row(person, this_date, row_index, this_hue)
+  				this_hue = @row_hue[person[:key_iata]]
+					draw_person_row(person, this_date, row_index, this_hue)
   				row_index += 1
         end		
   		end
@@ -152,7 +146,7 @@ module EventsHelper
   def draw_person_row(person, this_date, row_index, hue)
   	prev_flight = nil
     
-    concat "<a xlink:href=\"#s-#{person[:id]}\">".html_safe
+    concat "<a xlink:href=\"#s-#{person[:section][:id]}\">".html_safe
   	concat "<text x=\"#{@image_padding}\" y=\"#{flight_bar_top(row_index) + (@flight_bar_height * 0.4)}\" class=\"svg_person_name\">#{person[:section].traveler_name}\n</text>".html_safe
   	concat "<text x=\"#{@image_padding}\" y=\"#{flight_bar_top(row_index) + (@flight_bar_height * 0.9)}\" class=\"svg_person_nickname\">#{person[:section].traveler_note}\n</text>\n".html_safe
     concat "</a>\n".html_safe
@@ -175,7 +169,7 @@ module EventsHelper
 	
   	if person[:flights].first.departure_datetime.to_date == this_date
   		concat "<g cursor=\"default\">\n".html_safe
-      concat "<title>#{airport_name(person[:flights].first.departure_airport_iata)}</title>\n".html_safe
+      concat "<title>#{person[:flights].first.dep_airport_name}</title>\n".html_safe
       concat "<text x=\"#{section_left}\" y=\"#{flight_bar_top(row_index) + @flight_bar_height * 0.42}\" class=\"svg_airport_label svg_airport_block_start\">#{person[:flights].first.departure_airport_iata}</text>\n".html_safe
   		concat "<text x=\"#{section_left}\" y=\"#{flight_bar_top(row_index) + @flight_bar_height * 0.92}\" class=\"svg_time_label svg_airport_block_start\">#{format_time_short(person[:flights].first.departure_datetime)}</text>\n".html_safe
       concat "</g>\n".html_safe
@@ -183,7 +177,7 @@ module EventsHelper
 	
   	if person[:flights].last.arrival_datetime.to_date == this_date
   		concat "<g cursor=\"default\">\n".html_safe
-      concat "<title>#{airport_name(person[:flights].last.arrival_airport_iata)}</title>\n".html_safe
+      concat "<title>#{person[:flights].last.arr_airport_name}</title>\n".html_safe
   		concat "<text x=\"#{section_right}\" y=\"#{flight_bar_top(row_index) + @flight_bar_height * 0.42}\" class=\"svg_airport_label svg_airport_block_end\">#{person[:flights].last.arrival_airport_iata}</text>\n".html_safe
   		concat "<text x=\"#{section_right}\" y=\"#{flight_bar_top(row_index) + @flight_bar_height * 0.92}\" class=\"svg_time_label svg_airport_block_end\">#{format_time_short(person[:flights].last.arrival_datetime)}</text>\n".html_safe
       concat "</g>\n".html_safe
@@ -208,7 +202,7 @@ module EventsHelper
     # Draw tooltip:
     html += "<title>"
     html += "#{flight.airline_name} #{flight[:flight_number]} \n"
-    html += "#{airport_name(flight.departure_airport_iata)} – #{airport_name(flight.arrival_airport_iata)} \n"
+    html += "#{flight.dep_airport_name} – #{flight.arr_airport_name} \n"
     html += time_range(start_time, end_time, flight[:timezone])
     html += "</title>\n"
     
@@ -245,7 +239,7 @@ module EventsHelper
     
     # Draw tooltip:
     html += "<title>"
-    html += "Layover at #{airport_name(flight_1.arrival_airport_iata)} \n"
+    html += "Layover at #{flight_1.arr_airport_name} \n"
     html += time_range(start_time, end_time, flight_1[:timezone])
     html += "</title>\n"
     
@@ -304,15 +298,6 @@ module EventsHelper
   # Checks if a person has flights on a given date
   def person_has_flight_on_date?(person, this_date)
     (person[:flights].any? && person[:flights].first.departure_datetime.to_date <= this_date && person[:flights].last.arrival_datetime.to_date >= this_date)
-  end
-  
-  # Takes an airport code, and returns the airport name (if available) and code.
-  def airport_name(code)
-    if @airport_codes && @airport_codes[code]
-      "#{@airport_codes[code]} (#{code})"
-    else
-      code
-    end
   end
   
   # Takes a date and two times, and returns a hash containing a string of the SVG polygon points for a time bar, the left side of the bar, and the right side of the bar.

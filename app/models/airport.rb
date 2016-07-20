@@ -11,4 +11,8 @@ class Airport < ActiveRecord::Base
     self.name ? "#{self.name} (#{self.iata_code})" : self.iata_code
   end
   
+  def formatted_iata
+    self.iata_code ? self.iata_code : ""
+  end
+  
 end

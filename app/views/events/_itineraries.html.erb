@@ -6,7 +6,7 @@
 		<th class="event-pickup-info">Pickup Info</th>
 	</thead>
 	<% itineraries.each do |section| %>
-		<tr id="s-<%= section[:id] %>">
+		<tr id="s-<%= section[:section][:id] %>">
 			
 			<td>
 				<span class="traveler-name"><%= section[:section].traveler_name %></span>
@@ -34,7 +34,7 @@
             <span class="flight-time"><%= flight_times(flight.departure_datetime, flight.arrival_datetime) %></span>
             <span class="flight-timezone"><%= section[:timezone] %></span>
             <br/>
-            <span class="flight-airports"><%= flight.departure_airport_iata %> &ndash; <%= flight.arrival_airport_iata %></span><br/>
+            <span class="flight-airports"><%= flight.dep_airport_name %> &ndash; <%= flight.arr_airport_name %></span><br/>
             <span class="flight-number"><%= flight.airline_name %> <%= flight.flight_number %></span>
           </div>
         <% end %>

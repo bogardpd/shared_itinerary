@@ -45,7 +45,8 @@ class EventsController < ApplicationController
         flight_any = (flight_list.length > 0)
         @arrivals.push(  section:     section,
                          flights:     flight_list,
-                         key_airport: flight_any ? flight_list.last.arrival_airport_iata : "",
+                         key_airport: flight_any ? flight_list.last.arrival_airport : Airport.new,
+                         key_iata:    flight_any ? flight_list.last.arr_airport_iata : "",
                          key_time:    flight_any ? flight_list.last.arrival_datetime : nil,
                          alt_time:    flight_any ? flight_list.first.departure_datetime : nil)
       else
@@ -53,13 +54,14 @@ class EventsController < ApplicationController
         flight_any = (flight_list.length > 0)
         @departures.push(section:     section,
                          flights:     flight_list,
-                         key_airport: flight_any ? flight_list.first.departure_airport_iata : "",
+                         key_airport: flight_any ? flight_list.first.departure_airport : Airport.new,
+                         key_iata:    flight_any ? flight_list.first.dep_airport_iata : "",
                          key_time:    flight_any ? flight_list.first.departure_datetime : nil,
                          alt_time:    flight_any ? flight_list.last.arrival_datetime : nil)
       end
     end
-    @arrivals.sort_by!   { |h| [h[:key_airport], h[:key_time], h[:alt_time]] }
-    @departures.sort_by! { |h| [h[:key_airport], h[:key_time], h[:alt_time]] }
+    @arrivals.sort_by!   { |h| [h[:key_iata], h[:key_time], h[:alt_time]] }
+    @departures.sort_by! { |h| [h[:key_iata], h[:key_time], h[:alt_time]] }
     
     @timezones = [@event.arriving_timezone, @event.departing_timezone]
     
@@ -69,7 +71,7 @@ class EventsController < ApplicationController
     
     [@arrivals, @departures].each do |section_directions|
       section_directions.each do |section|
-        key_airports.add(section[:key_airport])
+        key_airports.add(section[:key_iata])
       end
     end
     key_airports.reject!(&:blank?)
