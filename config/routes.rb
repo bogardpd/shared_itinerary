@@ -21,4 +21,7 @@ Rails.application.routes.draw do
   resources :airlines, only: [:index, :edit, :update]
   resources :airports, only: [:index, :edit, :update]
   
+  # Certbot
+  get '/.well-known/acme-challenge/:id' => 'static_pages#letsencrypt'
+  
 end
