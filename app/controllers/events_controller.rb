@@ -3,38 +3,10 @@ class EventsController < ApplicationController
   before_action :correct_user, only: [:edit, :update, :share_link, :destroy]
   before_action :correct_user_or_share_link, only: [:show]
   
-  def show2
-    @event = Event.find(params[:id])
-    
-    @arrivals = Array.new
-    @departures = Array.new
-    @event.sections.each do |section|
-      if section.is_arrival?
-        flight_list = section.flights.order(:arrival_datetime)
-        flight_any = (flight_list.length > 0)
-        @arrivals.push(  section:     section,
-                         flights:     flight_list,
-                         key_airport: flight_any ? flight_list.last.arrival_airport_iata : "",
-                         key_time:    flight_any ? flight_list.last.arrival_datetime : nil,
-                         alt_time:    flight_any ? flight_list.first.departure_datetime : nil)
-      else
-        flight_list = section.flights.order(:departure_datetime)
-        flight_any = (flight_list.length > 0)
-        @departures.push(section:     section,
-                         flights:     flight_list,
-                         key_airport: flight_any ? flight_list.first.departure_airport_iata : "",
-                         key_time:    flight_any ? flight_list.first.departure_datetime : nil,
-                         alt_time:    flight_any ? flight_list.last.arrival_datetime : nil)
-      end
-    end
-    @arrivals.sort_by!   { |h| [h[:key_airport], h[:key_time], h[:alt_time]] }
-    @departures.sort_by! { |h| [h[:key_airport], h[:key_time], h[:alt_time]] }
-    
-  end
-  
   def show
     
     @event = Event.find(params[:id])
+    @chart = @event.chart
     
     # Create arrival and departure arrays:
     @arrivals = Array.new

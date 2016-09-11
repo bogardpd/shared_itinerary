@@ -5,4 +5,9 @@ class Event < ActiveRecord::Base
   validates :event_name, presence: true
   validates :arriving_timezone, presence: true
   validates :departing_timezone, presence: true
+  
+  def chart
+    return Chart.new(self)
+  end
+  
 end
