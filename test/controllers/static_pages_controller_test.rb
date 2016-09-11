@@ -3,7 +3,7 @@ require 'test_helper'
 class StaticPagesControllerTest < ActionController::TestCase
   
   def setup
-    @base_title = "Group Itinerary"
+    @base_title = "Shared Itinerary"
     @user = users(:johndoe)
     @other_user = users(:archer)
   end

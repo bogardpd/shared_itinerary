@@ -3,6 +3,7 @@ class Chart
   def initialize(event)
     @event = event
     @event_sections = event_sections
+    initialize_settings
   end
   
   # Return HTML and SVG code for arrival and departure charts.
@@ -18,6 +19,48 @@ class Chart
   end
   
   private
+    
+    # Define chart visual settings.
+    def initialize_settings
+      # Settable colors:
+      @lightness_ff_lt             = '40%' # Flight fill, layover text
+      @lightness_lf_ft             = '90%' # Layover fill, flight text
+      @lightness_stroke            = '30%'
+      @saturation                  = '50%'
+      @bar_opacity                 = '0.9'
+  
+      # Settable distances (all values in pixels):
+      @image_padding               = 15
+                               
+      @legend_width                = 140
+      @legend_height               = 30
+      @legend_box_size             = 16
+  
+      @time_axis_height            = 20
+      @time_axis_padding           = 5
+  
+      @name_width                  = 130
+      @name_height                 = 40
+  
+      @hour_width                  = 38.5
+  
+      @flight_bar_height           = 30
+      @flight_bar_arrow_width      = 5
+      @flight_bar_buffer_width     = 48
+      @flight_bar_line_break_width = 50 # If flight bar width is less than this, add a line break
+      @flight_bar_no_text_width    = 23 # If flight bar width is less than this, do not display text
+  
+      @airport_margin              = 3
+  
+      # Derived:
+      @image_width = @name_width + (24*@hour_width) + 2*@image_padding + @time_axis_padding + @flight_bar_buffer_width
+      @flight_bar_margin = (@name_height - @flight_bar_height) / 2
+  
+      @chart_top = @image_padding + @legend_height + @time_axis_height
+      @chart_left = @image_padding + @name_width
+      @chart_right = @chart_left + (24 * @hour_width)
+  
+    end
     
     # Return a hash of departures and arrivals, with :arrivals or :departures as
     # the keys and ranges of dates as the values.
