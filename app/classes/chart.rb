@@ -3,7 +3,14 @@ class Chart
   def initialize(event)
     @event = event
     @event_sections = event_sections
+    
+    @timezone = Hash.new
+    @timezone[:arrivals]   = event.arriving_timezone
+    @timezone[:departures] = event.departing_timezone
+    
     initialize_settings
+    
+    @row_hue = row_hue
   end
   
   # Return HTML and SVG code for arrival and departure charts.
@@ -90,8 +97,51 @@ class Chart
     # +direction+:: Arrivals (:arrivals) or departures (:departures)
     def draw_date_chart(date, direction)
       html = String.new
-      html += "Date #{date}, direction #{direction}<br/>\n"
-      return html
+      
+    	# Determine number of rows, and create array of key airports so we can identify when airports change:
+      person_key_airports = Array.new
+    	@event_sections[direction].each do |person|
+    		if person_has_flight_on_date?(person, date)
+          if direction == :arrivals
+            person_key_airports.push(person[:flights].last.arrival_airport_iata)
+          else
+            person_key_airports.push(person[:flights].first.departure_airport_iata)
+          end
+        end
+    	end	  
+      number_of_rows = person_key_airports.length
+       
+      if number_of_rows > 0
+        
+    		chart_height = @name_height * number_of_rows
+    		image_height = @chart_top + chart_height + @image_padding
+        
+        html += %Q(<h3>#{date.strftime("%A, %B %-d, %Y")} (#{@timezone[direction]})</h3>\n\n)
+        
+        html += %Q(<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="#{@image_width}" height="#{image_height}">\n)
+        
+        # Draw background:
+        html += %Q(\t<rect width="#{@image_width}" height="#{image_height}" class="svg_background" />\n)
+        
+        @row_hue.each_with_index do |(airport, hue), index|
+          legend_left = @chart_right - ((@row_hue.length - index) * @legend_width)
+          text_left = legend_left + (@legend_box_size * 1.25)
+          arriving_departing = (direction == :arrivals) ? "Arriving at" : "Departing from"
+      		html += %Q(\t<g cursor="default">\n)
+          html += %Q(\t\t<title>#{airport}</title>\n)
+          html += %Q(\t\t<rect width="#{@legend_box_size}" height="#{@legend_box_size}" x="#{legend_left}" y="#{@image_padding}" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" fill-opacity="#{@bar_opacity}" stroke="hsl(#{hue},#{@saturation},#{@lightness_stroke})" stroke-opacity="#{@bar_opacity}"/>\n)
+          html += %Q(\t\t<text x="#{text_left}" y="#{@image_padding + @legend_box_size*0.75}" text-anchor="start">#{arriving_departing} #{airport}</text>\n)
+          html += %Q(\t</g>\n)
+        
+        end
+        
+        html += %Q(</svg>\n\n)
+        
+        return html
+      else
+        return nil
+      end
+      
     end
     
     # Return the HTML and SVG for all flight charts in a given direction.
@@ -143,6 +193,34 @@ class Chart
       section_hash[:arrivals]   = arrivals
       section_hash[:departures] = departures
       return section_hash
+    end
+    
+    # Check if a person has flights on a given date (return true or false).
+    # Params:
+    # +person+:: One specific element of an event_section array.
+    # +date+:: The date to check.
+    def person_has_flight_on_date?(person, date)
+      (person[:flights].any? && person[:flights].first.departure_datetime.to_date <= date && person[:flights].last.arrival_datetime.to_date >= date)
+    end
+    
+    # Return a hash of hues for each key airport, with the airport IATA as key
+    # and the hue as value.
+    def row_hue
+      row_hue = Hash.new
+      key_airports = Set.new
+    
+      [@event_sections[:arrivals], @event_sections[:departures]].each do |section_directions|
+        section_directions.each do |section|
+          key_airports.add(section[:key_iata])
+        end
+      end
+      key_airports.reject!(&:blank?)
+      hue_step = key_airports.length > 0 ? 360/key_airports.length : 0
+      key_airports.each_with_index do |airport, index|
+        row_hue[airport] = index*hue_step
+      end
+      
+      return row_hue
     end
   
 end
