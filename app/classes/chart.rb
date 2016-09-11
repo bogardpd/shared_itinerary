@@ -46,7 +46,9 @@ class Chart
     # +date+:: The date to show (in the timezone of the event)
     # +direction+:: Arrivals (:arrivals) or departures (:departures)
     def draw_date_chart(date, direction)
-    
+      html = String.new
+      html += "Date #{date}, direction #{direction}<br/>\n"
+      return html
     end
     
     # Return the HTML and SVG for all flight charts in a given direction.
@@ -56,9 +58,9 @@ class Chart
       html = String.new
       dates = date_range(section_array)
       if section_array.any? && dates[0] && dates[1]
+        direction = section_array.first[:section].is_arrival? ? :arrivals : :departures
       	for d in dates[0]..dates[1]
-      		#draw_date_chart(d, @arrivals, true, @timezones[0])
-          html += "#{d.to_s}<br/>\n"
+          html += draw_date_chart(d, direction)
       	end
       else
         html += "<p>When incoming flights are added, they will show up here.</p>\n"
