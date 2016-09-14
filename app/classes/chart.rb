@@ -123,6 +123,7 @@ class Chart
         # Draw background:
         html += %Q(\t<rect width="#{@image_width}" height="#{image_height}" class="svg_background" />\n)
         
+        # Draw legend:
         @row_hue.each_with_index do |(airport, hue), index|
           legend_left = @chart_right - ((@row_hue.length - index) * @legend_width)
           text_left = legend_left + (@legend_box_size * 1.25)
@@ -132,8 +133,20 @@ class Chart
           html += %Q(\t\t<rect width="#{@legend_box_size}" height="#{@legend_box_size}" x="#{legend_left}" y="#{@image_padding}" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" fill-opacity="#{@bar_opacity}" stroke="hsl(#{hue},#{@saturation},#{@lightness_stroke})" stroke-opacity="#{@bar_opacity}"/>\n)
           html += %Q(\t\t<text x="#{text_left}" y="#{@image_padding + @legend_box_size*0.75}" text-anchor="start">#{arriving_departing} #{airport}</text>\n)
           html += %Q(\t</g>\n)
-        
         end
+        
+        # Draw chart grid:
+        prior_key_airport = nil
+    		for x in 0..number_of_rows
+          current_key_airport = person_key_airports[x]
+          majmin = current_key_airport == prior_key_airport ? "minor" : "major"
+          prior_key_airport = current_key_airport
+          html += %Q(<line x1="#{@image_padding}" y1="#{@chart_top + x * @name_height}" x2="#{@image_padding + @name_width + 24 * @hour_width}" y2="#{@chart_top + x * @name_height}" class="svg_gridline_#{majmin}_horizontal" />\n) 
+    		end
+    		for x in 0..24
+    			html += %Q(<text x="#{@image_padding + @name_width + (x * @hour_width)}" y="#{@chart_top - @time_axis_padding}" text-anchor="middle" class="svg_time_label">#{time_label(x)}</text>\n)
+    			html += %Q(<line x1="#{@image_padding + @name_width + (x * @hour_width)}" y1="#{@chart_top}" x2="#{@image_padding + @name_width + (x * @hour_width)}" y2="#{@chart_top + chart_height + 1}" class="#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}" />\n)
+    		end
         
         html += %Q(</svg>\n\n)
         
@@ -221,6 +234,21 @@ class Chart
       end
       
       return row_hue
+    end
+    
+    def time_label(hour)
+    	case hour
+    	when 0
+    		return "mdnt"
+    	when 1..11
+    		return hour.to_s + "am"
+    	when 12
+    		return "noon"
+    	when 13..23
+    		return (hour - 12).to_s + "pm"
+    	when 24
+    		return "mdnt"
+    	end
     end
   
 end
