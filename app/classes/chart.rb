@@ -69,6 +69,54 @@ class Chart
   
     end
     
+    # Take a date and two times, and return a hash containing a string of the
+    # SVG polygon points for a time bar, the left side of the bar, and the
+    # right side of the bar.
+    def bar_points(this_date, start_time, end_time, row)
+    
+      points = Array.new
+      top = flight_bar_top(row)
+      middle = top + @flight_bar_height/2
+      bottom = top + @flight_bar_height
+    
+      # Check if bar starts today or before today
+      if start_time.to_date == this_date
+        # Draw left bar edge
+        left_side = @chart_left + (start_time.hour*@hour_width) + (start_time.min*@hour_width/60)
+        points.push("#{left_side},#{bottom}")
+        points.push("#{left_side},#{top}")
+      elsif start_time.to_date < this_date
+        # Draw left arrow edge
+        left_side = @chart_left
+        points.push("#{left_side},#{bottom}")
+        points.push("#{left_side - @flight_bar_arrow_width},#{middle}")
+        points.push("#{left_side},#{top}")
+      else
+        # This bar should not be drawn today
+        return nil
+      end
+    
+      # Check if bar ends today or after today
+      if end_time.to_date == this_date
+        # Draw right bar edge
+        right_side = @chart_left + (end_time.hour*@hour_width) + (end_time.min*@hour_width/60)
+        points.push("#{right_side},#{top}")
+        points.push("#{right_side},#{bottom}")
+      elsif end_time.to_date > this_date
+        # Draw right arrow edge
+        right_side = @chart_right
+        points.push("#{right_side},#{top}")
+        points.push("#{right_side + @flight_bar_arrow_width},#{middle}")
+        points.push("#{right_side},#{bottom}")
+      else
+        # This bar should not be drawn today
+        return nil
+      end
+    
+      return {points: points.join(" "), left: left_side, right: right_side}
+    
+    end
+    
     # Return a hash of departures and arrivals, with :arrivals or :departures as
     # the keys and ranges of dates as the values.
     # Params:
@@ -186,14 +234,82 @@ class Chart
       return html
     end
     
+    # Return the SVG for an individual flight bar.
+    # Params:
+    # +row+:: Which row the flight bar belongs in (zero-indexed)
+    # +hue+:: Hue value for this flight bar
+    # +flight+:: Flight object to draw bar for
+    # +this_date:: The date of the chart that this row belongs to
+    def draw_flight_bar(row, hue, flight, this_date)
+  	
+      start_time = flight.departure_datetime
+    	end_time   = flight.arrival_datetime
+  	
+      bar_values = bar_points(this_date, start_time, end_time, row)
+      return nil if bar_values.nil?
+      points     = bar_values[:points]
+      left_side  = bar_values[:left]
+      right_side = bar_values[:right]
+      width      = right_side - left_side
+    
+      html  = "\t<g id=\"flight#{flight[:id]}\" cursor=\"default\">\n"
+    
+      # Draw tooltip:
+      html += "\t\t<title>"
+      html += "#{flight.airline_name} #{flight[:flight_number]} \n"
+      html += "#{flight.dep_airport_name} – #{flight.arr_airport_name} \n"
+      html += time_range(start_time, end_time, flight[:timezone])
+      html += "</title>\n"
+    
+      # Draw flight bar:
+      html += %Q(\t\t<polygon id="flight#{flight[:id]}" points="#{points}" class="svg_bar" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" stroke="hsl(#{hue},#{@saturation},#{@lightness_stroke})" fill-opacity="#{@bar_opacity}" stroke-opacity="#{@bar_opacity}" />\n)
+    
+      # Draw flight number:  	
+  		if width >= @flight_bar_no_text_width
+        if width < @flight_bar_line_break_width
+    			html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height * 0.41}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" fill-opacity="#{@bar_opacity}">#{flight.airline_iata}</text>\n)
+    			html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height * 0.81}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" fill-opacity="#{@bar_opacity}">#{flight[:flight_number]}</text>\n)
+    		else
+    			html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*0.61}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" fill-opacity="#{@bar_opacity}">#{flight.airline_iata} #{flight[:flight_number]}</text>\n)
+    		end
+      end
+      html += "\t</g>\n"
+    end
+    
     # Return the SVG for a particular chart row.
     def draw_row(person, date, row_index)
       html = String.new
+      
+      hue = @row_hue[person[:key_iata]]
+      
       html += %Q(\t<a xlink:href="#s-#{person[:section][:id]}">\n)
     	html += %Q(\t\t<text x="#{@image_padding}" y="#{flight_bar_top(row_index) + (@flight_bar_height * 0.4)}" class="svg_person_name">#{person[:section].traveler_name}</text>\n)
     	html += %Q(\t\t<text x="#{@image_padding}" y="#{flight_bar_top(row_index) + (@flight_bar_height * 0.9)}" class="svg_person_nickname">#{person[:section].traveler_note}</text>\n)
       html += %Q(\t</a>\n)
+
+  	  prev_flight = nil
+    	person[:flights].each do |flight|
+    		html += draw_flight_bar(row_index, hue, flight, date)
+		
+    		# Draw layover bars if necessary:
+    		unless prev_flight.nil?
+    			#concat draw_layover_bar(row_index, hue, prev_flight, flight, date)
+    		end
+    		prev_flight = flight
+    	end
+      
       return html
+    end
+    
+    # Take two times, and return a string showing the elapsed time in hours and
+    # minutes.
+    # Params:
+    # +start_time+:: Start time
+    # +end_time+:: End time
+    def elapsed_time(start_time, end_time)
+      diff_hour = ((end_time - start_time) / 3600).to_i
+      diff_minute = (((end_time - start_time) / 60) % 60).to_i
+      "#{diff_hour}h #{diff_minute}m"
     end
   
     # Return a hash of departures and arrivals, with :arrivals or :departures as
@@ -237,6 +353,13 @@ class Chart
     	return @chart_top + (row_number * @name_height) + @flight_bar_margin
     end
     
+    # Return a formatted time string.
+    # Params:
+    # +time+:: The time to format
+    def format_time(time)
+        time.strftime("%l:%M%P").strip
+    end
+    
     # Check if a person has flights on a given date (return true or false).
     # Params:
     # +person+:: One specific element of an event_section array.
@@ -278,6 +401,16 @@ class Chart
     	when 24
     		return "mdnt"
     	end
+    end
+    
+    # Return a string containing a time range and elapsed time.
+    # Params:
+    # +start_time+:: Start time
+    # +end_time+:: End time
+    # +timezone+:: String containing the timezone of the direction
+    def time_range(start_time, end_time, timezone)
+      html = "#{format_time(start_time)} – #{format_time(end_time)} #{timezone} "
+      html += "(#{elapsed_time(start_time, end_time)})"
     end
   
 end
