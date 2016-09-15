@@ -141,11 +141,23 @@ class Chart
           current_key_airport = person_key_airports[x]
           majmin = current_key_airport == prior_key_airport ? "minor" : "major"
           prior_key_airport = current_key_airport
-          html += %Q(<line x1="#{@image_padding}" y1="#{@chart_top + x * @name_height}" x2="#{@image_padding + @name_width + 24 * @hour_width}" y2="#{@chart_top + x * @name_height}" class="svg_gridline_#{majmin}_horizontal" />\n) 
+          html += %Q(\t<line x1="#{@image_padding}" y1="#{@chart_top + x * @name_height}" x2="#{@image_padding + @name_width + 24 * @hour_width}" y2="#{@chart_top + x * @name_height}" class="svg_gridline_#{majmin}_horizontal" />\n) 
     		end
     		for x in 0..24
-    			html += %Q(<text x="#{@image_padding + @name_width + (x * @hour_width)}" y="#{@chart_top - @time_axis_padding}" text-anchor="middle" class="svg_time_label">#{time_label(x)}</text>\n)
-    			html += %Q(<line x1="#{@image_padding + @name_width + (x * @hour_width)}" y1="#{@chart_top}" x2="#{@image_padding + @name_width + (x * @hour_width)}" y2="#{@chart_top + chart_height + 1}" class="#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}" />\n)
+    			html += %Q(\t<text x="#{@image_padding + @name_width + (x * @hour_width)}" y="#{@chart_top - @time_axis_padding}" text-anchor="middle" class="svg_time_label">#{time_label(x)}</text>\n)
+    			html += %Q(\t<line x1="#{@image_padding + @name_width + (x * @hour_width)}" y1="#{@chart_top}" x2="#{@image_padding + @name_width + (x * @hour_width)}" y2="#{@chart_top + chart_height + 1}" class="#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}" />\n)
+    		end
+        
+    		# Draw flight bars:
+    		row_index = 0;
+    		@event_sections[direction].each do |person|
+    			# Make sure this person has flights on this date, and if so, draw a row for them:
+    			if person_has_flight_on_date?(person, date)	          
+    				#this_hue = @row_hue[person[:key_iata]]
+  					#draw_person_row(person, date, row_index, this_hue)
+            html += draw_row(person, date, row_index)
+    				row_index += 1
+          end		
     		end
         
         html += %Q(</svg>\n\n)
@@ -171,6 +183,16 @@ class Chart
       else
         html += "<p>When incoming flights are added, they will show up here.</p>\n"
       end
+      return html
+    end
+    
+    # Return the SVG for a particular chart row.
+    def draw_row(person, date, row_index)
+      html = String.new
+      html += %Q(\t<a xlink:href="#s-#{person[:section][:id]}">\n)
+    	html += %Q(\t\t<text x="#{@image_padding}" y="#{flight_bar_top(row_index) + (@flight_bar_height * 0.4)}" class="svg_person_name">#{person[:section].traveler_name}</text>\n)
+    	html += %Q(\t\t<text x="#{@image_padding}" y="#{flight_bar_top(row_index) + (@flight_bar_height * 0.9)}" class="svg_person_nickname">#{person[:section].traveler_note}</text>\n)
+      html += %Q(\t</a>\n)
       return html
     end
   
@@ -206,6 +228,13 @@ class Chart
       section_hash[:arrivals]   = arrivals
       section_hash[:departures] = departures
       return section_hash
+    end
+    
+    # Return the y position of the top of the flight bar of a given row.
+    # Params:
+    # +row_number+:: Row number (zero-indexed)
+    def flight_bar_top(row_number)
+    	return @chart_top + (row_number * @name_height) + @flight_bar_margin
     end
     
     # Check if a person has flights on a given date (return true or false).
