@@ -200,9 +200,7 @@ class Chart
     		row_index = 0;
     		@event_sections[direction].each do |person|
     			# Make sure this person has flights on this date, and if so, draw a row for them:
-    			if person_has_flight_on_date?(person, date)	          
-    				#this_hue = @row_hue[person[:key_iata]]
-  					#draw_person_row(person, date, row_index, this_hue)
+    			if person_has_flight_on_date?(person, date)
             html += draw_row(person, date, row_index)
     				row_index += 1
           end		
@@ -274,12 +272,56 @@ class Chart
     		end
       end
       html += "\t</g>\n"
+      
+      return html
+    end
+    
+    # Return the SVG for an individual layover bar.
+    # Params:
+    # +row+::      Which row the flight bar belongs in (zero-indexed)
+    # +hue+::      Hue value for this flight bar
+    # +flight_1+:: The Flight object immediately prior to the layover
+    # +flight_2+:: The Flight object immediately after the layover
+    # +this_date:: The date of the chart that this row belongs to
+    def draw_layover_bar(row, hue, flight_1, flight_2, this_date)
+      html = String.new
+      
+    	start_time = flight_1.arrival_datetime
+    	end_time   = flight_2.departure_datetime
+    
+      bar_values = bar_points(this_date, start_time, end_time, row)
+      return nil if bar_values.nil?
+      points     = bar_values[:points]
+      left_side  = bar_values[:left]
+      right_side = bar_values[:right]
+      width      = right_side - left_side
+
+      html  += %Q(\t<g cursor="default">\n)
+    
+      # Draw tooltip:
+      html += %Q(\t\t<title>)
+      html += %Q(Layover at #{flight_1.arr_airport_name}\n)
+      html += time_range(start_time, end_time, flight_1[:timezone])
+      html += %Q(</title>\n)
+    
+      # Draw layover bar:
+      html += %Q(\t\t<polygon points="#{points}" class="svg_bar" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" stroke="hsl(#{hue},#{@saturation},#{@lightness_stroke})" fill-opacity="#{@bar_opacity}" stroke-opacity="#{@bar_opacity}" />\n)
+	
+      # Draw layover airport label:
+    	html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*0.61}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" fill-opacity="#{@bar_opacity}">#{flight_1.arrival_airport_iata}</text>\n)
+  	
+      html += %Q(\t</g>\n)
+    
+    	return html
     end
     
     # Return the SVG for a particular chart row.
+    # Params:
+    # +person+::    One specific element of an event_section array
+    # +date::       The date this row is to be drawn in
+    # +row_index+:: Which row the layover bar belongs in (zero-indexed)
     def draw_row(person, date, row_index)
       html = String.new
-      
       hue = @row_hue[person[:key_iata]]
       
       html += %Q(\t<a xlink:href="#s-#{person[:section][:id]}">\n)
@@ -289,11 +331,11 @@ class Chart
 
   	  prev_flight = nil
     	person[:flights].each do |flight|
-    		html += draw_flight_bar(row_index, hue, flight, date)
+    		html += draw_flight_bar(row_index, hue, flight, date).to_s
 		
     		# Draw layover bars if necessary:
     		unless prev_flight.nil?
-    			#concat draw_layover_bar(row_index, hue, prev_flight, flight, date)
+    			html += draw_layover_bar(row_index, hue, prev_flight, flight, date).to_s
     		end
     		prev_flight = flight
     	end
