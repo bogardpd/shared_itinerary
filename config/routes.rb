@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   post    'login'  => 'sessions#create'
   delete  'logout' => 'sessions#destroy'
   
-  post    'share_link/:id', to: 'events#share_link', as: 'share_link'
+  post    'share_link/:id', to: 'events#update_share_link', as: 'update_share_link'
   
   get     'events/:id/share/:share_link' => 'events#show'
   

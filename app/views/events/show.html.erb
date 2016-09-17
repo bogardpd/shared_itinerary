@@ -4,7 +4,7 @@
 <% if current_user?(@event.user) %>
   <div class="row center">
 
-  <%= form_for(:event, url: share_link_path, html: { class: "form-inline" } ) do |f| %>
+  <%= form_for(:event, url: update_share_link_path, html: { class: "form-inline" } ) do |f| %>
     
     <div class="input-group">
       <%= link_to "<span class=\"glyphicon glyphicon-pencil\"></span> Edit #{@event.event_name} information".html_safe, edit_event_path(@event), class: "btn btn-primary" %> 

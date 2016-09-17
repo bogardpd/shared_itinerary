@@ -4,10 +4,8 @@ class EventsController < ApplicationController
   before_action :correct_user_or_share_link, only: [:show]
   
   def show
-    
     @event = Event.find(params[:id])
     @chart = @event.chart
-    
     @share_link = url_for(share_link: @event.share_link)
         
     rescue ActiveRecord::RecordNotFound
@@ -43,14 +41,12 @@ class EventsController < ApplicationController
     end
   end
   
-  def share_link
+  def update_share_link
     share_text = SecureRandom.hex(8)
     @event = Event.find(params[:id])
-    if @event.update_attributes(share_link: share_text)
-      redirect_to @event
-    else
-      redirect_to @event
-    end
+    @event.update_attributes(share_link: share_text)
+    redirect_to @event
+    
     rescue ActiveRecord::RecordNotFound
       flash[:warning] = "We couldnʼt find an event with an ID of #{params[:id]}."
       redirect_to current_user
