@@ -80,52 +80,5 @@ class EventsController < ApplicationController
         end
       end
     end
-    
-    # Accepts a collection of trip sections and formats them in an array.
-    def section_array(sections_collection, is_arrival)
-      flights_array = Array.new
-      sections_collection.each do |section|
-        flights = Array.new
-        section.flights.order(:departure_datetime).each do |flight|
-          flights.push({
-            id:                flight.id,
-            airline:           flight.airline_iata,
-            flight_number:     flight.flight_number,
-            departure_airport: flight.departure_airport_iata,
-            departure_time:    flight.departure_datetime,
-            arrival_airport:   flight.arrival_airport_iata,
-            arrival_time:      flight.arrival_datetime,
-            timezone:          section.timezone
-          })
-        end
-        dep_time = arr_time = Time.new
-        if flights.any?
-          key_airport = is_arrival ? flights.last[:arrival_airport] : flights.first[:departure_airport]
-          timezone = is_arrival ? @event.arriving_timezone : @event.departing_timezone
-          dep_time = flights.first[:departure_time]
-          arr_time = flights.last[:arrival_time]
-        end
-        flights_array.push({
-          id:                     section.id,  
-          name:                   section.traveler_name,
-          note:                   section.traveler_note,
-          pickup_info:            section.pickup_info,
-          timezone:               timezone,  
-          flights:                flights,
-          section_departure_time: dep_time,
-          section_arrival_time:   arr_time,
-          key_airport:            key_airport || ""
-        })  
-            
-      end
-      
-      if is_arrival
-        flights_array.sort_by! { |h| [h[:key_airport], h[:section_arrival_time], h[:section_departure_time]] }
-      else
-        flights_array.sort_by! { |h| [h[:key_airport], h[:section_departure_time], h[:section_arrival_time]] }
-      end
-            
-      return flights_array
-    end
   
 end
