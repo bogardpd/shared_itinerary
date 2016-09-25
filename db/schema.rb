@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160720010808) do
+ActiveRecord::Schema.define(version: 20160925173009) do
 
   create_table "airlines", force: :cascade do |t|
     t.string "iata_code"
@@ -43,14 +43,11 @@ ActiveRecord::Schema.define(version: 20160720010808) do
   add_index "events", ["user_id"], name: "index_events_on_user_id"
 
   create_table "flights", force: :cascade do |t|
-    t.text     "airline_iata"
     t.integer  "flight_number"
     t.datetime "departure_datetime"
-    t.text     "departure_airport_iata"
     t.datetime "arrival_datetime"
-    t.text     "arrival_airport_iata"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
     t.integer  "section_id"
     t.integer  "airline_id"
     t.integer  "departure_airport_id"

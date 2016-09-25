@@ -161,9 +161,9 @@ class Chart
     	@event_sections[direction].each do |person|
     		if person_has_flight_on_date?(person, date)
           if direction == :arrivals
-            person_key_airports.push(person[:flights].last.arrival_airport_iata)
+            person_key_airports.push(person[:flights].last.arr_airport_iata)
           else
-            person_key_airports.push(person[:flights].first.departure_airport_iata)
+            person_key_airports.push(person[:flights].first.dep_airport_iata)
           end
         end
     	end	  
@@ -318,7 +318,7 @@ class Chart
       html += %Q(\t\t<polygon points="#{points}" class="svg_bar" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" stroke="hsl(#{hue},#{@saturation},#{@lightness_stroke})" fill-opacity="#{@bar_opacity}" stroke-opacity="#{@bar_opacity}" />\n)
 	
       # Draw layover airport label:
-    	html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*0.61}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" fill-opacity="#{@bar_opacity}">#{flight_1.arrival_airport_iata}</text>\n)
+    	html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*0.61}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" fill-opacity="#{@bar_opacity}">#{flight_1.arr_airport_iata}</text>\n)
   	
       html += %Q(\t</g>\n)
     

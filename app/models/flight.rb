@@ -2,16 +2,15 @@ class Flight < ActiveRecord::Base
   belongs_to :section
   belongs_to :airline
   belongs_to :departure_airport, :class_name => 'Airport'
-  belongs_to :arrival_airport, :class_name => 'Airport'
-  validates :flight_number, presence: true
-  validates :departure_airport_iata, presence: true
-  validates :arrival_airport_iata, presence: true
-  validates :departure_datetime, presence: true
-  validates :arrival_datetime, presence: true
+  belongs_to :arrival_airport,   :class_name => 'Airport'
   
-  before_save { self.airline_iata = airline_iata.upcase }
-  before_save { self.departure_airport_iata = departure_airport_iata.upcase }
-  before_save { self.arrival_airport_iata = arrival_airport_iata.upcase }
+  validates :flight_number,        presence: true
+  validates :airline_id,           presence: true
+  validates :departure_airport_id, presence: true
+  validates :arrival_airport_id,   presence: true
+  validates :departure_datetime,   presence: true
+  validates :arrival_datetime,     presence: true
+  
   before_save { self.departure_datetime = Time.parse(departure_datetime.to_s) }
   before_save { self.arrival_datetime = Time.parse(arrival_datetime.to_s)}
 
