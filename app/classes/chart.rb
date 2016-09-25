@@ -341,13 +341,34 @@ class Chart
 
   	  prev_flight = nil
     	person[:flights].each do |flight|
-    		html += draw_flight_bar(row_index, hue, flight, date).to_s
+    		# Draw flights:
+        html += draw_flight_bar(row_index, hue, flight, date).to_s
 		
     		# Draw layover bars if necessary:
     		unless prev_flight.nil?
     			html += draw_layover_bar(row_index, hue, prev_flight, flight, date).to_s
     		end
     		prev_flight = flight
+    	end
+      
+      # Draw airport codes and times at each end of each flight bar:
+      start_time = person[:flights].first.departure_datetime
+      end_time   = person[:flights].last.arrival_datetime
+      section_left = @name_width + @image_padding + (start_time.hour*@hour_width) + (start_time.min*@hour_width/60) - @airport_margin
+      section_right = @name_width + @image_padding + (end_time.hour*@hour_width) + (end_time.min*@hour_width/60) + @airport_margin
+      if person[:flights].first.departure_datetime.to_date == date
+    		html += %Q(<g cursor="default">\n)
+        html += %Q(<title>#{person[:flights].first.dep_airport_name}</title>\n)
+        html += %Q(<text x="#{section_left}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.42}" class="svg_airport_label svg_airport_block_start">#{person[:flights].first.dep_airport_iata}</text>\n)
+    		html += %Q(<text x="#{section_left}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.92}" class="svg_time_label svg_airport_block_start">#{format_time_short(person[:flights].first.departure_datetime)}</text>\n)
+        html += %Q(</g>\n)
+    	end      
+      if person[:flights].last.arrival_datetime.to_date == date
+    		html += %Q(<g cursor="default">\n)
+        html += %Q(<title>#{person[:flights].last.arr_airport_name}</title>\n)
+    		html += %Q(<text x="#{section_right}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.42}" class="svg_airport_label svg_airport_block_end">#{person[:flights].last.arr_airport_iata}</text>\n)
+    		html += %Q(<text x="#{section_right}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.92}" class="svg_time_label svg_airport_block_end">#{format_time_short(person[:flights].last.arrival_datetime)}</text>\n)
+        html += %Q(</g>\n)
     	end
       
       return html
@@ -375,7 +396,14 @@ class Chart
     # Params:
     # +time+:: The time to format
     def format_time(time)
-        time.strftime("%l:%M%P").strip
+      time.strftime("%l:%M%P").strip
+    end
+    
+    # Return a formatted time string.
+    # Params:
+    # +time+:: The time to format
+    def format_time_short(time)
+      time.strftime("%l:%M%P").chomp('m')
     end
     
     # Check if a person has flights on a given date (return true or false).
