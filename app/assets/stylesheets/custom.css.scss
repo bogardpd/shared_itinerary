@@ -16,7 +16,7 @@ $color-border: hsl(200,5%,90%);
 
 body {
 	font-family: "Lato", sans-serif;
-	font-size: 12pt;
+	font-size: 18px;
   background-color: hsl(200,5%,97%);
 }
 
@@ -94,7 +94,7 @@ p {
 /* header */
 
 #logo {
-  font-size: 1.8em;
+  font-size: 28px;
   font-weight: 300;
   color: $gray;
 	&:hover {
@@ -137,6 +137,10 @@ footer {
 }
 
 /* forms */
+
+.btn, .form-control {
+  font-size: 100%;
+}
 
 input, textarea, select, .uneditable-input {
 	border: 1px solid #bbb;
@@ -256,6 +260,7 @@ span.flight-timezone {
 
 span.flight-number {
   color: $color-light;
+  font-size: 85%;
 }
 
 th.event-traveler {
