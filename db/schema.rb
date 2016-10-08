@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160925173009) do
+ActiveRecord::Schema.define(version: 20161008154139) do
 
   create_table "airlines", force: :cascade do |t|
     t.string "iata_code"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20160925173009) do
     t.datetime "updated_at",         null: false
     t.string   "share_link"
     t.text     "note"
+    t.string   "timezone"
   end
 
   add_index "events", ["user_id"], name: "index_events_on_user_id"
