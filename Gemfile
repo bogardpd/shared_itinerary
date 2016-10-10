@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.2.4'
+ruby '2.3.1'
 
 gem 'rails', '4.2.3'
 
@@ -24,6 +24,8 @@ gem 'jbuilder', '2.2.3'
 gem 'sdoc', '0.4.0', group: :doc
 # Use redcarpet for markdown formatting
 gem 'redcarpet'
+# Use tzinfo for IANA time zones:
+gem 'tzinfo', '~> 1.2', '>= 1.2.2'
 
 group :development, :test do
   # Use sqlite3 as the database for Active Record
