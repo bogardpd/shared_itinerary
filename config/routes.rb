@@ -24,4 +24,7 @@ Rails.application.routes.draw do
   # Certbot
   get '/.well-known/acme-challenge/:id' => 'static_pages#letsencrypt'
   
+  # Test
+  get 'autocomplete_test' => 'static_pages#autocomplete_test'
+  
 end

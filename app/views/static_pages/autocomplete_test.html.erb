@@ -1,0 +1,25 @@
+<input id="autocomplete" placeholder="Enter your address" type="text"></input>
+
+<script>
+
+  var placeSearch, autocomplete;
+ 
+  function initAutocomplete() {
+    // Create the autocomplete object, restricting the search to geographical
+    // location types.
+    autocomplete = new google.maps.places.Autocomplete(
+        /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+        {types: ['geocode']});
+
+    // When the user selects an address from the dropdown, populate the address
+    // fields in the form.
+    autocomplete.addListener('place_changed', processLocation);
+  }
+
+  function processLocation() {
+    /* Do some stuff with the location */
+  }
+
+  
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpn9HzEqNSgk9xvU49biL_XEqdliDccys&libraries=places&callback=initAutocomplete" async defer></script>

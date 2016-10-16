@@ -274,3 +274,8 @@ th.event-pickup-info {
 th.event-flights {
 	width: 50%;
 }
+
+/* Fix Google address lookup in bootstrap: */
+.pac-container {
+  z-index: 10000 !important;
+}

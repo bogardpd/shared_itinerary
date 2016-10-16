@@ -12,5 +12,8 @@ class StaticPagesController < ApplicationController
   def letsencrypt
     render text: ""
   end
- 
+  
+  def autocomplete_test
+    
+  end
 end
