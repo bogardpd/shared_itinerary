@@ -4,10 +4,6 @@ class Chart
     @event = event
     @event_sections = @event.event_sections
     
-    @timezone = Hash.new
-    @timezone[:arrivals]   = event.arriving_timezone
-    @timezone[:departures] = event.departing_timezone
-    
     initialize_settings
     
     @row_hue = row_hue
@@ -174,7 +170,7 @@ class Chart
     		chart_height = @name_height * number_of_rows
     		image_height = @chart_top + chart_height + @image_padding
         
-        html += %Q(<h3>#{date.strftime("%A, %B %-d, %Y")} (#{@timezone[direction]})</h3>\n\n)
+        html += %Q(<h3>#{date.strftime("%A, %B %-d, %Y")}</h3>\n\n)
         
         html += %Q(<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="#{@image_width}" height="#{image_height}">\n)
         

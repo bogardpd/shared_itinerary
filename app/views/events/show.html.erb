@@ -31,6 +31,8 @@
   <div class="alert alert-info event-info"><%= markdown_text(@event.note) %></div>
 <% end %>
 
+<p>All times are <span class="timezone"><%= @event.timezone %></span>.</p>
+
 <%= @chart.draw %>
 
 <hr />
