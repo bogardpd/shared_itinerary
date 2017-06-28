@@ -234,7 +234,7 @@ class Chart
       if section_array.any? && dates[0] && dates[1]
         direction = section_array.first[:section].is_arrival? ? :arrivals : :departures
       	for d in dates[0]..dates[1]
-          html += draw_date_chart(d, direction)
+          html += draw_date_chart(d, direction) || ""
       	end
       else
         html += "<p>When incoming flights are added, they will show up here.</p>\n"
