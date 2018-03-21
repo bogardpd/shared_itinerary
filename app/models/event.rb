@@ -26,7 +26,8 @@ class Event < ActiveRecord::Base
                          key_airport: flight_any ? flight_list.last.arrival_airport : Airport.new,
                          key_iata:    flight_any ? flight_list.last.arr_airport_iata : "",
                          key_time:    flight_any ? flight_list.last.arrival_datetime : nil,
-                         alt_time:    flight_any ? flight_list.first.departure_datetime : nil)
+                         alt_time:    flight_any ? flight_list.first.departure_datetime : nil,
+                         pickup_info: section.pickup_info)
       else
         flight_list = section.flights.order(:departure_datetime)
         flight_any = (flight_list.length > 0)
@@ -35,7 +36,8 @@ class Event < ActiveRecord::Base
                          key_airport: flight_any ? flight_list.first.departure_airport : Airport.new,
                          key_iata:    flight_any ? flight_list.first.dep_airport_iata : "",
                          key_time:    flight_any ? flight_list.first.departure_datetime : nil,
-                         alt_time:    flight_any ? flight_list.last.arrival_datetime : nil)
+                         alt_time:    flight_any ? flight_list.last.arrival_datetime : nil,
+                         pickup_info: section.pickup_info)
       end
     end
     arrivals.sort_by!   { |h| [h[:key_iata], h[:key_time], h[:alt_time]] }
