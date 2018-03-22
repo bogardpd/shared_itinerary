@@ -25,6 +25,10 @@ gem 'sdoc', '0.4.0', group: :doc
 # Use redcarpet for markdown formatting
 gem 'redcarpet'
 
+# Force loofah to 2.2.1 for security update.
+# https://github.com/flavorjones/loofah/issues/144
+gem 'loofah', '~> 2.2.1'
+
 group :development, :test do
   # Use sqlite3 as the database for Active Record
   gem 'sqlite3', '1.3.9'
