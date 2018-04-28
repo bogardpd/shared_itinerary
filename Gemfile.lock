@@ -94,6 +94,8 @@ GEM
     mini_mime (1.0.0)
     mini_portile2 (2.3.0)
     minitest (5.11.3)
+    minitest-fail-fast (0.1.0)
+      minitest (~> 5)
     minitest-reporters (1.2.0)
       ansi
       builder
@@ -198,6 +200,7 @@ DEPENDENCIES
   jbuilder (~> 2.7)
   jquery-rails
   loofah (~> 2.2.1)
+  minitest-fail-fast (~> 0.1.0)
   minitest-reporters (~> 1.2)
   pg (= 0.18.4)
   puma (= 3.9.1)

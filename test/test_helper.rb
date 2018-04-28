@@ -1,6 +1,7 @@
-ENV['RAILS_ENV'] ||= 'test'
-require File.expand_path('../../config/environment', __FILE__)
-require 'rails/test_help'
+ENV["RAILS_ENV"] ||= "test"
+require File.expand_path("../../config/environment", __FILE__)
+require "rails/test_help"
+require "minitest/fail_fast"
 require "minitest/reporters"
 Minitest::Reporters.use!
 
@@ -15,10 +16,10 @@ class ActiveSupport::TestCase
   
   # Logs in a test user.
   def log_in_as(user, options = {})
-    password = options[:password] || 'password'
-    remember_me = options[:remember_me] || '1'
+    password = options[:password] || "password"
+    remember_me = options[:remember_me] || "1"
     if integration_test?
-      post login_path, params: { email: user.email, password: password, remember_me: remember_me } # changed session: to params:
+      post login_path, params: { session: { email: user.email, password: password, remember_me: remember_me } }
     else
       session[:user_id] = user.id
     end

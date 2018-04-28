@@ -33,14 +33,14 @@ class AirlinesControllerTest < ActionController::TestCase
   end
   
   test "should redirect update when not logged in" do
-    patch :update, id: @airline, airline: { name: "TWA" }
+    patch :update, params: { id: @airline, airline: { name: "TWA" } }
     assert_not flash.empty?
     assert_redirected_to login_url
   end
   
   test "should redirect update when logged in as a non-admin" do
     log_in_as(@other_user)
-    patch :update, id: @airline, airline: { name: "TWA" }
+    patch :update, params: { id: @airline, airline: { name: "TWA" } }
     assert_redirected_to root_url
   end
   
