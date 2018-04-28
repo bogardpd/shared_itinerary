@@ -15,4 +15,8 @@ class Airport < ActiveRecord::Base
     self.iata_code ? self.iata_code : ""
   end
   
+  def self.airport_names
+    return Airport.all.map{ |a| [a.iata_code, a.formatted_name] }.to_h
+  end
+  
 end

@@ -3,6 +3,7 @@ class Chart
   def initialize(event)
     @event = event
     @event_sections = @event.event_sections
+    @airport_names = Airport.airport_names
     
     @timezone = Hash.new
     @timezone[:arrivals]   = event.arriving_timezone
@@ -187,7 +188,7 @@ class Chart
           text_left = legend_left + (@legend_box_size * 1.25)
           arriving_departing = (direction == :arrivals) ? "Arriving at" : "Departing from"
       		html += %Q(\t<g cursor="default">\n)
-          html += %Q(\t\t<title>#{airport}</title>\n)
+          html += %Q(\t\t<title>#{@airport_names[airport] || airport}</title>\n)
           html += %Q(\t\t<rect width="#{@legend_box_size}" height="#{@legend_box_size}" x="#{legend_left}" y="#{@image_padding}" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" fill-opacity="#{@bar_opacity}" stroke="hsl(#{hue},#{@saturation},#{@lightness_stroke})" stroke-opacity="#{@bar_opacity}"/>\n)
           html += %Q(\t\t<text x="#{text_left}" y="#{@image_padding + @legend_box_size*0.75}" text-anchor="start">#{arriving_departing} #{airport}</text>\n)
           html += %Q(\t</g>\n)
