@@ -22,13 +22,13 @@ class AirlinesControllerTest < ActionController::TestCase
   
   test "should get edit when logged in as an admin" do
     log_in_as(@user)
-    get :edit, id: @airline
+    get :edit, params: { id: @airline }
     assert_response :success
   end
   
   test "should redirect edit when logged in as a non-admin" do
     log_in_as(@other_user)
-    get :edit, id: @airline
+    get :edit, params: { id: @airline }
     assert_redirected_to root_url
   end
   

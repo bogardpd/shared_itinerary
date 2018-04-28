@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
-ruby '2.3.1'
+ruby '2.5.1'
 
-gem 'rails', '5.0.0.1'
+gem 'rails', '~> 5.1'
 
 # Use bcrypt to hash passwords
 gem 'bcrypt', '3.1.7'
@@ -16,8 +16,6 @@ gem 'uglifier', '2.5.3'
 gem 'coffee-rails', '~> 4.2'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
-# Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
-gem 'turbolinks', '2.3.0'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.7'
 # bundle exec rake doc:rails generates the API under doc/api.
@@ -43,9 +41,9 @@ group :development, :test do
 end
 
 group :test do
-  gem 'minitest-reporters', '1.0.5'
-  gem 'mini_backtrace', '0.1.3'
-  gem 'guard-minitest', '2.3.1'
+  gem 'rails-controller-testing', '~> 1.0', '>= 1.0.2'
+  gem 'minitest-reporters', '~> 1.2'
+  gem 'guard-minitest', '~> 2.4', '>= 2.4.6'
 end
 
 group :production do
