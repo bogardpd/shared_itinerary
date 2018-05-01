@@ -2,7 +2,7 @@ class Chart
   
   def initialize(event)
     @event = event
-    @event_sections = @event.event_sections
+    @event_travelers = @event.event_travelers
     @airport_names = Airport.airport_names
     
     @timezone = Hash.new
@@ -19,21 +19,21 @@ class Chart
     html = String.new
     
     html += "<h2>Incoming Flights</h2>\n"
-    html += draw_direction_charts(@event_sections[:arrivals])
+    html += draw_direction_charts(@event_travelers[:arrivals])
     html += "<h2>Returning Flights</h2>\n"
-    html += draw_direction_charts(@event_sections[:departures])
+    html += draw_direction_charts(@event_travelers[:departures])
     
     return html.html_safe
   end
   
-  # Return a hash of arrival sections.
+  # Return a hash of arrival travelers.
   def arrivals
-    return @event_sections[:arrivals]
+    return @event_travelers[:arrivals]
   end
   
-  # Return a hash of departure sections.
+  # Return a hash of departure travelers.
   def departures
-    return @event_sections[:departures]
+    return @event_travelers[:departures]
   end
   
   private
@@ -131,12 +131,12 @@ class Chart
     # Return a hash of departures and arrivals, with :arrivals or :departures as
     # the keys and ranges of dates as the values.
     # Params:
-    # +section_array+:: A section array for a single direction (arrivals or departures)
-    def date_range(section_array)
+    # +traveler_array+:: A traveler array for a single direction (arrivals or departures)
+    def date_range(traveler_array)
     	date_range = [nil,nil];
 	
-    	section_array.each do |section|
-    		section[:flights].each do |flight|
+    	traveler_array.each do |traveler|
+    		traveler[:flights].each do |flight|
           if (date_range[0].nil? || flight.departure_datetime.to_date < date_range[0])
     				date_range[0] = flight.departure_datetime.to_date
     			end
@@ -159,7 +159,7 @@ class Chart
       
     	# Determine number of rows, and create array of key airports so we can identify when airports change:
       person_key_airports = Array.new
-    	@event_sections[direction].each do |person|
+    	@event_travelers[direction].each do |person|
     		if person_has_flight_on_date?(person, date)
           if direction == :arrivals
             person_key_airports.push(person[:flights].last.arr_airport_iata)
@@ -209,7 +209,7 @@ class Chart
         
     		# Draw flight bars:
     		row_index = 0;
-    		@event_sections[direction].each do |person|
+    		@event_travelers[direction].each do |person|
     			# Make sure this person has flights on this date, and if so, draw a row for them:
     			if person_has_flight_on_date?(person, date)
             html += draw_row(person, date, row_index)
@@ -228,12 +228,12 @@ class Chart
     
     # Return the HTML and SVG for all flight charts in a given direction.
     # Params:
-    # +section_array+:: A section array for a single direction (arrivals or departures)
-    def draw_direction_charts(section_array)
+    # +traveler_array+:: A traveler array for a single direction (arrivals or departures)
+    def draw_direction_charts(traveler_array)
       html = String.new
-      dates = date_range(section_array)
-      if section_array.any? && dates[0] && dates[1]
-        direction = section_array.first[:section].is_arrival? ? :arrivals : :departures
+      dates = date_range(traveler_array)
+      if traveler_array.any? && dates[0] && dates[1]
+        direction = traveler_array.first[:traveler].is_arrival? ? :arrivals : :departures
       	for d in dates[0]..dates[1]
           html += draw_date_chart(d, direction) || ""
       	end
@@ -328,16 +328,16 @@ class Chart
     
     # Return the SVG for a particular chart row.
     # Params:
-    # +person+::    One specific element of an event_section array
+    # +person+::    One specific element of an event_traveler array
     # +date::       The date this row is to be drawn in
     # +row_index+:: Which row the layover bar belongs in (zero-indexed)
     def draw_row(person, date, row_index)
       html = String.new
       hue = @row_hue[person[:key_iata]]
       
-      html += %Q(\t<a xlink:href="#s-#{person[:section][:id]}">\n)
-    	html += %Q(\t\t<text x="#{@image_padding}" y="#{flight_bar_top(row_index) + (@flight_bar_height * 0.4)}" class="svg_person_name">#{person[:section].traveler_name}</text>\n)
-    	html += %Q(\t\t<text x="#{@image_padding}" y="#{flight_bar_top(row_index) + (@flight_bar_height * 0.9)}" class="svg_person_nickname">#{person[:section].traveler_note}</text>\n)
+      html += %Q(\t<a xlink:href="#s-#{person[:traveler][:id]}">\n)
+    	html += %Q(\t\t<text x="#{@image_padding}" y="#{flight_bar_top(row_index) + (@flight_bar_height * 0.4)}" class="svg_person_name">#{person[:traveler].traveler_name}</text>\n)
+    	html += %Q(\t\t<text x="#{@image_padding}" y="#{flight_bar_top(row_index) + (@flight_bar_height * 0.9)}" class="svg_person_nickname">#{person[:traveler].traveler_note}</text>\n)
       html += %Q(\t</a>\n)
 
   	  prev_flight = nil
@@ -355,20 +355,20 @@ class Chart
       # Draw airport codes and times at each end of each flight bar:
       start_time = person[:flights].first.departure_datetime
       end_time   = person[:flights].last.arrival_datetime
-      section_left = @name_width + @image_padding + (start_time.hour*@hour_width) + (start_time.min*@hour_width/60) - @airport_margin
-      section_right = @name_width + @image_padding + (end_time.hour*@hour_width) + (end_time.min*@hour_width/60) + @airport_margin
+      traveler_left = @name_width + @image_padding + (start_time.hour*@hour_width) + (start_time.min*@hour_width/60) - @airport_margin
+      traveler_right = @name_width + @image_padding + (end_time.hour*@hour_width) + (end_time.min*@hour_width/60) + @airport_margin
       if person[:flights].first.departure_datetime.to_date == date
     		html += %Q(<g cursor="default">\n)
         html += %Q(<title>#{person[:flights].first.dep_airport_name}</title>\n)
-        html += %Q(<text x="#{section_left}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.42}" class="svg_airport_label svg_airport_block_start">#{person[:flights].first.dep_airport_iata}</text>\n)
-    		html += %Q(<text x="#{section_left}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.92}" class="svg_time_label svg_airport_block_start">#{format_time_short(person[:flights].first.departure_datetime)}</text>\n)
+        html += %Q(<text x="#{traveler_left}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.42}" class="svg_airport_label svg_airport_block_start">#{person[:flights].first.dep_airport_iata}</text>\n)
+    		html += %Q(<text x="#{traveler_left}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.92}" class="svg_time_label svg_airport_block_start">#{format_time_short(person[:flights].first.departure_datetime)}</text>\n)
         html += %Q(</g>\n)
     	end      
       if person[:flights].last.arrival_datetime.to_date == date
     		html += %Q(<g cursor="default">\n)
         html += %Q(<title>#{person[:flights].last.arr_airport_name}</title>\n)
-    		html += %Q(<text x="#{section_right}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.42}" class="svg_airport_label svg_airport_block_end">#{person[:flights].last.arr_airport_iata}</text>\n)
-    		html += %Q(<text x="#{section_right}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.92}" class="svg_time_label svg_airport_block_end">#{format_time_short(person[:flights].last.arrival_datetime)}</text>\n)
+    		html += %Q(<text x="#{traveler_right}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.42}" class="svg_airport_label svg_airport_block_end">#{person[:flights].last.arr_airport_iata}</text>\n)
+    		html += %Q(<text x="#{traveler_right}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.92}" class="svg_time_label svg_airport_block_end">#{format_time_short(person[:flights].last.arrival_datetime)}</text>\n)
         html += %Q(</g>\n)
     	end
       
@@ -409,7 +409,7 @@ class Chart
     
     # Check if a person has flights on a given date (return true or false).
     # Params:
-    # +person+:: One specific element of an event_section array.
+    # +person+:: One specific element of an event_traveler array.
     # +date+:: The date to check.
     def person_has_flight_on_date?(person, date)
       (person[:flights].any? && person[:flights].first.departure_datetime.to_date <= date && person[:flights].last.arrival_datetime.to_date >= date)
@@ -421,9 +421,9 @@ class Chart
       row_hue = Hash.new
       key_airports = Set.new
     
-      [@event_sections[:arrivals], @event_sections[:departures]].each do |section_directions|
-        section_directions.each do |section|
-          key_airports.add(section[:key_iata])
+      [@event_travelers[:arrivals], @event_travelers[:departures]].each do |traveler_directions|
+        traveler_directions.each do |traveler|
+          key_airports.add(traveler[:key_iata])
         end
       end
       key_airports.reject!(&:blank?)

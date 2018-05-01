@@ -31,10 +31,10 @@ class EventTest < ActiveSupport::TestCase
     assert_not @event.valid?
   end
   
-  test "associated sections should be destroyed" do
+  test "associated travelers should be destroyed" do
     @event.save
-    @event.sections.create!(traveler_name: "Bob", traveler_note: "bibbity_bob", pickup_info: "rental car", is_arrival: true)
-    assert_difference 'Section.count', -1 do
+    @event.travelers.create!(traveler_name: "Bob", traveler_note: "bibbity_bob", pickup_info: "rental car", is_arrival: true)
+    assert_difference 'Traveler.count', -1 do
       @event.destroy
     end
   end

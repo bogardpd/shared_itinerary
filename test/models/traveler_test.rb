@@ -1,10 +1,10 @@
 require 'test_helper'
 
-class SectionTest < ActiveSupport::TestCase
+class TravelerTest < ActiveSupport::TestCase
 
   def setup
     @event = events(:one)
-    @section = @event.sections.build(traveler_name: "Bob", traveler_note: "bibbity_bob", pickup_info: "rental car", is_arrival: true)
+    @section = @event.travelers.build(traveler_name: "Bob", traveler_note: "bibbity_bob", pickup_info: "rental car", is_arrival: true)
   end
   
   test "should be valid" do

@@ -1,5 +1,5 @@
 class Flight < ActiveRecord::Base
-  belongs_to :section
+  belongs_to :traveler
   belongs_to :airline
   belongs_to :departure_airport, :class_name => 'Airport'
   belongs_to :arrival_airport,   :class_name => 'Airport'

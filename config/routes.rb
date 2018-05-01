@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   
   resources :users
   resources :events
-  resources :sections
+  resources :travelers
   resources :flights
   resources :airlines, only: [:index, :edit, :update]
   resources :airports, only: [:index, :edit, :update]
