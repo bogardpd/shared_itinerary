@@ -1,3 +1,29 @@
+div.traveler-itinerary {
+  border: 1px solid $color-border;
+  background-color: #FFFFFF;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  
+  div.traveler-name {
+    padding: 0 15px;
+  }
+  
+  div.traveler-flights {
+    padding: 15px;
+  }
+  
+  div.traveler-info {
+    font-style: italic;
+  }
+  
+  div.flight {
+    margin-bottom: 10px;
+  }
+  
+}
+
+
+
 table.flight {
   border: none;
   

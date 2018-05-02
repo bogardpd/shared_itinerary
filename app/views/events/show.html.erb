@@ -37,45 +37,43 @@
 
 <h2>Flight Details</h2>
 
+[add traveler link]
+
 <% if @event.travelers.any? %>
-<table class="table">
-	<thead>
-		<th class="event-traveler">Traveler</th>
-		<th class="event-flights">Flights</th>
-	</thead>
 	<% @event.travelers.each do |traveler| %>
-		<tr id="s-<%= traveler.id %>">
-			
-			<td>
-				<span class="traveler-name"><%= traveler.traveler_name %></span>
+		<div class="row traveler-itinerary" id="s-<%= traveler.id %>">
+
+      <div class="col-md-12 traveler-name">    
+  			<h3><%= traveler.traveler_name %>&ensp;<small><%= traveler.traveler_note %></small></h3>
         <% if current_user?(@event.user) %>
-          <div class="btn-group-vertical edit-button">
+          <div class="btn-group">
             <%= link_to("<span class=\"glyphicon glyphicon-pencil\"></span> <span class=\"glyphicon glyphicon-user\"></span>".html_safe, edit_traveler_path(traveler), title: "Edit #{traveler.traveler_name}", class: "btn btn-default") %>
             <%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-plane\"></span>".html_safe, new_flight_path(traveler: traveler), title: "Add a new flight to #{traveler.traveler_name}’s itinerary", class: "btn btn-default") %>
           </div>
         <% end %>
-        <br />
-				<span class="traveler-note"><%= traveler.traveler_note %></span>
-			</td>
-			
-			<td>
-        <div>
-          <h3>Arrival</h3>
-          <%= render partial: "traveler_flights", locals: { flights: traveler.flights, is_arrival: true } %>
-          <% if traveler.pickup_info %>
-            <div><%= traveler.pickup_info %></div>
-          <% end %>
-        </div>
+  		</div>
+		
+  		<div class="col-md-6 traveler-flights">
+        <h4>Arrival</h4>
+        <%= render partial: "traveler_flights", locals: { flights: traveler.flights, is_arrival: true } %>
+        <% if traveler.pickup_info %>
+          <hr/>
+          <div class="traveler-info"><%= traveler.pickup_info %></div>
+        <% end %>
+      </div>
+    
+      <div class="col-md-6 traveler-flights">
+        <h4>Departure</h4>
+        <%= render partial: "traveler_flights", locals: { flights: traveler.flights, is_arrival: false } %>
         <hr/>
-        <div>
-          <h3>Departure</h3>
-          <%= render partial: "traveler_flights", locals: { flights: traveler.flights, is_arrival: false } %>
-          <div>[Departure dropoff info]</div>
-        </div>
-        
-			</td>
-      
-		</tr>
+        <div class="traveler-info">[Departure dropoff info]</div>  
+  		</div>
+    
+    </div>
 	<% end %>
-</table>
+
+<% else %>
+
+<p>No travelers have been added yet. [Add traveler link]</p>
+
 <% end %>
