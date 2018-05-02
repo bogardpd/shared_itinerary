@@ -1,0 +1,11 @@
+$color-light: hsl(0,0,70%);
+$color-border: hsl(200,5%,90%);
+
+$font-size-small: 80%;
+$font-size-large: 150%;
+
+@mixin box_sizing {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}

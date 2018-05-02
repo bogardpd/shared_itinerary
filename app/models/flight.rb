@@ -13,6 +13,10 @@ class Flight < ActiveRecord::Base
   
   before_save { self.departure_datetime = Time.parse(departure_datetime.to_s) }
   before_save { self.arrival_datetime = Time.parse(arrival_datetime.to_s)}
+  
+  scope :chronological, -> {
+    order("flights.departure_datetime")
+  }  
 
   attr_accessor :airline_iata_code
   
@@ -36,12 +40,20 @@ class Flight < ActiveRecord::Base
     self.departure_airport ? self.departure_airport.formatted_name : ""
   end
   
+  def dep_airport_city
+    self.departure_airport ? self.departure_airport.name : ""
+  end
+  
   def arr_airport_iata
     self.arrival_airport ? self.arrival_airport.iata_code : ""
   end
   
   def arr_airport_name
     self.arrival_airport ? self.arrival_airport.formatted_name : ""
+  end
+  
+  def arr_airport_city
+    self.arrival_airport ? self.arrival_airport.name : ""
   end
   
 end

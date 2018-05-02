@@ -27,17 +27,6 @@ module ApplicationHelper
     dt.strftime("%H:%M")
   end
   
-  def flight_times(dep, arr)
-    html = short_datetime(dep)
-    html+= " &ndash; "
-    if Time.at(dep).utc.to_date === Time.at(arr).utc.to_date
-      html += short_time(arr)
-    else 
-      html += short_datetime(arr)
-    end
-    html.html_safe
-  end
-  
   def admin_link
     count = Airline.where(name: nil).count + Airport.where(name: nil).count
     if count > 0

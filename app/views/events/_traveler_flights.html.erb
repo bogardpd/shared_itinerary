@@ -1,0 +1,35 @@
+<% filtered_flights = flights.where(is_arrival: is_arrival).chronological %>
+<div class="flight">
+  <table class="flight">
+    
+    <% filtered_flights.each_with_index do |flight, index| %>
+    
+    <tr>
+      <td class="flight-identifier">
+        <div class="flight-airline"><%= flight.airline_name %></div>
+        <div class="flight-number"><%= flight.flight_number %></div>
+        <% if current_user?(@event.user) %>
+          <div class="btn-group flight-edit">
+            <%= link_to("<span class=\"glyphicon glyphicon-pencil\"></span> <span class=\"glyphicon glyphicon-plane\"></span>".html_safe, edit_flight_path(flight[:id]), title: "Edit #{flight.airline_name} #{flight[:flight_number]}", class: "btn btn-default") %>
+          </div>
+        <% end %>
+      </td>
+      <td class="flight-airport flight-origin<%= " flight-highlighted" if !is_arrival && index == 0 %>">
+        <div class="flight-date-time"><%= short_datetime(flight.departure_datetime) %></div>
+        <div class="flight-iata"><%= flight.dep_airport_iata %></div>
+        <div class="flight-city"><%= flight.dep_airport_city %></div>
+      </td>
+      <td class="flight-separator">
+        <span class="glyphicon glyphicon-arrow-right"></span>
+      </td>
+      <td class="flight-airport flight-destination<%= " flight-highlighted" if is_arrival && index == filtered_flights.length-1 %>">
+        <div class="flight-date-time"><%= short_datetime(flight.arrival_datetime) %></div>
+        <div class="flight-iata"><%= flight.arr_airport_iata %></div>
+        <div class="flight-city"><%= flight.arr_airport_city %></div>
+      </td>
+    </tr>
+    
+    <% end %>
+    
+  </table>
+</div>

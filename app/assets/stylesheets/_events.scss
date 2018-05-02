@@ -1,0 +1,58 @@
+table.flight {
+  border: none;
+  
+  div.flight-airline {
+  }
+  
+  div.flight-city {
+    font-size: $font-size-small;
+  }
+  
+  div.flight-date-time {
+    font-weight: 300;
+    font-size: $font-size-small;
+  }
+  
+  div.flight-edit {
+    text-align: center;
+    margin-top: 0.25em;
+  }
+  
+  div.flight-iata {
+    font-weight: 700;
+    font-size: $font-size-large;
+  }
+  
+  td {
+    padding: 0.5em;
+  }
+  
+  td.flight-highlighted {
+    background-color: yellow;
+  }
+  
+  td.flight-identifier {
+    width: 8em;
+    text-align: center;
+    font-size: $font-size-small;
+  }
+  
+  td.flight-airport {
+    width: 8em;
+    vertical-align: top;
+  }
+  
+  td.flight-origin {
+    text-align: left;
+  }
+  
+  td.flight-separator {
+    vertical-align: top;
+    padding-top: 2em;
+  }
+  
+  td.flight-destination {
+    text-align: right;
+  }
+  
+}

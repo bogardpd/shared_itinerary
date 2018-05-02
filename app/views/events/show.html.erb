@@ -35,18 +35,47 @@
 
 <hr />
 
-<h2>Incoming Flight Details</h2>
+<h2>Flight Details</h2>
 
-<% if current_user?(@event.user) %>
-  <%= link_to "<span class=\"glyphicon glyphicon-plus\"></span> Add a traveler’s incoming itinerary".html_safe, new_traveler_path(event: @event, direction: :arrival), class: "btn btn-success" %>
+<% if @event.travelers.any? %>
+<table class="table">
+	<thead>
+		<th class="event-traveler">Traveler</th>
+		<th class="event-flights">Flights</th>
+	</thead>
+	<% @event.travelers.each do |traveler| %>
+		<tr id="s-<%= traveler.id %>">
+			
+			<td>
+				<span class="traveler-name"><%= traveler.traveler_name %></span>
+        <% if current_user?(@event.user) %>
+          <div class="btn-group-vertical edit-button">
+            <%= link_to("<span class=\"glyphicon glyphicon-pencil\"></span> <span class=\"glyphicon glyphicon-user\"></span>".html_safe, edit_traveler_path(traveler), title: "Edit #{traveler.traveler_name}", class: "btn btn-default") %>
+            <%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-plane\"></span>".html_safe, new_flight_path(traveler: traveler), title: "Add a new flight to #{traveler.traveler_name}’s itinerary", class: "btn btn-default") %>
+          </div>
+        <% end %>
+        <br />
+				<span class="traveler-note"><%= traveler.traveler_note %></span>
+			</td>
+			
+			<td>
+        <div>
+          <h3>Arrival</h3>
+          <%= render partial: "traveler_flights", locals: { flights: traveler.flights, is_arrival: true } %>
+          <% if traveler.pickup_info %>
+            <div><%= traveler.pickup_info %></div>
+          <% end %>
+        </div>
+        <hr/>
+        <div>
+          <h3>Departure</h3>
+          <%= render partial: "traveler_flights", locals: { flights: traveler.flights, is_arrival: false } %>
+          <div>[Departure dropoff info]</div>
+        </div>
+        
+			</td>
+      
+		</tr>
+	<% end %>
+</table>
 <% end %>
-
-<%= render 'itineraries', itineraries: @chart.arrivals %>
-
-<h2>Returning Flight Details</h2>
-
-<% if current_user?(@event.user) %>
-  <%= link_to "<span class=\"glyphicon glyphicon-plus\"></span> Add a traveler’s returning itinerary".html_safe, new_traveler_path(event: @event, direction: :departure), class: "btn btn-success" %>
-<% end %>
-
-<%= render 'itineraries', itineraries: @chart.departures %>
