@@ -35,12 +35,13 @@
 
 <hr />
 
-<h2>Flight Details</h2>
-
-[add traveler link]
+<h2>Traveler Details</h2>
 
 <% if @event.travelers.any? %>
-	<% @event.travelers.each do |traveler| %>
+	
+  <p><%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-user\"></span> Add new traveler".html_safe, new_traveler_path(event: @event), title: "Add a new traveler to #{@event.event_name}", class: "btn btn-default") %></p>
+  
+  <% @event.travelers.each do |traveler| %>
 		<div class="row traveler-itinerary" id="s-<%= traveler.id %>">
 
       <div class="col-md-12 traveler-name">    
@@ -74,6 +75,8 @@
 
 <% else %>
 
-<p>No travelers have been added yet. [Add traveler link]</p>
+<p>When travelers are added to this event, they will show up here.</p>
+
+<p><%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-user\"></span> Add new traveler".html_safe, new_traveler_path(event: @event), title: "Add a new traveler to #{@event.event_name}", class: "btn btn-default") %></p>
 
 <% end %>
