@@ -233,7 +233,7 @@ class Chart
       html = String.new
       dates = date_range(traveler_array)
       if traveler_array.any? && dates[0] && dates[1]
-        direction = traveler_array.first[:traveler].is_arrival? ? :arrivals : :departures
+        direction = traveler_array.first[:flights].first.is_arrival? ? :arrivals : :departures
       	for d in dates[0]..dates[1]
           html += draw_date_chart(d, direction) || ""
       	end

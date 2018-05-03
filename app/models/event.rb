@@ -16,35 +16,37 @@ class Event < ActiveRecord::Base
   # the keys and arrays of travelers as the values.
   def event_travelers
     traveler_hash = Hash.new
-    arrivals = Array.new
+    arrivals   = Array.new
     departures = Array.new
+    
     self.travelers.each do |traveler|
-      if traveler.is_arrival?
-        flight_list = traveler.flights.order(:arrival_datetime)
-        flight_any = (flight_list.length > 0)
-        arrivals.push(  traveler:     traveler,
-                         flights:     flight_list,
-                         key_airport: flight_any ? flight_list.last.arrival_airport : Airport.new,
-                         key_iata:    flight_any ? flight_list.last.arr_airport_iata : "",
-                         key_time:    flight_any ? flight_list.last.arrival_datetime : nil,
-                         alt_time:    flight_any ? flight_list.first.departure_datetime : nil,
-                         pickup_info: traveler.pickup_info)
-      else
-        flight_list = traveler.flights.order(:departure_datetime)
-        flight_any = (flight_list.length > 0)
-        departures.push(traveler:     traveler,
-                         flights:     flight_list,
-                         key_airport: flight_any ? flight_list.first.departure_airport : Airport.new,
-                         key_iata:    flight_any ? flight_list.first.dep_airport_iata : "",
-                         key_time:    flight_any ? flight_list.first.departure_datetime : nil,
-                         alt_time:    flight_any ? flight_list.last.arrival_datetime : nil,
-                         pickup_info: traveler.pickup_info)
-      end
+      flight_list = traveler.flights.order(:departure_datetime)
+      arrival_flights   = flight_list.where(is_arrival: true)
+      departure_flights = flight_list.where(is_arrival: false)
+      
+      arrivals.push(   traveler:    traveler,
+                       flights:     arrival_flights,
+                       key_airport: arrival_flights.any? ? arrival_flights.last.arrival_airport : Airport.new,
+                       key_iata:    arrival_flights.any? ? arrival_flights.last.arr_airport_iata : "",
+                       key_time:    arrival_flights.any? ? arrival_flights.last.arrival_datetime : nil,
+                       alt_time:    arrival_flights.any? ? arrival_flights.first.departure_datetime : nil,
+                       pickup_info: traveler.pickup_info)
+
+      departures.push( traveler:    traveler,
+                       flights:     departure_flights,
+                       key_airport: departure_flights.any? ? departure_flights.first.departure_airport : Airport.new,
+                       key_iata:    departure_flights.any? ? departure_flights.first.dep_airport_iata : "",
+                       key_time:    departure_flights.any? ? departure_flights.first.departure_datetime : nil,
+                       alt_time:    departure_flights.any? ? departure_flights.last.arrival_datetime : nil,
+                       pickup_info: traveler.pickup_info)
+                       
     end
+    
     arrivals.sort_by!   { |h| [h[:key_iata], h[:key_time], h[:alt_time]] }
     departures.sort_by! { |h| [h[:key_iata], h[:key_time], h[:alt_time]] }
     traveler_hash[:arrivals]   = arrivals
     traveler_hash[:departures] = departures
+    
     return traveler_hash
   end
   
