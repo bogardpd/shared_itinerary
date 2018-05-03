@@ -19,9 +19,9 @@ class Chart
     html = String.new
     
     html += "<h2>Incoming Flights</h2>\n"
-    html += draw_direction_charts(@event_travelers[:arrivals])
+    html += draw_direction_charts(@event_travelers[:arrivals], :arrivals)
     html += "<h2>Returning Flights</h2>\n"
-    html += draw_direction_charts(@event_travelers[:departures])
+    html += draw_direction_charts(@event_travelers[:departures], :departures)
     
     return html.html_safe
   end
@@ -229,11 +229,11 @@ class Chart
     # Return the HTML and SVG for all flight charts in a given direction.
     # Params:
     # +traveler_array+:: A traveler array for a single direction (arrivals or departures)
-    def draw_direction_charts(traveler_array)
+    def draw_direction_charts(traveler_array, direction)
       html = String.new
       dates = date_range(traveler_array)
       if traveler_array.any? && dates[0] && dates[1]
-        direction = traveler_array.first[:flights].first.is_arrival? ? :arrivals : :departures
+        #direction = traveler_array.first[:flights].first.is_arrival? ? :arrivals : :departures
       	for d in dates[0]..dates[1]
           html += draw_date_chart(d, direction) || ""
       	end
