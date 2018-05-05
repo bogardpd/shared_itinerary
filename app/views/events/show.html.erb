@@ -57,17 +57,19 @@
   		<div class="col-md-6 traveler-flights">
         <h4>Arrival</h4>
         <%= render partial: "traveler_flights", locals: { flights: traveler.flights, is_arrival: true } %>
-        <% if traveler.pickup_info %>
+        <% if traveler.arrival_info %>
           <hr/>
-          <div class="traveler-info"><%= traveler.pickup_info %></div>
+          <div class="traveler-info"><%= traveler.arrival_info %></div>
         <% end %>
       </div>
     
       <div class="col-md-6 traveler-flights">
         <h4>Departure</h4>
         <%= render partial: "traveler_flights", locals: { flights: traveler.flights, is_arrival: false } %>
-        <hr/>
-        <div class="traveler-info">[Departure dropoff info]</div>  
+        <% if traveler.departure_info %>
+          <hr/>
+          <div class="traveler-info"><%= traveler.departure_info %></div>
+        <% end %>
   		</div>
     
     </div>

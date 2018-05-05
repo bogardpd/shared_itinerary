@@ -10,8 +10,11 @@
 			
 			<%= render 'form_fields', :f => f %>
 
-			<%= f.label :pickup_info %> <small>(e.g. "Rental Car" or "Riding with John Doe")</small>
-			<%= f.text_field :pickup_info, class: 'form-control' %>
+			<%= f.label :arrival_info %> <small>(e.g. "Rental Car" or "Riding with John Doe")</small>
+			<%= f.text_field :arrival_info, class: 'form-control' %>
+      
+			<%= f.label :departure_info %> <small>(e.g. "Rental Car" or "Riding with John Doe")</small>
+			<%= f.text_field :departure_info, class: 'form-control' %>
 			
 			<% if @show_arrival_departure %>
 				<%= f.label :is_arrival, 'Arrival or Departure?' %>

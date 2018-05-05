@@ -30,7 +30,7 @@ class Event < ActiveRecord::Base
                        key_iata:    arrival_flights.any? ? arrival_flights.last.arr_airport_iata : "",
                        key_time:    arrival_flights.any? ? arrival_flights.last.arrival_datetime : nil,
                        alt_time:    arrival_flights.any? ? arrival_flights.first.departure_datetime : nil,
-                       pickup_info: traveler.pickup_info)
+                       pickup_info: traveler.arrival_info)
 
       departures.push( traveler:    traveler,
                        flights:     departure_flights,
@@ -38,7 +38,7 @@ class Event < ActiveRecord::Base
                        key_iata:    departure_flights.any? ? departure_flights.first.dep_airport_iata : "",
                        key_time:    departure_flights.any? ? departure_flights.first.departure_datetime : nil,
                        alt_time:    departure_flights.any? ? departure_flights.last.arrival_datetime : nil,
-                       pickup_info: traveler.pickup_info)
+                       pickup_info: traveler.departure_info)
                        
     end
     

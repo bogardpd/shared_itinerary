@@ -33,7 +33,7 @@ class EventTest < ActiveSupport::TestCase
   
   test "associated travelers should be destroyed" do
     @event.save
-    @event.travelers.create!(traveler_name: "Bob", traveler_note: "bibbity_bob", pickup_info: "rental car", is_arrival: true)
+    @event.travelers.create!(traveler_name: "Bob", traveler_note: "bibbity_bob", arrival_info: "rental car", departure_info: "zeppelin", is_arrival: true)
     assert_difference 'Traveler.count', -1 do
       @event.destroy
     end
