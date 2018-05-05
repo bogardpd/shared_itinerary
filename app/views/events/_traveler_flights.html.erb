@@ -14,7 +14,7 @@
           </div>
         <% end %>
       </td>
-      <td class="flight-airport flight-origin<%= " flight-highlighted" if !is_arrival && index == 0 %>">
+      <td class="flight-airport flight-origin"<%= highlight(@airport_colors[flight.dep_airport_iata]) if !is_arrival && index == 0 %>>
         <div class="flight-date-time"><%= short_datetime(flight.departure_datetime) %></div>
         <div class="flight-iata"><%= flight.dep_airport_iata %></div>
         <div class="flight-city"><%= flight.dep_airport_city %></div>
@@ -22,7 +22,7 @@
       <td class="flight-separator">
         <span class="glyphicon glyphicon-arrow-right"></span>
       </td>
-      <td class="flight-airport flight-destination<%= " flight-highlighted" if is_arrival && index == filtered_flights.length-1 %>">
+      <td class="flight-airport flight-destination"<%= highlight(@airport_colors[flight.arr_airport_iata]) if is_arrival && index == filtered_flights.length-1 %>>
         <div class="flight-date-time"><%= short_datetime(flight.arrival_datetime) %></div>
         <div class="flight-iata"><%= flight.arr_airport_iata %></div>
         <div class="flight-city"><%= flight.arr_airport_city %></div>

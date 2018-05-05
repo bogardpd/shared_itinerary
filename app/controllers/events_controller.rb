@@ -7,6 +7,7 @@ class EventsController < ApplicationController
     @event = Event.find(params[:id])
     @chart = @event.chart
     @share_link = url_for(share_link: @event.share_link)
+    @airport_colors = @chart.colors
         
     rescue ActiveRecord::RecordNotFound
       flash[:warning] = "We couldnʼt find an event with an ID of #{params[:id]}."

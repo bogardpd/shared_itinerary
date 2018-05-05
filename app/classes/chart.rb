@@ -26,6 +26,15 @@ class Chart
     return html.html_safe
   end
   
+  # Returns the airport color array
+  def colors
+    airport_colors = Hash.new
+    @row_hue.each do |airport, hue|
+      airport_colors.store(airport, {background: "#{hue},#{@saturation},#{@lightness_lf_ft}", border: "#{hue},#{@saturation},#{@lightness_ff_lt}"})
+    end
+    return airport_colors
+  end
+  
   # Return a hash of arrival travelers.
   def arrivals
     return @event_travelers[:arrivals]
