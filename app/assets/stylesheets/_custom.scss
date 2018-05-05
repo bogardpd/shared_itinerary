@@ -1,8 +1,8 @@
 /* universal */
 
 body {
-	font-family: "Lato", sans-serif;
-	font-size: 18px;
+	font-family: "Source Sans Pro", sans-serif;
+	font-size: 20px;
   background-color: hsl(200,5%,97%);
 }
 
@@ -13,7 +13,7 @@ header {
 }
 
 svg {
-  border: 1px solid $color-border;
+  @include box-visual;
 }
 
 section {
@@ -43,7 +43,7 @@ textarea {
 
 a.prominent {
   text-decoration: underline;
-  font-weight: 700;
+  font-weight: $font-weight-bold;
 }
 
 .event-info a {
@@ -182,7 +182,7 @@ div.delete-button {
 /* Admin */
 
 a.admin-attention {
-  font-weight: 700;
+  font-weight: $font-weight-bold;
 }
 
 span.unread {

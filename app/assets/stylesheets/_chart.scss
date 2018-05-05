@@ -1,19 +1,82 @@
-svg {font-family: 'Lato', sans-serif; font-size: 12px;}
+svg {font-family: "Source Sans Pro", sans-serif; font-size: 13px;}
 
-.svg_airport_block_start {text-anchor: end; dominant-baseline: baseline;}
-.svg_airport_block_end {text-anchor: beginning; dominant-baseline: baseline;}
-.svg_airport_label {fill: hsl(0,0%,30%); font-size: 13px; font-weight: 700;}
-.svg_background {fill: hsl(0,50%,100%);}
-.svg_bar {stroke-width: 1; shape-rendering: crispEdges;}
-.svg_flight_text {font-size: 10px; text-anchor: middle; dominant-baseline: baseline;}
-.svg_gridline_major {stroke-width: 1; stroke: hsl(0,0%,85%); shape-rendering: crispEdges;}
-.svg_gridline_minor {stroke-width: 1; stroke: hsl(0,0%,92%); shape-rendering: crispEdges;}
-.svg_gridline_major_horizontal {stroke-width: 1; stroke: hsl(0,0%,85%); shape-rendering: crispEdges;}
-.svg_gridline_minor_horizontal {stroke-width: 1; stroke: hsl(0,0%,95%); shape-rendering: crispEdges;}
-.svg_layover_text {font-size: 10px; text-anchor: middle; dominant-baseline: baseline;}
-.svg_legend_text {font-size: 12px; fill: hsl(0,0,30%);}
-.svg_person_name {fill: hsl(0,0%,30%);font-size: 13px; font-weight: 700; text-anchor: start; dominant-baseline: baseline;}
-.svg_person_nickname {fill: hsl(0,0%,60%);font-size: 12px; font-weight: 400; font-style: italic; text-anchor: start; dominant-baseline: baseline;}
-.svg_time_label {fill: hsl(0,0%,60%);font-size: 11px; font-variant: small-caps;}
-.svg_time_date_label {fill: hsl(0,0%,20%); font-size: 16px; font-weight: 700; text-anchor: beginning; dominant-baseline: hanging;}
-.svg_time_zone_label {fill: hsl(0,0%,50%); font-size: 12px; font-weight: 700;}
+.svg_airport_block_start {
+  text-anchor: end;
+  dominant-baseline: baseline;
+}
+.svg_airport_block_end {
+  text-anchor: beginning;
+  dominant-baseline: baseline;
+}
+.svg_airport_label {
+  fill: hsl(0,0%,30%);
+  font-size: 110%;
+  font-weight:
+  $font-weight-bold;
+}
+.svg_background {
+  fill: hsl(0,50%,100%);
+}
+.svg_bar {
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+.svg_flight_text {
+  font-size: 90%;
+  text-anchor: middle;
+  dominant-baseline: baseline;
+}
+.svg_gridline_major {
+  stroke-width: 1;
+  stroke: hsl(0,0%,85%);
+  shape-rendering:
+  crispEdges;}
+.svg_gridline_minor {
+  stroke-width: 1;
+  stroke: hsl(0,0%,92%);
+  shape-rendering: crispEdges;
+}
+.svg_gridline_major_horizontal {
+  stroke-width: 1;
+  stroke: hsl(0,0%,85%);
+  shape-rendering: crispEdges;
+}
+.svg_gridline_minor_horizontal {
+  stroke-width: 1;
+  stroke: hsl(0,0%,95%);
+  shape-rendering: crispEdges;
+}
+.svg_layover_text {
+  font-size: 90%;
+  text-anchor: middle;
+  dominant-baseline: baseline;
+}
+.svg_legend_text {
+  font-size: 100%;
+  fill: hsl(0,0,30%);
+}
+.svg_person_name {
+  fill: hsl(0,0%,30%);
+  font-size: 110%;
+  font-weight: $font-weight-bold;
+  text-anchor: start;
+  dominant-baseline: baseline;
+}
+.svg_person_nickname {
+  fill: hsl(0,0%,60%);
+  font-size: 100%;
+  font-weight: 400;
+  font-style: italic;
+  text-anchor: start;
+  dominant-baseline: baseline;
+}
+.svg_time_label {
+  fill: hsl(0,0%,60%);
+  font-size: 100%;
+  font-variant: small-caps;
+}
+.svg_time_zone_label {
+  fill: hsl(0,0%,50%);
+  font-size: 100%;
+  font-weight: $font-weight-bold;
+}

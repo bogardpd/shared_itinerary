@@ -1,8 +1,18 @@
 $color-light:  hsl(0,0,70%);
+$color-background-light: hsl(200,5%,95%);
 $color-border: hsl(200,5%,90%);
 
 $font-size-small: 80%;
 $font-size-large: 150%;
+
+$font-weight-bold: 600;
+
+$shadow: 2px 2px darken($color-border, 10%);
+
+@mixin box-visual {
+  border: 1px solid $color-border;
+  box-shadow: 1px 1px darken($color-border, 10%);
+}
 
 @mixin box_sizing {
 	-moz-box-sizing: border-box;

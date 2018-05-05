@@ -55,7 +55,7 @@
   		</div>
 		
   		<div class="col-md-6 traveler-flights">
-        <h4>Arrival</h4>
+        <h4>Arrival <small>at <%= @event.event_name %></small></h4>
         <%= render partial: "traveler_flights", locals: { flights: traveler.flights, is_arrival: true } %>
         <% if traveler.arrival_info %>
           <hr/>
@@ -64,7 +64,7 @@
       </div>
     
       <div class="col-md-6 traveler-flights">
-        <h4>Departure</h4>
+        <h4>Departure <small>from <%= @event.event_name %></small></h4>
         <%= render partial: "traveler_flights", locals: { flights: traveler.flights, is_arrival: false } %>
         <% if traveler.departure_info %>
           <hr/>
