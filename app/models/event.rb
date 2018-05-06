@@ -19,7 +19,7 @@ class Event < ActiveRecord::Base
     arrivals   = Array.new
     departures = Array.new
     
-    self.travelers.each do |traveler|
+    travelers.eager_load(flights: [:arrival_airport, :departure_airport]).each do |traveler|
       flight_list = traveler.flights.order(:departure_datetime)
       arrival_flights   = flight_list.where(is_arrival: true)
       departure_flights = flight_list.where(is_arrival: false)
@@ -27,7 +27,7 @@ class Event < ActiveRecord::Base
       arrivals.push(   traveler:    traveler,
                        flights:     arrival_flights,
                        key_airport: arrival_flights.any? ? arrival_flights.last.arrival_airport : Airport.new,
-                       key_iata:    arrival_flights.any? ? arrival_flights.last.arr_airport_iata : "",
+                       key_iata:    arrival_flights.any? ? arrival_flights.last.arrival_airport.iata_code : "",
                        key_time:    arrival_flights.any? ? arrival_flights.last.arrival_datetime : nil,
                        alt_time:    arrival_flights.any? ? arrival_flights.first.departure_datetime : nil,
                        pickup_info: traveler.arrival_info)
@@ -35,7 +35,7 @@ class Event < ActiveRecord::Base
       departures.push( traveler:    traveler,
                        flights:     departure_flights,
                        key_airport: departure_flights.any? ? departure_flights.first.departure_airport : Airport.new,
-                       key_iata:    departure_flights.any? ? departure_flights.first.dep_airport_iata : "",
+                       key_iata:    departure_flights.any? ? departure_flights.first.departure_airport.iata_code : "",
                        key_time:    departure_flights.any? ? departure_flights.first.departure_datetime : nil,
                        alt_time:    departure_flights.any? ? departure_flights.last.arrival_datetime : nil,
                        pickup_info: traveler.departure_info)
