@@ -4,7 +4,7 @@ class TravelerTest < ActiveSupport::TestCase
 
   def setup
     @event = events(:one)
-    @section = @event.travelers.build(traveler_name: "Bob", traveler_note: "bibbity_bob", arrival_info: "rental car", departure_info: "zeppelin", is_arrival: true)
+    @section = @event.travelers.build(traveler_name: "Bob", traveler_note: "bibbity_bob", arrival_info: "rental car", departure_info: "zeppelin")
   end
   
   test "should be valid" do
