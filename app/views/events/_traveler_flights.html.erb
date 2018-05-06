@@ -20,7 +20,7 @@
         <div class="flight-iata"><%= flight.dep_airport_iata %></div>
         <div class="flight-date-time">
           <%= short_date(flight.departure_datetime) %><br/>
-          <%= short_time(flight.departure_datetime) %> <%= @event.arriving_timezone %>
+          <%= short_time(flight.departure_datetime) %> <span class="time-zone"><%= @event.arriving_timezone %>
         </div>
       </td>
       <td class="flight-separator">
@@ -31,7 +31,7 @@
         <div class="flight-iata"><%= flight.arr_airport_iata %></div>
         <div class="flight-date-time">
           <%= short_date(flight.arrival_datetime) %><br/>
-          <%= short_time(flight.arrival_datetime) %> <%= @event.arriving_timezone %>
+          <%= short_time(flight.arrival_datetime) %> <span class="time-zone"><%= @event.arriving_timezone %></span>
         </div>
       </td>
     </tr>
