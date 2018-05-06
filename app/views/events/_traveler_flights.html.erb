@@ -6,6 +6,7 @@
     
     <tr>
       <td class="flight-identifier">
+        <%= airline_icon(flight.airline.iata_code) %>
         <div class="flight-airline"><%= flight.airline_name %></div>
         <div class="flight-number"><%= flight.flight_number %></div>
         <% if current_user?(@event.user) %>

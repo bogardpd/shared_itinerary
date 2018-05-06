@@ -13,7 +13,7 @@
 <% @airlines.each do |airline| %>
   <tr>
     <td><%= airline.iata_code %></td>
-    <td><%= airline.name %></td>
+    <td><%= airline_icon(airline.iata_code, show_blank_icon: true) %> <%= airline.name %></td>
     <td><%= link_to "Edit", edit_airline_path(airline) %>
   </tr>
 <% end %>

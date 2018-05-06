@@ -216,17 +216,10 @@ span.unread {
 	}
 }
 
-/* Events */
+/* Images */
 
-.edit-button {
-  float: right;
-  font-size: $font-size-small;
-}
-
-a.edit-link {
-  font-size: 75%;
-}
-
-a.inline-link {
-  margin-left: 1.5em;
+img.icon {
+  width:  48px;
+  height: 24px;
+  margin:  5px;
 }
