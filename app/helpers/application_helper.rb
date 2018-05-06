@@ -40,8 +40,12 @@ module ApplicationHelper
     end
   end
   
+  def short_date(dt)
+    dt.strftime("%a %-d %b %Y")
+  end
+  
   def short_datetime(dt)
-    dt.strftime("%a %b %-d %H:%M")
+    dt.strftime("%a %-d %b %H:%M")
   end
   
   def short_time(dt)

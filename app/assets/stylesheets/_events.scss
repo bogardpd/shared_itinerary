@@ -56,11 +56,11 @@ table.flight {
   }
   
   div.flight-city {
+    font-weight: $font-weight-bold;
     font-size: $font-size-small;
   }
   
   div.flight-date-time {
-    font-weight: 300;
     font-size: $font-size-small;
   }
   
@@ -70,8 +70,10 @@ table.flight {
   }
   
   div.flight-iata {
+    margin-bottom: 0.2em;
     font-weight: $font-weight-bold;
     font-size: $font-size-large;
+    line-height: 1.1;
   }
   
   td {
@@ -99,7 +101,7 @@ table.flight {
   td.flight-separator {
     width: 10%;
     vertical-align: top;
-    padding-top: 2em;
+    padding-top: 1.8em;
   }
   
   td.flight-destination {

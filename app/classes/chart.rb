@@ -184,7 +184,7 @@ class Chart
     		chart_height = @name_height * number_of_rows
     		image_height = @chart_top + chart_height + @image_padding
         
-        html += %Q(<h3>#{date.strftime("%A, %B %-d, %Y")} (#{@timezone[direction]})</h3>\n\n)
+        html += %Q(<h3>#{date.strftime("%A, %-d %B %Y")}&ensp;<small>(All times are #{@timezone[direction]})</small></h3>\n\n)
         
         html += %Q(<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="#{@image_width}" height="#{image_height}">\n)
         
