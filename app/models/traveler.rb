@@ -5,6 +5,6 @@ class Traveler < ActiveRecord::Base
   validates :traveler_name, presence: true
   
   def timezone
-    self.is_arrival? ? self.event.arriving_timezone : self.event.departing_timezone
+    self.event.arriving_timezone
   end
 end

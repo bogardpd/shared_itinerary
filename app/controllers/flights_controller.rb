@@ -5,7 +5,7 @@ class FlightsController < ApplicationController
   def new
     @traveler = Traveler.find(params[:traveler])
     @flight = Flight.new
-    @timezone = @traveler.is_arrival? ? @traveler.event.arriving_timezone : @traveler.event.departing_timezone
+    @timezone = @traveler.event.arriving_timezone
     session[:current_traveler] = @traveler.id
     
     rescue ActiveRecord::RecordNotFound
@@ -21,14 +21,14 @@ class FlightsController < ApplicationController
       flash[:success] = "Flight created! #{view_context.link_to("Jump to this flight’s itinerary", "#s-#{current_traveler.id}", class: "btn btn-default")} #{view_context.link_to(%Q[<span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-plane"></span>&ensp;Add another flight].html_safe, new_flight_path(traveler: current_traveler.id), class: "btn btn-default")}"
       redirect_to event_path(current_traveler.event)
     else
-      @timezone = current_traveler.is_arrival? ? current_traveler.event.arriving_timezone : current_traveler.event.departing_timezone
+      @timezone = current_traveler.event.arriving_timezone
       render 'new'
     end
   end
   
   def edit
     @flight= Flight.find(params[:id])
-    @timezone = @flight.traveler.is_arrival? ? @flight.traveler.event.arriving_timezone :  @flight.traveler.event.departing_timezone
+    @timezone = @flight.traveler.event.arriving_timezone
   end
   
   def update
@@ -39,7 +39,7 @@ class FlightsController < ApplicationController
       flash[:success] = "Flight updated! #{view_context.link_to("Jump to this flight’s itinerary", "#s-#{@flight.traveler.id}", class: "btn btn-default")}"
       redirect_to @flight.traveler.event
     else
-      @timezone = @flight.traveler.is_arrival? ? @flight.traveler.event.arriving_timezone :  @flight.traveler.event.departing_timezone
+      @timezone = @flight.traveler.event.arriving_timezone
       render 'edit'
     end
   end
