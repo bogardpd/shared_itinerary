@@ -4,22 +4,6 @@ class TravelersController < ApplicationController
   
   def new
     @traveler = Event.find(params[:event]).travelers.build
-    case params[:direction]
-    when "arrival"
-      @title_text = "Add a New Incoming Itinerary"
-      @to_from_text = "from"
-      @is_arrival = true
-      @show_arrival_departure = false
-    when "departure"
-      @title_text = "Add a New Returning Itinerary"
-      @to_from_text = "to"
-      @is_arrival = false
-      @show_arrival_departure = false
-    else
-      @title_text = "Add a New Itinerary"
-      @to_from_text = "to/from"
-      @show_arrival_departure = true
-    end
   end
   
   def create
@@ -35,14 +19,6 @@ class TravelersController < ApplicationController
   
   def edit
     @traveler = Traveler.find(params[:id])
-    if @traveler.is_arrival?
-      @to_from_text = "from"
-      @title_text = "Edit Incoming Itinerary"
-    else 
-      @to_from_text = "to"
-      @title_text = "Edit Returning Itinerary"
-    end
-    
   end
   
   def update
@@ -66,7 +42,7 @@ class TravelersController < ApplicationController
   private
   
   def traveler_params
-    params.require(:traveler).permit(:traveler_name, :traveler_note, :arrival_info, :departure_info, :is_arrival)
+    params.require(:traveler).permit(:traveler_name, :traveler_note, :arrival_info, :departure_info)
   end
     
   def correct_user

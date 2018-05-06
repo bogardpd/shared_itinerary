@@ -5,11 +5,11 @@ div.traveler-itinerary {
   @include box-visual;
   
   div.traveler-name {
-    padding: 0 15px;
+    padding: 15px;
   }
   
   div.traveler-flights {
-    padding: 15px;
+    padding: 0 15px 15px 15px;
   }
   
   div.traveler-info {
@@ -20,12 +20,15 @@ div.traveler-itinerary {
     margin-bottom: 10px;
   }
   
+  h3 {
+    margin: 0;
+  }
+  
   h4 {
     padding: 0.25em;
     background-color: $color-background-light;
     @include box-visual;
     text-align: center;
-    font-size: 120%;
   }
   
 }
@@ -61,11 +64,7 @@ table.flight {
   td {
     padding: 0.5em;
   }
-  
-  td.flight-highlighted {
-//    background-color: yellow;
-  }
-  
+    
   td.flight-identifier {
     width: 20%;
     text-align: center;
@@ -89,6 +88,15 @@ table.flight {
   
   td.flight-destination {
     text-align: right;
+  }
+  
+  td.flight-new-button {
+    text-align: center;
+    font-size: $font-size-small;
+    padding: 15px;
+    .btn {
+      min-width: 75%;
+    }
   }
   
 }

@@ -1,4 +1,4 @@
-<% filtered_flights = flights.where(is_arrival: is_arrival).chronological %>
+<% filtered_flights = traveler.flights.where(is_arrival: is_arrival).chronological %>
 <div class="flight">
   <table class="flight">
     
@@ -29,6 +29,14 @@
       </td>
     </tr>
     
+    <% end %>
+    
+    <% if current_user?(@event.user) %> 
+    <tr>
+      <td colspan="4" class="flight-new-button">
+        <%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-plane\"></span> Add #{is_arrival ? "an arrival" : "a departure"} flight for #{traveler.traveler_name}".html_safe, new_flight_path(traveler: traveler, direction: is_arrival ? :arrival : :departure), title: "Add a new flight to #{traveler.traveler_name}’s itinerary", class: "btn btn-default") %>
+      </td>
+    </tr>
     <% end %>
     
   </table>

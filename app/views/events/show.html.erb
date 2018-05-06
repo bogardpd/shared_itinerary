@@ -39,24 +39,24 @@
 
 <% if @event.travelers.any? %>
 	
-  <p><%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-user\"></span> Add new traveler".html_safe, new_traveler_path(event: @event), title: "Add a new traveler to #{@event.event_name}", class: "btn btn-default") %></p>
+  <div class="button"><%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-user\"></span> Add new traveler".html_safe, new_traveler_path(event: @event), title: "Add a new traveler to #{@event.event_name}", class: "btn btn-default") %></div>
   
   <% @event.travelers.each do |traveler| %>
 		<div class="row traveler-itinerary" id="s-<%= traveler.id %>">
 
-      <div class="col-md-12 traveler-name">    
-  			<h3><%= traveler.traveler_name %>&ensp;<small><%= traveler.traveler_note %></small></h3>
+      <div class="col-md-12 traveler-name">
         <% if current_user?(@event.user) %>
-          <div class="btn-group">
+          <div class="btn-group edit-button">
             <%= link_to("<span class=\"glyphicon glyphicon-pencil\"></span> <span class=\"glyphicon glyphicon-user\"></span>".html_safe, edit_traveler_path(traveler), title: "Edit #{traveler.traveler_name}", class: "btn btn-default") %>
-            <%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-plane\"></span>".html_safe, new_flight_path(traveler: traveler), title: "Add a new flight to #{traveler.traveler_name}’s itinerary", class: "btn btn-default") %>
           </div>
-        <% end %>
+        <% end %>   
+  			<h3><%= traveler.traveler_name %>&ensp;<small><%= traveler.traveler_note %></small></h3>
+        
   		</div>
 		
   		<div class="col-md-6 traveler-flights">
         <h4>Arrival <small>at <%= @event.event_name %></small></h4>
-        <%= render partial: "traveler_flights", locals: { flights: traveler.flights, is_arrival: true } %>
+        <%= render partial: "traveler_flights", locals: { traveler: traveler, is_arrival: true } %>
         <% if traveler.arrival_info %>
           <hr/>
           <div class="traveler-info"><%= traveler.arrival_info %></div>
@@ -65,7 +65,7 @@
     
       <div class="col-md-6 traveler-flights">
         <h4>Departure <small>from <%= @event.event_name %></small></h4>
-        <%= render partial: "traveler_flights", locals: { flights: traveler.flights, is_arrival: false } %>
+        <%= render partial: "traveler_flights", locals: { traveler: traveler, is_arrival: false } %>
         <% if traveler.departure_info %>
           <hr/>
           <div class="traveler-info"><%= traveler.departure_info %></div>

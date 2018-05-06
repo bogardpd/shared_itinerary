@@ -5,12 +5,10 @@ one:
   traveler_note: MyText
   arrival_info: MyText
   departure_info: MyText
-  is_arrival: false
 
 two:
   traveler_name: MyText
   traveler_note: MyText
   arrival_info: MyText
   departure_info: MyText
-  is_arrival: false
   event: different_owner

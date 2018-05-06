@@ -15,8 +15,8 @@
         </div>
       </div>
       
-      <div class="inline-label"><%= f.label :dep_airport_iata, "Departure" %></div> /
-      <div class="inline-label"><%= f.label :arr_airport_iata, "arrival" %></div> airport codes
+      <div class="inline-label"><%= f.label :dep_airport_iata, "Origin" %></div> /
+      <div class="inline-label"><%= f.label :arr_airport_iata, "destination" %></div> airport codes
       <div class="form-group form-inline">
         <div class="input-group">
           <%= f.text_field :dep_airport_iata, class: 'form-control', maxlength: 3, style: 'text-transform:uppercase;width:5em', placeholder: 'AAA' %>
@@ -28,11 +28,14 @@
           <%= f.text_field :arr_airport_iata, class: 'form-control', maxlength: 3, style: 'text-transform:uppercase;width:5em', placeholder: 'AAA' %>
         </div>
       </div>
+      
+			<%= f.label :is_arrival, 'Arrival or Departure?' %>
+			<%= f.select :is_arrival, options_for_select([["Arrival – this flight brings the traveler to the event", true],["Departure – this flight takes the traveler home from the event", false]], selected: (params[:direction] != "departure")) %>
           
-      <%= f.label :departure_datetime, "Departure date and time (#{@timezone})" %>
+      <%= f.label :departure_datetime, "Origin departure date and time (#{@timezone})" %>
       <%= f.datetime_field :departure_datetime, type: 'datetime', value: f.object.departure_datetime.try(:strftime, "%Y-%m-%d %H:%M"), class: 'form-control date-field', placeholder: "yyyy-mm-dd hh:mm" %>
           
-      <%= f.label :arrival_datetime, "Arrival date and time (#{@timezone})" %>
+      <%= f.label :arrival_datetime, "Destination arrival date and time (#{@timezone})" %>
       <%= f.datetime_field :arrival_datetime, type: 'datetime', value: f.object.arrival_datetime.try(:strftime, "%Y-%m-%d %H:%M"), class: 'form-control date-field', placeholder: "yyyy-mm-dd hh:mm" %>
       
       <%= f.submit yield(:form_button), class: "btn btn-primary" %>

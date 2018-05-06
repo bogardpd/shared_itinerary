@@ -1,5 +1,5 @@
-<% provide(:title, @title_text)%>
-<h1><%= @title_text %></h1>
+<% provide(:title, "Edit Incoming Itinerary")%>
+<h1><%= "Edit Incoming Itinerary" %></h1>
 
 <div class="row">
 	<div class="col-md-6 col-md-offset-3">
@@ -15,15 +15,6 @@
       
 			<%= f.label :departure_info %> <small>(e.g. "Rental Car" or "Riding with John Doe")</small>
 			<%= f.text_field :departure_info, class: 'form-control' %>
-			
-			<% if @show_arrival_departure %>
-				<%= f.label :is_arrival, 'Arrival or Departure?' %>
-				<%= f.select :is_arrival, options_for_select([['Arrival', true],['Departure', false]]) %>
-	
-			<% else %>
-				<%= f.hidden_field :is_arrival %>
-
-			<% end %>
 			
 			<%= f.submit "Update traveler info", class: "btn btn-primary" %>
 			
