@@ -39,7 +39,9 @@
 
 <% if @event.travelers.any? %>
 	
-  <div class="button"><%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-user\"></span> Add new traveler".html_safe, new_traveler_path(event: @event), title: "Add a new traveler to #{@event.event_name}", class: "btn btn-default") %></div>
+  <% if current_user?(@event.user) %>
+    <div class="button"><%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-user\"></span> Add new traveler".html_safe, new_traveler_path(event: @event), title: "Add a new traveler to #{@event.event_name}", class: "btn btn-default") %></div>
+  <% end %>
   
   <% @event.travelers.each do |traveler| %>
 		<div class="row traveler-itinerary" id="s-<%= traveler.id %>">
@@ -74,11 +76,17 @@
     
     </div>
 	<% end %>
+  
+  <% if current_user?(@event.user) %>
+    <div class="button"><%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-user\"></span> Add new traveler".html_safe, new_traveler_path(event: @event), title: "Add a new traveler to #{@event.event_name}", class: "btn btn-default") %></div>
+  <% end %>
 
 <% else %>
 
-<p>When travelers are added to this event, they will show up here.</p>
+  <p>When travelers are added to this event, they will show up here.</p>
 
-<p><%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-user\"></span> Add new traveler".html_safe, new_traveler_path(event: @event), title: "Add a new traveler to #{@event.event_name}", class: "btn btn-default") %></p>
+  <% if current_user?(@event.user) %>
+    <div class="button"><%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-user\"></span> Add new traveler".html_safe, new_traveler_path(event: @event), title: "Add a new traveler to #{@event.event_name}", class: "btn btn-default") %></div>
+  <% end %>
 
 <% end %>
