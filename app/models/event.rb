@@ -50,22 +50,4 @@ class Event < ActiveRecord::Base
     return traveler_hash
   end
   
-  # Temporary method to merge departure and arrival travelers with the same name
-  # in the same event into a single traveler.
-  def consolidate_travelers
-    event_flights = Flight.joins(:traveler).where("travelers.event_id = ?", self.id)
-    traveler_ids = self.travelers.pluck(:id).sort
-    unique_names = self.travelers.pluck(:traveler_name).uniq
-    unique_names.each do |name|
-      traveler_flights = event_flights.where("travelers.traveler_name = ?", name)
-      traveler_ids = traveler_flights.pluck(:traveler_id).uniq.sort
-      new_traveler_id = traveler_ids.first
-      delete_traveler_ids = traveler_ids[1..-1]
-      puts "#{name} (#{traveler_ids} / Keep #{new_traveler_id}, delete #{delete_traveler_ids}): #{traveler_flights.pluck(:id)}"
-
-      traveler_flights.update_all(traveler_id: new_traveler_id)
-      Traveler.where(id: delete_traveler_ids).destroy_all
-    end
-  end
-  
 end
