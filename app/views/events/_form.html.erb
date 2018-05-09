@@ -7,11 +7,8 @@
       <%= f.label :event_name %>
       <%= f.text_field :event_name, class: 'form-control' %>
 
-      <%= f.label :arriving_timezone %>
-      <%= f.text_field :arriving_timezone, class: 'form-control' %>
-
-      <%= f.label :departing_timezone %>
-      <%= f.text_field :departing_timezone, class: 'form-control' %>
+      <%= f.label :timezone, "What time zone does the event take place in?" %>
+      <%= f.text_field :timezone, class: 'form-control' %>
       
       <%= f.label :note, "Note (optional) "%> (supports <%= link_to "Markdown", 'https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet' %>)
       <%= f.text_area :note, class: 'form-control', rows: 5 %>

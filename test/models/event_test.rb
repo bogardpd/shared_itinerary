@@ -4,7 +4,7 @@ class EventTest < ActiveSupport::TestCase
 
   def setup
     @user = users(:johndoe)
-    @event = @user.events.build(event_name: "Convention", arriving_timezone: "EST", departing_timezone: "EST")
+    @event = @user.events.build(event_name: "Convention", timezone: "America/Los_Angeles")
   end
   
   test "should be valid" do
@@ -18,16 +18,6 @@ class EventTest < ActiveSupport::TestCase
   
   test "event name should be present" do
     @event.event_name = "   "
-    assert_not @event.valid?
-  end
-  
-  test "arriving timezone should be present" do
-    @event.arriving_timezone = "   "
-    assert_not @event.valid?
-  end
-  
-  test "departing timezone should be present" do
-    @event.departing_timezone = "   "
     assert_not @event.valid?
   end
   

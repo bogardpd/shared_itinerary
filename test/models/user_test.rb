@@ -69,7 +69,7 @@ class UserTest < ActiveSupport::TestCase
   
   test "associated events should be destroyed" do
     @user.save
-    @user.events.create!(event_name: "Convention", arriving_timezone: "EST", departing_timezone: "EST")
+    @user.events.create!(event_name: "Convention", timezone: "America/Los_Angeles")
     assert_difference 'Event.count', -1 do
       @user.destroy
     end

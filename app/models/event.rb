@@ -4,8 +4,6 @@ class Event < ActiveRecord::Base
   
   validates :user_id, presence: true
   validates :event_name, presence: true
-  validates :arriving_timezone, presence: true
-  validates :departing_timezone, presence: true
   
   # Return this event's Chart object.
   def chart
