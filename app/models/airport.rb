@@ -1,6 +1,6 @@
 class Airport < ActiveRecord::Base
-  has_many :departing_flights, :class_name => 'Flight', :foreign_key => 'departure_airport_id'
-  has_many :arriving_flights, :class_name => 'Flight', :foreign_key => 'arrival_airport_id'
+  has_many :origin_flights,      class_name: "Flight", foreign_key: "origin_airport_id"
+  has_many :destination_flights, class_name: "Flight", foreign_key: "destination_airport_id"
   
   before_save { self.iata_code = iata_code.upcase }
   validates :iata_code, presence: true,

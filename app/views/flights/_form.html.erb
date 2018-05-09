@@ -29,14 +29,14 @@
         </div>
       </div>
       
-			<%= f.label :is_arrival, 'Arrival or Departure?' %>
-			<%= f.select :is_arrival, options_for_select([["Arrival – this flight brings the traveler to the event", true],["Departure – this flight takes the traveler home from the event", false]], selected: (params[:direction] != "departure")) %>
+			<%= f.label :is_event_arrival, 'Arrival or Departure?' %>
+			<%= f.select :is_event_arrival, options_for_select([["Arrival – this flight brings the traveler to the event", true],["Departure – this flight takes the traveler home from the event", false]], selected: (params[:direction] != "departure")) %>
           
-      <%= f.label :departure_datetime, "Origin departure date and time (#{@timezone})" %>
-      <%= f.datetime_field :departure_datetime, type: 'datetime', value: f.object.departure_datetime.try(:strftime, "%Y-%m-%d %H:%M"), class: 'form-control date-field', placeholder: "yyyy-mm-dd hh:mm" %>
+      <%= f.label :origin_time, "Origin departure date and time (#{@timezone})" %>
+      <%= f.datetime_field :origin_time, type: 'datetime', value: f.object.origin_time.try(:strftime, "%Y-%m-%d %H:%M"), class: 'form-control date-field', placeholder: "yyyy-mm-dd hh:mm" %>
           
-      <%= f.label :arrival_datetime, "Destination arrival date and time (#{@timezone})" %>
-      <%= f.datetime_field :arrival_datetime, type: 'datetime', value: f.object.arrival_datetime.try(:strftime, "%Y-%m-%d %H:%M"), class: 'form-control date-field', placeholder: "yyyy-mm-dd hh:mm" %>
+      <%= f.label :destination_time, "Destination arrival date and time (#{@timezone})" %>
+      <%= f.datetime_field :destination_time, type: 'datetime', value: f.object.destination_time.try(:strftime, "%Y-%m-%d %H:%M"), class: 'form-control date-field', placeholder: "yyyy-mm-dd hh:mm" %>
       
       <%= f.submit yield(:form_button), class: "btn btn-primary" %>
       

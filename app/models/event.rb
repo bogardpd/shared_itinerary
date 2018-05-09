@@ -17,25 +17,25 @@ class Event < ActiveRecord::Base
     arrivals   = Array.new
     departures = Array.new
     
-    travelers.eager_load(flights: [:arrival_airport, :departure_airport]).each do |traveler|
-      flight_list = traveler.flights.order(:departure_datetime)
-      arrival_flights   = flight_list.where(is_arrival: true)
-      departure_flights = flight_list.where(is_arrival: false)
+    travelers.eager_load(flights: [:origin_airport, :destination_airport]).each do |traveler|
+      flight_list = traveler.flights.order(:origin_time)
+      arrival_flights   = flight_list.where(is_event_arrival: true)
+      departure_flights = flight_list.where(is_event_arrival: false)
       
       arrivals.push(   traveler:    traveler,
                        flights:     arrival_flights,
-                       key_airport: arrival_flights.any? ? arrival_flights.last.arrival_airport : Airport.new,
-                       key_iata:    arrival_flights.any? ? arrival_flights.last.arrival_airport.iata_code : "",
-                       key_time:    arrival_flights.any? ? arrival_flights.last.arrival_datetime : nil,
-                       alt_time:    arrival_flights.any? ? arrival_flights.first.departure_datetime : nil,
+                       key_airport: arrival_flights.any? ? arrival_flights.last.destination_airport : Airport.new,
+                       key_iata:    arrival_flights.any? ? arrival_flights.last.destination_airport.iata_code : "",
+                       key_time:    arrival_flights.any? ? arrival_flights.last.destination_time : nil,
+                       alt_time:    arrival_flights.any? ? arrival_flights.first.origin_time : nil,
                        pickup_info: traveler.arrival_info)
 
       departures.push( traveler:    traveler,
                        flights:     departure_flights,
-                       key_airport: departure_flights.any? ? departure_flights.first.departure_airport : Airport.new,
-                       key_iata:    departure_flights.any? ? departure_flights.first.departure_airport.iata_code : "",
-                       key_time:    departure_flights.any? ? departure_flights.first.departure_datetime : nil,
-                       alt_time:    departure_flights.any? ? departure_flights.last.arrival_datetime : nil,
+                       key_airport: departure_flights.any? ? departure_flights.first.origin_airport : Airport.new,
+                       key_iata:    departure_flights.any? ? departure_flights.first.origin_airport.iata_code : "",
+                       key_time:    departure_flights.any? ? departure_flights.first.origin_time : nil,
+                       alt_time:    departure_flights.any? ? departure_flights.last.destination_time : nil,
                        pickup_info: traveler.departure_info)
                        
     end
