@@ -9,6 +9,9 @@
       
       <%= f.label :name %>
       <%= f.text_field :name, class: 'form-control' %>
+      
+      <%= f.label :timezone %>
+      <%= f.select :timezone, Timezones::select_options %>
 
       <%= f.submit "Edit Airport", class: "btn btn-primary" %>
 

@@ -1,3 +1,4 @@
 atlanta:
   iata_code: ATL
   name: Atlanta
+  timezone: America/New_York
