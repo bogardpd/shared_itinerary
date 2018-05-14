@@ -6,6 +6,20 @@ class AirportsController < ApplicationController
     @airports = Airport.all.order(:name, :iata_code)
   end
   
+  def new
+    @airport = Airport.new
+  end
+  
+  def create
+    @airport = Airport.new(airport_params)
+    if @airport.save
+      flash[:success] = "Successfully created #{@airport.iata_code}!"
+      redirect_to airports_path
+    else
+      render 'new'
+    end
+  end
+  
   def edit
     @airport = Airport.find(params[:id])
   end

@@ -19,7 +19,7 @@ Rails.application.routes.draw do
   resources :travelers
   resources :flights
   resources :airlines, only: [:index, :edit, :update]
-  resources :airports, only: [:new, :index, :edit, :update]
+  resources :airports, except: [:show]
   
   # Certbot
   get '/.well-known/acme-challenge/:id' => 'static_pages#letsencrypt'

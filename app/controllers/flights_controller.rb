@@ -14,6 +14,9 @@ class FlightsController < ApplicationController
   
   def create
     convert_iata_codes_to_ids
+
+    params[:flight][:origin_airport_id]      = Airport.find_or_create_by_iata(params[:flight][:origin_airport_iata])&.id
+    params[:flight][:destination_airport_id] = Airport.find_or_create_by_iata(params[:flight][:destination_airport_iata])&.id
     current_traveler = Traveler.find(session[:current_traveler])
     @flight = current_traveler.flights.build(flight_params)
     
@@ -76,8 +79,8 @@ class FlightsController < ApplicationController
     
     def convert_iata_codes_to_ids
       params[:flight][:airline_id] = Airline.find_or_create_by!(:iata_code => params[:flight][:airline_iata].upcase).id
-      params[:flight][:origin_airport_id]      = Airport.find_or_create_by_iata(params[:flight][:dep_airport_iata])&.id
-      params[:flight][:destination_airport_id] = Airport.find_or_create_by_iata(params[:flight][:arr_airport_iata])&.id
+      params[:flight][:origin_airport_id]      = Airport.find_or_create_by_iata(params[:flight][:origin_airport_iata])&.id
+      params[:flight][:destination_airport_id] = Airport.find_or_create_by_iata(params[:flight][:destination_airport_iata])&.id
       
     end
     

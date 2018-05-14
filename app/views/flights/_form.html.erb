@@ -8,10 +8,10 @@
       <div class="inline-label"><%= f.label :flight_number %></div>
       <div class="form-group form-inline">
         <div class="input-group">
-          <%= f.text_field :airline_iata, class: 'form-control', maxlength: 2, style: 'text-transform:uppercase;width:4em', placeholder: 'AA' %>
+          <%= f.text_field :airline_iata, class: "form-control code airline-iata", maxlength: 2, placeholder: 'AA' %>
         </div>
         <div class="input-group">
-          <%= f.text_field :flight_number, class: 'form-control', maxlength: 4, style: 'text-transform:uppercase;width:5em', placeholder: '1234' %>
+          <%= f.text_field :flight_number, class: "form-control flight-number", maxlength: 4, placeholder: '1234' %>
         </div>
       </div>
       
@@ -19,13 +19,13 @@
       <div class="inline-label"><%= f.label :destination_airport_iata, "destination" %></div> airport codes
       <div class="form-group form-inline">
         <div class="input-group">
-          <%= f.text_field :origin_airport_iata, class: 'form-control', maxlength: 3, style: 'text-transform:uppercase;width:5em', value: params.dig(:flight, :origin_airport_iata), placeholder: 'AAA' %>
+          <%= f.text_field :origin_airport_iata, class: "form-control code airport-iata", maxlength: 3, value: params.dig(:flight, :origin_airport_iata), placeholder: 'AAA' %>
         </div>
         <div class="input-group">
           &ndash;
         </div>
         <div class="input-group">
-          <%= f.text_field :destination_airport_iata, class: 'form-control', maxlength: 3, style: 'text-transform:uppercase;width:5em', value: params.dig(:flight, :destination_airport_iata), placeholder: 'AAA' %>
+          <%= f.text_field :destination_airport_iata, class: "form-control code airport-iata", maxlength: 3, value: params.dig(:flight, :destination_airport_iata), placeholder: 'AAA' %>
         </div>
       </div>
       
