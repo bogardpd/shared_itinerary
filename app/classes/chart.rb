@@ -169,9 +169,9 @@ class Chart
     	@event_travelers[direction].each do |person|
     		if person_has_flight_on_date?(person, date)
           if direction == :arrivals
-            person_key_airports.push(person[:flights].last.arr_airport_iata)
+            person_key_airports.push(person[:flights].last.destination_airport_iata)
           else
-            person_key_airports.push(person[:flights].first.dep_airport_iata)
+            person_key_airports.push(person[:flights].first.origin_airport_iata)
           end
         end
     	end	  
@@ -275,7 +275,7 @@ class Chart
       # Draw tooltip:
       html += "\t\t<title>"
       html += "#{flight.airline_name} #{flight[:flight_number]} \n"
-      html += "#{flight.dep_airport_name} – #{flight.arr_airport_name} \n"
+      html += "#{flight.origin_airport_name} – #{flight.destination_airport_name} \n"
       html += time_range(start_time, end_time, flight[:timezone])
       html += "</title>\n"
     
@@ -320,7 +320,7 @@ class Chart
     
       # Draw tooltip:
       html += %Q(\t\t<title>)
-      html += %Q(Layover at #{flight_1.arr_airport_name}\n)
+      html += %Q(Layover at #{flight_1.destination_airport_name}\n)
       html += time_range(start_time, end_time, flight_1[:timezone])
       html += %Q(</title>\n)
     
@@ -328,7 +328,7 @@ class Chart
       html += %Q(\t\t<polygon points="#{points}" class="svg_bar" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" stroke="hsl(#{hue},#{@saturation},#{@lightness_stroke})" fill-opacity="#{@bar_opacity}" stroke-opacity="#{@bar_opacity}" />\n)
 	
       # Draw layover airport label:
-    	html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*0.61}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" fill-opacity="#{@bar_opacity}">#{flight_1.arr_airport_iata}</text>\n)
+    	html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*0.61}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" fill-opacity="#{@bar_opacity}">#{flight_1.destination_airport_iata}</text>\n)
   	
       html += %Q(\t</g>\n)
     
@@ -368,15 +368,15 @@ class Chart
       traveler_right = @name_width + @image_padding + (end_time.hour*@hour_width) + (end_time.min*@hour_width/60) + @airport_margin
       if person[:flights].first.origin_time.to_date == date
     		html += %Q(<g cursor="default">\n)
-        html += %Q(<title>#{person[:flights].first.dep_airport_name}</title>\n)
-        html += %Q(<text x="#{traveler_left}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.42}" class="svg_airport_label svg_airport_block_start">#{person[:flights].first.dep_airport_iata}</text>\n)
+        html += %Q(<title>#{person[:flights].first.origin_airport_name}</title>\n)
+        html += %Q(<text x="#{traveler_left}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.42}" class="svg_airport_label svg_airport_block_start">#{person[:flights].first.origin_airport_iata}</text>\n)
     		html += %Q(<text x="#{traveler_left}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.92}" class="svg_time_label svg_airport_block_start">#{format_time_short(person[:flights].first.origin_time)}</text>\n)
         html += %Q(</g>\n)
     	end      
       if person[:flights].last.destination_time.to_date == date
     		html += %Q(<g cursor="default">\n)
-        html += %Q(<title>#{person[:flights].last.arr_airport_name}</title>\n)
-    		html += %Q(<text x="#{traveler_right}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.42}" class="svg_airport_label svg_airport_block_end">#{person[:flights].last.arr_airport_iata}</text>\n)
+        html += %Q(<title>#{person[:flights].last.destination_airport_name}</title>\n)
+    		html += %Q(<text x="#{traveler_right}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.42}" class="svg_airport_label svg_airport_block_end">#{person[:flights].last.destination_airport_iata}</text>\n)
     		html += %Q(<text x="#{traveler_right}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.92}" class="svg_time_label svg_airport_block_end">#{format_time_short(person[:flights].last.destination_time)}</text>\n)
         html += %Q(</g>\n)
     	end

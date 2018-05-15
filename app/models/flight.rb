@@ -32,28 +32,39 @@ class Flight < ActiveRecord::Base
     self.airline ? self.airline.formatted_name : ""
   end
   
-  def dep_airport_iata
+  def origin_airport_iata
     self.origin_airport ? self.origin_airport.iata_code : ""
   end
   
-  def dep_airport_name
+  def origin_airport_name
     self.origin_airport ? self.origin_airport.formatted_name : ""
   end
   
-  def dep_airport_city
+  def origin_airport_city
     self.origin_airport ? self.origin_airport.name : ""
   end
   
-  def arr_airport_iata
+  # Returns the origin departure time in the origin airport's local timezone
+  def origin_time_local
+    return Time.at(self.origin_time).in_time_zone(TZInfo::Timezone.get(self.origin_airport.timezone))
+  end
+  
+  def destination_airport_iata
     self.destination_airport ? self.destination_airport.iata_code : ""
   end
   
-  def arr_airport_name
+  def destination_airport_name
     self.destination_airport ? self.destination_airport.formatted_name : ""
   end
   
-  def arr_airport_city
+  def destination_airport_city
     self.destination_airport ? self.destination_airport.name : ""
+  end
+  
+  # Returns the destination arrival time in the destination airport's local
+  # timezone
+  def destination_time_local
+    return Time.at(self.destination_time).in_time_zone(TZInfo::Timezone.get(self.destination_airport.timezone))
   end
   
 end
