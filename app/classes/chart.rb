@@ -5,7 +5,7 @@ class Chart
     @event_travelers = @event.event_travelers
     @airport_names = Airport.airport_names
     
-    @timezone = event.timezone || "UTC"
+    @timezone = TZInfo::Timezone.get(event.timezone || "UTC")
     
     initialize_settings
     
@@ -144,11 +144,14 @@ class Chart
 	
     	traveler_array.each do |traveler|
     		traveler[:flights].each do |flight|
-          if (date_range[0].nil? || flight.origin_time.to_date < date_range[0])
-    				date_range[0] = flight.origin_time.to_date
+          origin_date_event      = flight.origin_time.in_time_zone(@timezone).to_date
+          destination_date_event = flight.destination_time.in_time_zone(@timezone).to_date
+          
+          if (date_range[0].nil? || origin_date_event < date_range[0])
+    				date_range[0] = origin_date_event
     			end
-    			if (date_range[1].nil? || flight.destination_time.to_date > date_range[1])
-    				date_range[1] = flight.destination_time.to_date
+    			if (date_range[1].nil? || destination_date_event > date_range[1])
+    				date_range[1] = destination_date_event
     			end
     		end
     	end
@@ -260,8 +263,8 @@ class Chart
     # +this_date:: The date of the chart that this row belongs to
     def draw_flight_bar(row, hue, flight, this_date)
   	
-      start_time = flight.origin_time
-    	end_time   = flight.destination_time
+      start_time = flight.origin_time.in_time_zone(@timezone)
+    	end_time   = flight.destination_time.in_time_zone(@timezone)
   	
       bar_values = bar_points(this_date, start_time, end_time, row)
       return nil if bar_values.nil?
@@ -276,7 +279,7 @@ class Chart
       html += "\t\t<title>"
       html += "#{flight.airline_name} #{flight[:flight_number]} \n"
       html += "#{flight.origin_airport_name} – #{flight.destination_airport_name} \n"
-      html += time_range(start_time, end_time, flight[:timezone])
+      html += time_range(start_time, end_time, start_time.strftime("%Z"))
       html += "</title>\n"
     
       # Draw flight bar:
@@ -306,8 +309,8 @@ class Chart
     def draw_layover_bar(row, hue, flight_1, flight_2, this_date)
       html = String.new
       
-    	start_time = flight_1.destination_time
-    	end_time   = flight_2.origin_time
+    	start_time = flight_1.destination_time.in_time_zone(@timezone)
+    	end_time   = flight_2.origin_time.in_time_zone(@timezone)
     
       bar_values = bar_points(this_date, start_time, end_time, row)
       return nil if bar_values.nil?
@@ -321,7 +324,7 @@ class Chart
       # Draw tooltip:
       html += %Q(\t\t<title>)
       html += %Q(Layover at #{flight_1.destination_airport_name}\n)
-      html += time_range(start_time, end_time, flight_1[:timezone])
+      html += time_range(start_time, end_time, start_time.strftime("%Z"))
       html += %Q(</title>\n)
     
       # Draw layover bar:
@@ -362,22 +365,22 @@ class Chart
     	end
       
       # Draw airport codes and times at each end of each flight bar:
-      start_time = person[:flights].first.origin_time
-      end_time   = person[:flights].last.destination_time
+      start_time = person[:flights].first.origin_time.in_time_zone(@timezone)
+      end_time   = person[:flights].last.destination_time.in_time_zone(@timezone)
       traveler_left = @name_width + @image_padding + (start_time.hour*@hour_width) + (start_time.min*@hour_width/60) - @airport_margin
       traveler_right = @name_width + @image_padding + (end_time.hour*@hour_width) + (end_time.min*@hour_width/60) + @airport_margin
-      if person[:flights].first.origin_time.to_date == date
+      if person[:flights].first.origin_time.in_time_zone(@timezone).to_date == date
     		html += %Q(<g cursor="default">\n)
         html += %Q(<title>#{person[:flights].first.origin_airport_name}</title>\n)
         html += %Q(<text x="#{traveler_left}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.42}" class="svg_airport_label svg_airport_block_start">#{person[:flights].first.origin_airport_iata}</text>\n)
-    		html += %Q(<text x="#{traveler_left}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.92}" class="svg_time_label svg_airport_block_start">#{format_time_short(person[:flights].first.origin_time)}</text>\n)
+    		html += %Q(<text x="#{traveler_left}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.92}" class="svg_time_label svg_airport_block_start">#{format_time_short(person[:flights].first.origin_time.in_time_zone(@timezone))}</text>\n)
         html += %Q(</g>\n)
     	end      
-      if person[:flights].last.destination_time.to_date == date
+      if person[:flights].last.destination_time.in_time_zone(@timezone).to_date == date
     		html += %Q(<g cursor="default">\n)
         html += %Q(<title>#{person[:flights].last.destination_airport_name}</title>\n)
     		html += %Q(<text x="#{traveler_right}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.42}" class="svg_airport_label svg_airport_block_end">#{person[:flights].last.destination_airport_iata}</text>\n)
-    		html += %Q(<text x="#{traveler_right}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.92}" class="svg_time_label svg_airport_block_end">#{format_time_short(person[:flights].last.destination_time)}</text>\n)
+    		html += %Q(<text x="#{traveler_right}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.92}" class="svg_time_label svg_airport_block_end">#{format_time_short(person[:flights].last.destination_time.in_time_zone(@timezone))}</text>\n)
         html += %Q(</g>\n)
     	end
       
@@ -421,7 +424,7 @@ class Chart
     # +person+:: One specific element of an event_traveler array.
     # +date+:: The date to check.
     def person_has_flight_on_date?(person, date)
-      (person[:flights].any? && person[:flights].first.origin_time.to_date <= date && person[:flights].last.destination_time.to_date >= date)
+      (person[:flights].any? && person[:flights].first.origin_time.in_time_zone(@timezone).to_date <= date && person[:flights].last.destination_time.in_time_zone(@timezone).to_date >= date)
     end
     
     # Return a hash of hues for each key airport, with the airport IATA as key
