@@ -14,10 +14,17 @@ class FlightsController < ApplicationController
   
   def create
     convert_iata_codes_to_ids
-
-    params[:flight][:origin_airport_id]      = Airport.find_or_create_by_iata(params[:flight][:origin_airport_iata])&.id
-    params[:flight][:destination_airport_id] = Airport.find_or_create_by_iata(params[:flight][:destination_airport_iata])&.id
+    
+    origin_airport = Airport.find_or_create_by_iata(params[:flight][:origin_airport_iata])
+    params[:flight][:origin_airport_id] = origin_airport&.id
+    destination_airport = Airport.find_or_create_by_iata(params[:flight][:destination_airport_iata])
+    params[:flight][:destination_airport_id] = destination_airport&.id
     current_traveler = Traveler.find(session[:current_traveler])
+    
+    timezones = {origin: TZInfo::Timezone.get(origin_airport.timezone), destination: TZInfo::Timezone.get(destination_airport.timezone)}
+    params[:flight][:origin_time] = convert_local_time_string_to_utc(params[:flight][:origin_time_local], timezones[:origin])
+    params[:flight][:destination_time] = convert_local_time_string_to_utc(params[:flight][:destination_time_local], timezones[:destination])
+    
     @flight = current_traveler.flights.build(flight_params)
     
     if params[:flight][:origin_airport_id] && params[:flight][:destination_airport_id]
@@ -50,6 +57,10 @@ class FlightsController < ApplicationController
     convert_iata_codes_to_ids
     
     @flight = Flight.find(params[:id])
+    timezones = {origin: TZInfo::Timezone.get(@flight.origin_airport.timezone), destination: TZInfo::Timezone.get(@flight.destination_airport.timezone)}
+    params[:flight][:origin_time] = convert_local_time_string_to_utc(params[:flight][:origin_time_local], timezones[:origin])
+    params[:flight][:destination_time] = convert_local_time_string_to_utc(params[:flight][:destination_time_local], timezones[:destination])
+    
     if @flight.update_attributes(flight_params)
       flash[:success] = "Flight updated! #{view_context.link_to("Jump to this flight’s itinerary", "#s-#{@flight.traveler.id}", class: "btn btn-default")}"
       redirect_to @flight.traveler.event
@@ -84,6 +95,11 @@ class FlightsController < ApplicationController
       
     end
     
-    
+    def convert_local_time_string_to_utc(local_time_string, timezone)
+      local_time = Time.parse(local_time_string)
+      timezone.local_to_utc(local_time, dst=false)
+    rescue ArgumentError
+      return ""
+    end
   
 end

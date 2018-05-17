@@ -44,9 +44,11 @@ class Flight < ActiveRecord::Base
     self.origin_airport ? self.origin_airport.name : ""
   end
   
-  # Returns the origin departure time in the origin airport's local timezone
+  # Returns the origin departure time in the origin airport's local timezone.
+  # The check for origin_time is necessary in the case of a form where a user left
+  # the field blank; we'll thus have an unsaved Flight without a origin_time.
   def origin_time_local
-    return Time.at(self.origin_time).in_time_zone(TZInfo::Timezone.get(self.origin_airport.timezone))
+    return self.origin_time ?  Time.at(self.origin_time).in_time_zone(TZInfo::Timezone.get(self.origin_airport.timezone)) : ""
   end
   
   def destination_airport_iata
@@ -62,9 +64,11 @@ class Flight < ActiveRecord::Base
   end
   
   # Returns the destination arrival time in the destination airport's local
-  # timezone
+  # timezone. The check for destination_time is necessary in the case of a form
+  # where a user left the field blank; we'll thus have an unsaved Flight
+  # without a origin_time.
   def destination_time_local
-    return Time.at(self.destination_time).in_time_zone(TZInfo::Timezone.get(self.destination_airport.timezone))
+    return self.destination_time ?  Time.at(self.destination_time).in_time_zone(TZInfo::Timezone.get(self.destination_airport.timezone)) : ""
   end
   
 end
