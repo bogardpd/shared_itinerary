@@ -19,13 +19,13 @@
       <div class="inline-label"><%= f.label :destination_airport_iata, "destination" %></div> airport codes
       <div class="form-group form-inline">
         <div class="input-group">
-          <%= f.text_field :origin_airport_iata, class: "form-control code airport-iata", maxlength: 3, value: params.dig(:flight, :origin_airport_iata), placeholder: 'AAA' %>
+          <%= f.text_field :origin_airport_iata, class: "form-control code airport-iata", maxlength: 3, value: (params.dig(:flight, :origin_airport_iata) || f.object.origin_airport&.iata_code), placeholder: 'AAA' %>
         </div>
         <div class="input-group">
           &ndash;
         </div>
         <div class="input-group">
-          <%= f.text_field :destination_airport_iata, class: "form-control code airport-iata", maxlength: 3, value: params.dig(:flight, :destination_airport_iata), placeholder: 'AAA' %>
+          <%= f.text_field :destination_airport_iata, class: "form-control code airport-iata", maxlength: 3, value: (params.dig(:flight, :destination_airport_iata) || f.object.destination_airport&.iata_code), placeholder: 'AAA' %>
         </div>
       </div>
       
