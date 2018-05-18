@@ -185,8 +185,7 @@ class Chart
     		chart_height = @name_height * number_of_rows
     		image_height = @chart_top + chart_height + @image_padding
         
-        html += %Q(<h3>#{date.strftime("%A, %-d %B %Y")}&ensp;)
-        html += %Q(<small>(All times are #{@timezone})</small>) if @timezone
+        html += %Q(<h3>#{date.strftime("%A, %-d %B %Y")})
         html += %Q(</h3>\n\n)
         
         html += %Q(<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="#{@image_width}" height="#{image_height}">\n)
@@ -214,10 +213,19 @@ class Chart
           prior_key_airport = current_key_airport
           html += %Q(\t<line x1="#{@image_padding}" y1="#{@chart_top + x * @name_height}" x2="#{@image_padding + @name_width + 24 * @hour_width}" y2="#{@chart_top + x * @name_height}" class="svg_gridline_#{majmin}_horizontal" />\n) 
     		end
-    		for x in 0..24
-    			html += %Q(\t<text x="#{@image_padding + @name_width + (x * @hour_width)}" y="#{@chart_top - @time_axis_padding}" text-anchor="middle" class="svg_time_label">#{time_label(x)}</text>\n)
-    			html += %Q(\t<line x1="#{@image_padding + @name_width + (x * @hour_width)}" y1="#{@chart_top}" x2="#{@image_padding + @name_width + (x * @hour_width)}" y2="#{@chart_top + chart_height + 1}" class="#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}" />\n)
-    		end
+        time_at_0000 = Time.find_zone(@timezone).local(date.year, date.month, date.day)
+        time_at_2400 = time_at_0000 + 24.hours
+        if time_at_0000.gmt_offset == time_at_2400.gmt_offset
+          # Show one time label row
+          html += %Q(\t<text x="#{@image_padding}" y="#{@chart_top - @time_axis_padding}" text-anchor="left" class="svg_time_label">#{time_at_0000.strftime("(%:z) %Z").downcase}</text>\n)
+      		for x in 0..24
+      			html += %Q(\t<text x="#{@image_padding + @name_width + (x * @hour_width)}" y="#{@chart_top - @time_axis_padding}" text-anchor="middle" class="svg_time_label">#{time_label(x)}</text>\n)
+      			html += %Q(\t<line x1="#{@image_padding + @name_width + (x * @hour_width)}" y1="#{@chart_top}" x2="#{@image_padding + @name_width + (x * @hour_width)}" y2="#{@chart_top + chart_height + 1}" class="#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}" />\n)
+      		end
+        else
+          # Show two time label rows
+          
+        end
         
     		# Draw flight bars:
     		row_index = 0;
