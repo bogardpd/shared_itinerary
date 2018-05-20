@@ -4,6 +4,9 @@ module ExternalImage
   
   # Returns true if the image at path exists, false otherwise.
   def self.exists?(path)
+    
+    return false # TODO: Undo this
+    
     require "net/http"
     url = URI.parse(path)
     req = Net::HTTP.new(url.host)

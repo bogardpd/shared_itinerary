@@ -31,6 +31,8 @@
   <div class="alert alert-info event-info"><%= markdown_text(@event.note) %></div>
 <% end %>
 
+<pre><%= JSON.pretty_generate(@event.flight_data) %></pre>
+
 <%= @chart.draw %>
 
 <hr />
