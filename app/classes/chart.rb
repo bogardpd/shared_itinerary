@@ -2,7 +2,7 @@ class Chart
   
   def initialize(event)
     @event = event
-    @event_travelers = @event.event_travelers
+    @event_travelers = @event.event_travelers_old
     @airport_names = Airport.airport_names
     
     @timezone = TZInfo::Timezone.get(event.timezone || "UTC")
