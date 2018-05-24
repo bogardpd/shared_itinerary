@@ -31,11 +31,6 @@
   <div class="alert alert-info event-info"><%= markdown_text(@event.note) %></div>
 <% end %>
 
-<h2>By traveler</h2>
-<pre><%= JSON.pretty_generate(@event.flight_data_by_traveler) %></pre>
-<h2>By date</h2>
-<pre><%= JSON.pretty_generate(@event.flight_data_by_date) %></pre>
-
 <%= @chart.draw %>
 
 <hr />
@@ -49,7 +44,7 @@
   <% end %>
   
   <% @event.travelers.each do |traveler| %>
-		<div class="row traveler-itinerary" id="s-<%= traveler.id %>">
+		<div class="row traveler-itinerary" id="t-<%= traveler.id %>">
 
       <div class="col-md-12 traveler-name">
         <% if current_user?(@event.user) %>

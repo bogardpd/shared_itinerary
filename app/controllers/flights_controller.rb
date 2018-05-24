@@ -29,7 +29,7 @@ class FlightsController < ApplicationController
     
     if params[:flight][:origin_airport_id] && params[:flight][:destination_airport_id]
       if @flight.save
-        flash[:success] = "Flight created! #{view_context.link_to("Jump to this flight’s itinerary", "#s-#{current_traveler.id}", class: "btn btn-default")} #{view_context.link_to(%Q[<span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-plane"></span>&ensp;Add another flight].html_safe, new_flight_path(traveler: current_traveler.id), class: "btn btn-default")}"
+        flash[:success] = "Flight created! #{view_context.link_to("Jump to this flight’s itinerary", "#t-#{current_traveler.id}", class: "btn btn-default")} #{view_context.link_to(%Q[<span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-plane"></span>&ensp;Add another flight].html_safe, new_flight_path(traveler: current_traveler.id), class: "btn btn-default")}"
         redirect_to event_path(current_traveler.event)
       else
         render "new"
@@ -62,7 +62,7 @@ class FlightsController < ApplicationController
     params[:flight][:destination_time] = convert_local_time_string_to_utc(params[:flight][:destination_time_local], timezones[:destination])
     
     if @flight.update_attributes(flight_params)
-      flash[:success] = "Flight updated! #{view_context.link_to("Jump to this flight’s itinerary", "#s-#{@flight.traveler.id}", class: "btn btn-default")}"
+      flash[:success] = "Flight updated! #{view_context.link_to("Jump to this flight’s itinerary", "#t-#{@flight.traveler.id}", class: "btn btn-default")}"
       redirect_to @flight.traveler.event
     else
       @timezone = @flight.traveler.event.timezone
@@ -74,7 +74,7 @@ class FlightsController < ApplicationController
     @flight = Flight.find(params[:id])
     current_event = @flight.traveler.event
     @flight.destroy
-    flash[:success] = "Flight deleted! #{view_context.link_to("Jump to the deleted flight’s itinerary", "#s-#{@flight.traveler.id}", class: "btn btn-default")}"
+    flash[:success] = "Flight deleted! #{view_context.link_to("Jump to the deleted flight’s itinerary", "#t-#{@flight.traveler.id}", class: "btn btn-default")}"
     redirect_to current_event
   end
   

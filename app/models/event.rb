@@ -10,51 +10,36 @@ class Event < ActiveRecord::Base
     return Chart.new(self)
   end
   
+  # Return this event's timezone, or UTC if not set.
   def event_timezone
-    return TZInfo::Timezone.get(self.timezone || "UTC")
+    return TZInfo::Timezone.get(self.timezone) if self.timezone.present?
+    return TZInfo::Timezone.get("UTC")      
   end
   
-  # Return a hash of departures and arrivals, with :arrivals or :departures as
-  # the keys and arrays of travelers as the values.
-  def event_travelers_old
-    traveler_hash = Hash.new
-    arrivals   = Array.new
-    departures = Array.new
-    
-    travelers.eager_load(flights: [:origin_airport, :destination_airport]).each do |traveler|
-      flight_list = traveler.flights.order(:origin_time)
-      arrival_flights   = flight_list.where(is_event_arrival: true)
-      departure_flights = flight_list.where(is_event_arrival: false)
-      
-      arrivals.push(   traveler:    traveler,
-                       flights:     arrival_flights,
-                       key_airport: arrival_flights.any? ? arrival_flights.last.destination_airport : Airport.new,
-                       key_iata:    arrival_flights.any? ? arrival_flights.last.destination_airport.iata_code : "",
-                       key_time:    arrival_flights.any? ? arrival_flights.last.destination_time : nil,
-                       alt_time:    arrival_flights.any? ? arrival_flights.first.origin_time : nil,
-                       pickup_info: traveler.arrival_info)
-
-      departures.push( traveler:    traveler,
-                       flights:     departure_flights,
-                       key_airport: departure_flights.any? ? departure_flights.first.origin_airport : Airport.new,
-                       key_iata:    departure_flights.any? ? departure_flights.first.origin_airport.iata_code : "",
-                       key_time:    departure_flights.any? ? departure_flights.first.origin_time : nil,
-                       alt_time:    departure_flights.any? ? departure_flights.last.destination_time : nil,
-                       pickup_info: traveler.departure_info)
-                       
+  # Returns a hash of key airports and hues for each airport
+  def airport_hues
+    data = flight_data_by_traveler
+    return nil unless data
+    hues = Hash.new
+    key_airports = Set.new
+    data.each do |traveler_id, traveler|
+      [:arrivals, :departures].each do |direction|
+        key_airports.add(traveler[direction][:key_iata])
+      end
     end
     
-    arrivals.sort_by!   { |h| [h[:key_iata], h[:key_time], h[:alt_time]] }
-    departures.sort_by! { |h| [h[:key_iata], h[:key_time], h[:alt_time]] }
-    traveler_hash[:arrivals]   = arrivals
-    traveler_hash[:departures] = departures
+    key_airports.reject!(&:blank?)
+    hue_step = key_airports.length > 0 ? 360/key_airports.length : 0
+    key_airports.each_with_index do |airport, index|
+      hues[airport] = index*hue_step
+    end
     
-    return traveler_hash
+    return hues
+    
   end
   
   # Returns a summary of flight and layover data for each traveler
   def flight_data_by_traveler
-    event_travelers = self.travelers.includes(:flights)
     event_flights = Flight.where(traveler_id: self.travelers).includes(:airline, :origin_airport, :destination_airport, :traveler)
     
     traveler_flights = Hash.new
@@ -69,6 +54,7 @@ class Event < ActiveRecord::Base
       end
       flight_arr_dep = flight.is_event_arrival ? :arrivals : :departures
       traveler_flights[flight.traveler_id][flight_arr_dep][:flights].push({
+        id: flight.id,
         airline_iata: flight.airline.iata_code,
         airline_name: flight.airline.name,
         flight_number: flight.flight_number,
@@ -105,11 +91,12 @@ class Event < ActiveRecord::Base
   
   # Summarizes flight data by date and traveler.
   def flight_data_by_date
-    #return []
-    return nil unless flight_data_by_traveler
+    by_traveler = flight_data_by_traveler
+    return nil unless by_traveler
+    
     # Build data hash:
     data = {arrivals: Hash.new, departures: Hash.new}
-    flight_data_by_traveler.each do |traveler_id, traveler|
+    by_traveler.each do |traveler_id, traveler|
       [:arrivals, :departures].each do |direction|
         
         # Add flights and layovers:
@@ -130,13 +117,13 @@ class Event < ActiveRecord::Base
               
                 # Determine key_iata, key_time_utc, alt_time_utc
                 if direction == :arrivals
-                  key_iata     = flight_data_by_traveler[traveler_id][:arrivals][:key_iata]
-                  key_time_utc = flight_data_by_traveler[traveler_id][:arrivals][:key_time_utc]
-                  alt_time_utc = flight_data_by_traveler[traveler_id][:arrivals][:alt_time_utc]
+                  key_iata     = by_traveler[traveler_id][:arrivals][:key_iata]
+                  key_time_utc = by_traveler[traveler_id][:arrivals][:key_time_utc]
+                  alt_time_utc = by_traveler[traveler_id][:arrivals][:alt_time_utc]
                 else
-                  key_iata     = flight_data_by_traveler[traveler_id][:departures][:key_iata]
-                  key_time_utc = flight_data_by_traveler[traveler_id][:departures][:key_time_utc]
-                  alt_time_utc = flight_data_by_traveler[traveler_id][:departures][:alt_time_utc]
+                  key_iata     = by_traveler[traveler_id][:departures][:key_iata]
+                  key_time_utc = by_traveler[traveler_id][:departures][:key_time_utc]
+                  alt_time_utc = by_traveler[traveler_id][:departures][:alt_time_utc]
                 end
           
                 data[direction][local_date][:travelers].store(traveler_id, {
@@ -155,13 +142,19 @@ class Event < ActiveRecord::Base
               data[direction][local_date][:travelers][traveler_id][type].push(period)
             
             end
+            
+          end
+          # Sort each direction by date:
+          data[direction] = data[direction].sort.to_h
+          
+          # Sort each date by key_iata, key_time_utc, and alt_time_utc
+          data[direction].each do |local_date, local_date_data|
+            local_date_data[:travelers] = local_date_data[:travelers].sort_by{|k,v| [v[:key_iata], v[:key_time_utc], v[:alt_time_utc]]}.to_h
           end
         end
         
       end
     end
-      
-    # TODO: sort arrivals by traveler key destination time, and departures by traveler key origin time
     
     return data
     
@@ -211,8 +204,10 @@ class Event < ActiveRecord::Base
     (1..flights.length-1).each do |flight_index|
       layovers_result.push({
         start_iata:     flights[flight_index-1][:destination_iata],
+        start_name:     flights[flight_index-1][:destination_name],
         start_time_utc: flights[flight_index-1][:destination_time_utc],
         end_iata:       flights[flight_index][:origin_iata],
+        end_name:       flights[flight_index][:origin_name],
         end_time_utc:   flights[flight_index][:origin_time_utc]
       })
     end
