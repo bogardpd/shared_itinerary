@@ -205,14 +205,16 @@ class Event < ActiveRecord::Base
     return Array.new unless flights.length > 1
     layovers_result = Array.new
     (1..flights.length-1).each do |flight_index|
-      layovers_result.push({
-        start_iata:     flights[flight_index-1][:destination_iata],
-        start_name:     flights[flight_index-1][:destination_name],
-        start_time_utc: flights[flight_index-1][:destination_time_utc],
-        end_iata:       flights[flight_index][:origin_iata],
-        end_name:       flights[flight_index][:origin_name],
-        end_time_utc:   flights[flight_index][:origin_time_utc]
-      })
+      if flights[flight_index-1][:destination_time_utc] < flights[flight_index][:origin_time_utc]
+        layovers_result.push({
+          start_iata:     flights[flight_index-1][:destination_iata],
+          start_name:     flights[flight_index-1][:destination_name],
+          start_time_utc: flights[flight_index-1][:destination_time_utc],
+          end_iata:       flights[flight_index][:origin_iata],
+          end_name:       flights[flight_index][:origin_name],
+          end_time_utc:   flights[flight_index][:origin_time_utc]
+        })
+      end
     end
     
     return layovers_result
