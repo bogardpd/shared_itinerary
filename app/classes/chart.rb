@@ -2,7 +2,6 @@ class Chart
   
   def initialize(event)
     @event = event
-    #@event_travelers = @event.event_travelers_old
     @flight_data_by_date = @event.flight_data_by_date
     @airport_hues = @event.airport_hues
     @airport_names = Airport.airport_names

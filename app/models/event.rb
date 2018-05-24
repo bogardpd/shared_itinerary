@@ -91,6 +91,7 @@ class Event < ActiveRecord::Base
   
   # Summarizes flight data by date and traveler.
   def flight_data_by_date
+    
     by_traveler = flight_data_by_traveler
     return nil unless by_traveler
     
@@ -146,13 +147,15 @@ class Event < ActiveRecord::Base
           end
           # Sort each direction by date:
           data[direction] = data[direction].sort.to_h
-          
-          # Sort each date by key_iata, key_time_utc, and alt_time_utc
-          data[direction].each do |local_date, local_date_data|
-            local_date_data[:travelers] = local_date_data[:travelers].sort_by{|k,v| [v[:key_iata], v[:key_time_utc], v[:alt_time_utc]]}.to_h
-          end
         end
         
+      end
+    end
+    
+    # Sort each direction/date by key_iata, key_time_utc, alt_time_utc:
+    [:arrivals, :departures].each do |direction|
+      data[direction].each do |local_date, local_date_data|
+        data[direction][local_date][:travelers] = data[direction][local_date][:travelers].sort_by{|k,v| [v[:key_iata], v[:key_time_utc], v[:alt_time_utc]]}.to_h
       end
     end
     
