@@ -51,7 +51,8 @@ class Chart
       @legend_height               = 30
       @legend_box_size             = 16
   
-      @time_axis_height            = 20
+      @time_axis_height            = 22
+      @time_axis_dst_height        = 18
       @time_axis_padding           = 5
   
       @name_width                  = 130
@@ -74,6 +75,7 @@ class Chart
       @chart_top = @image_padding + @legend_height + @time_axis_height
       @chart_left = @image_padding + @name_width
       @chart_right = @chart_left + (24 * @hour_width)
+      @chart_width = @chart_right - @chart_left
   
     end
     
@@ -191,18 +193,37 @@ class Chart
         html += %Q(\t<line x1="#{@image_padding}" y1="#{@chart_top + x * @name_height}" x2="#{@image_padding + @name_width + 24 * @hour_width}" y2="#{@chart_top + x * @name_height}" class="svg_gridline_#{majmin}_horizontal" />\n)
       end
       day_time_range_utc = date_local_data[:start_time_utc]..date_local_data[:end_time_utc]
-      # if != 24 hours
-      time_at_0000 = Time.find_zone(@timezone).local(date_local.year, date_local.month, date_local.day)
-      time_at_2400 = time_at_0000 + 24.hours
-      if time_at_0000.gmt_offset == time_at_2400.gmt_offset
-        # Show one time label row
-        html += %Q(\t<text x="#{@image_padding}" y="#{@chart_top - @time_axis_padding}" text-anchor="left" class="svg_time_label">#{time_at_0000.strftime("(%:z) %Z").downcase}</text>\n)
+      day_time_range_local = date_local_data[:start_time_utc].in_time_zone(@timezone)..date_local_data[:end_time_utc].in_time_zone(@timezone)
+            
+      if day_time_range_local.begin.gmt_offset == day_time_range_local.end.gmt_offset
+        # No DST switch; show one time label row
+        html += %Q(\t<text x="#{@image_padding}" y="#{@chart_top - @time_axis_padding}" text-anchor="left" class="svg_time_label">#{day_time_range_utc.begin.in_time_zone(@timezone).strftime("(%:z) %Z")}</text>\n)
         for x in 0..24
-          html += %Q(\t<text x="#{@image_padding + @name_width + (x * @hour_width)}" y="#{@chart_top - @time_axis_padding}" text-anchor="middle" class="svg_time_label">#{time_label(x)}</text>\n)
-          html += %Q(\t<line x1="#{@image_padding + @name_width + (x * @hour_width)}" y1="#{@chart_top}" x2="#{@image_padding + @name_width + (x * @hour_width)}" y2="#{@chart_top + chart_height + 1}" class="#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}" />\n)
+          html += %Q(\t<text x="#{@chart_left + (x * @hour_width)}" y="#{@chart_top - @time_axis_padding}" text-anchor="middle" class="svg_time_label">#{time_label(x)}</text>\n)
+          html += %Q(\t<line x1="#{@chart_left + (x * @hour_width)}" y1="#{@chart_top}" x2="#{@image_padding + @name_width + (x * @hour_width)}" y2="#{@chart_top + chart_height + 1}" class="#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}" />\n)
         end
       else
-        # Show two time label rows
+        # DST switch; show two time label rows
+        seconds_in_day = (day_time_range_utc.end - day_time_range_utc.begin).to_i
+        dst_hour_width = @chart_width/(seconds_in_day/3600.0) # Must use float to handle non-hour DST offset
+        hours_in_day = seconds_in_day/3600
+
+        html += %Q(\t<text x="#{@image_padding}" y="#{@chart_top - @time_axis_dst_height - @time_axis_padding}" text-anchor="left" class="svg_time_label">#{day_time_range_local.begin.strftime("(%:z) %Z")}</text>\n)
+        for x in 0..hours_in_day
+          this_time = day_time_range_utc.begin + x.hours
+          if this_time.in_time_zone(@timezone).gmt_offset != day_time_range_local.begin.gmt_offset
+            switch_x = x
+            break
+          end
+          html += %Q(\t<text x="#{@chart_left + (x * dst_hour_width)}" y="#{@chart_top - @time_axis_dst_height - @time_axis_padding}" text-anchor="middle" class="svg_time_label">#{time_label(x)}</text>\n)
+          html += %Q(\t<line x1="#{@chart_left + (x * dst_hour_width)}" y1="#{@chart_top}" x2="#{@chart_left + (x * dst_hour_width)}" y2="#{@chart_top + chart_height + 1}" class="#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}" />\n)
+        end
+        html += %Q(\t<text x="#{@image_padding}" y="#{@chart_top - @time_axis_padding}" text-anchor="left" class="svg_time_label">#{day_time_range_local.end.strftime("(%:z) %Z")}</text>\n)
+        for x in 0..(hours_in_day-switch_x)
+          this_time = day_time_range_utc.end - x.hours
+          html += %Q(\t<text x="#{@chart_right - (x * dst_hour_width)}" y="#{@chart_top - @time_axis_padding}" text-anchor="middle" class="svg_time_label">#{time_label(24-x)}</text>\n)
+          html += %Q(\t<line x1="#{@chart_right - (x * dst_hour_width)}" y1="#{@chart_top}" x2="#{@chart_right - (x * dst_hour_width)}" y2="#{@chart_top + chart_height + 1}" class="#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}" />\n)
+        end
 
       end
       
@@ -446,7 +467,7 @@ class Chart
     # +time_utc+:: The UTC time to position in the range
     def x_position_in_local_day(day_time_range_utc, time_utc)
       return nil unless day_time_range_utc.include?(time_utc)
-      return ((time_utc - day_time_range_utc.begin) / (day_time_range_utc.end - day_time_range_utc.begin)) * (@chart_right - @chart_left) + @chart_left
+      return ((time_utc - day_time_range_utc.begin) / (day_time_range_utc.end - day_time_range_utc.begin)) * @chart_width + @chart_left
     end
   
 end
