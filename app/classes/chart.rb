@@ -200,7 +200,7 @@ class Chart
         html += %Q(\t<text x="#{@image_padding}" y="#{@chart_top - @time_axis_padding}" text-anchor="left" class="svg_time_label">#{day_time_range_utc.begin.in_time_zone(@timezone).strftime("(%:z) %Z")}</text>\n)
         for x in 0..24
           html += %Q(\t<text x="#{@chart_left + (x * @hour_width)}" y="#{@chart_top - @time_axis_padding}" text-anchor="middle" class="svg_time_label">#{time_label(x)}</text>\n)
-          html += %Q(\t<line x1="#{@chart_left + (x * @hour_width)}" y1="#{@chart_top}" x2="#{@image_padding + @name_width + (x * @hour_width)}" y2="#{@chart_top + chart_height + 1}" class="#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}" />\n)
+          html += %Q(\t<line x1="#{@chart_left + (x * @hour_width)}" y1="#{@chart_top}" x2="#{@image_padding + @name_width + (x * @hour_width)}" y2="#{@chart_top + chart_height}" class="#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}" />\n)
         end
       else
         # DST switch; show two time label rows
@@ -211,18 +211,23 @@ class Chart
         html += %Q(\t<text x="#{@image_padding}" y="#{@chart_top - @time_axis_dst_height - @time_axis_padding}" text-anchor="left" class="svg_time_label">#{day_time_range_local.begin.strftime("(%:z) %Z")}</text>\n)
         for x in 0..hours_in_day
           this_time = day_time_range_utc.begin + x.hours
+          
+          html += %Q(\t<text x="#{@chart_left + (x * dst_hour_width)}" y="#{@chart_top - @time_axis_dst_height - @time_axis_padding}" text-anchor="middle" class="svg_time_label">#{time_label(x)}</text>\n)
+          
           if this_time.in_time_zone(@timezone).gmt_offset != day_time_range_local.begin.gmt_offset
+            html += %Q(\t<line x1="#{@chart_left + (x * dst_hour_width)}" y1="#{@chart_top}" x2="#{@chart_left + (x * dst_hour_width)}" y2="#{@chart_top + chart_height}" class="svg_gridline_dst_switch" />\n)
             switch_x = x
             break
           end
-          html += %Q(\t<text x="#{@chart_left + (x * dst_hour_width)}" y="#{@chart_top - @time_axis_dst_height - @time_axis_padding}" text-anchor="middle" class="svg_time_label">#{time_label(x)}</text>\n)
-          html += %Q(\t<line x1="#{@chart_left + (x * dst_hour_width)}" y1="#{@chart_top}" x2="#{@chart_left + (x * dst_hour_width)}" y2="#{@chart_top + chart_height + 1}" class="#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}" />\n)
+          html += %Q(\t<line x1="#{@chart_left + (x * dst_hour_width)}" y1="#{@chart_top}" x2="#{@chart_left + (x * dst_hour_width)}" y2="#{@chart_top + chart_height}" class="#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}" />\n)
+          
         end
         html += %Q(\t<text x="#{@image_padding}" y="#{@chart_top - @time_axis_padding}" text-anchor="left" class="svg_time_label">#{day_time_range_local.end.strftime("(%:z) %Z")}</text>\n)
         for x in 0..(hours_in_day-switch_x)
           this_time = day_time_range_utc.end - x.hours
           html += %Q(\t<text x="#{@chart_right - (x * dst_hour_width)}" y="#{@chart_top - @time_axis_padding}" text-anchor="middle" class="svg_time_label">#{time_label(24-x)}</text>\n)
-          html += %Q(\t<line x1="#{@chart_right - (x * dst_hour_width)}" y1="#{@chart_top}" x2="#{@chart_right - (x * dst_hour_width)}" y2="#{@chart_top + chart_height + 1}" class="#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}" />\n)
+          html += %Q(\t<line x1="#{@chart_right - (x * dst_hour_width)}" y1="#{@chart_top}" x2="#{@chart_right - (x * dst_hour_width)}" y2="#{@chart_top + chart_height}" class="#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}" />\n) unless (x == hours_in_day-switch_x && seconds_in_day%3600 == 0)
+          puts "**** #{seconds_in_day} #{seconds_in_day%3600}"
         end
 
       end

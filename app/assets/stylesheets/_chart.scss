@@ -26,11 +26,18 @@ svg {font-family: "Source Sans Pro", sans-serif; font-size: 13px;}
   text-anchor: middle;
   dominant-baseline: baseline;
 }
+.svg_gridline_dst_switch {
+  stroke-width: 3;
+  stroke-linecap: butt;
+  stroke: hsl(0,0%,85%);
+  shape-rendering: crispEdges;
+}
 .svg_gridline_major {
   stroke-width: 1;
+  stroke-linecap: butt;
   stroke: hsl(0,0%,85%);
-  shape-rendering:
-  crispEdges;}
+  shape-rendering: crispEdges;
+}
 .svg_gridline_minor {
   stroke-width: 1;
   stroke: hsl(0,0%,92%);
