@@ -21,9 +21,15 @@ class FlightsController < ApplicationController
     params[:flight][:destination_airport_id] = destination_airport&.id
     current_traveler = Traveler.find(session[:current_traveler])
     
-    timezones = {origin: TZInfo::Timezone.get(origin_airport.timezone), destination: TZInfo::Timezone.get(destination_airport.timezone)}
-    params[:flight][:origin_time] = convert_local_time_string_to_utc(params[:flight][:origin_time_local], timezones[:origin])
-    params[:flight][:destination_time] = convert_local_time_string_to_utc(params[:flight][:destination_time_local], timezones[:destination])
+    timezones = Hash.new
+    if origin_airport
+      timezones[:origin] = TZInfo::Timezone.get(origin_airport.timezone)
+      params[:flight][:origin_time] = convert_local_time_string_to_utc(params[:flight][:origin_time_local], timezones[:origin])
+    end
+    if destination_airport
+      timezones[:destination] = TZInfo::Timezone.get(destination_airport.timezone)
+      params[:flight][:destination_time] = convert_local_time_string_to_utc(params[:flight][:destination_time_local], timezones[:destination])
+    end
     
     @flight = current_traveler.flights.build(flight_params)
     
