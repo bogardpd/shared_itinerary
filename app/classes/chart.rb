@@ -1,12 +1,11 @@
 class Chart
   
   def initialize(event)
-    @event = event
+    @event               = event    
+    @timezone            = @event.event_timezone
     @flight_data_by_date = @event.flight_data_by_date
-    @airport_hues = @event.airport_hues
-    @airport_names = Airport.airport_names
-    
-    @timezone = @event.event_timezone
+    @airport_hues        = @event.airport_hues
+    @airport_names       = Airport.airport_names
     
     initialize_settings
 

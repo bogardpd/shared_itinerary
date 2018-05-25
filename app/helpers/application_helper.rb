@@ -2,6 +2,8 @@ module ApplicationHelper
 
   def airline_icon(airline_iata, show_blank_icon: true)
     icon_path = Airline.icon_path(airline_iata)
+    return image_tag(icon_path, class: "icon", onerror: "this.style.display='none';this.onerror='';").html_safe
+    return html.html_safe
     if icon_path
       return image_tag(icon_path, class: "icon")
     elsif show_blank_icon
