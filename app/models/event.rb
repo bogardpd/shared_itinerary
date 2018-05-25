@@ -30,7 +30,7 @@ class Event < ActiveRecord::Base
     
     key_airports.reject!(&:blank?)
     hue_step = key_airports.length > 0 ? 360/key_airports.length : 0
-    key_airports.each_with_index do |airport, index|
+    key_airports.to_a.sort.each_with_index do |airport, index|
       hues[airport] = index*hue_step
     end
     
