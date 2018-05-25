@@ -128,66 +128,7 @@ footer {
 	}
 }
 
-/* forms */
 
-.btn, .form-control {
-  font-size: $font-size-standard;
-}
-
-input, textarea, select, .uneditable-input {
-	border: 1px solid #bbb;
-	width: 100%;
-	margin-bottom: 15px;
-	@include box_sizing;
-}
-
-.checkbox {
-	margin-top: -10px;
-	margin-bottom: 10px;
-	span {
-		margin-left: 20px;
-		font-weight: normal;
-	}
-}
-
-.date-field {
-  width: 225px;
-}
-
-#session_remember_me {
-	width: auto;
-	margin-left: 0;
-}
-
-#error_explanation {
-	color: red;
-	ul {
-		color: red;
-		margin: 0 0 30px 0;
-	}
-}
-
-.field_with_errors {
-	@extend .has-error;
-  color: $state-danger-text;
-	.form-control {
-		color: $state-danger-text;
-	}
-  
-}
-
-div.inline-label {
-  display: inline-block;
-}
-
-div.delete-button {
-  text-align: center;
-  margin-top: 40px;
-}
-
-div.button {
-  font-size: $font-size-small;
-}
 
 /* Admin */
 

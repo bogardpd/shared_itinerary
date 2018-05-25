@@ -10,10 +10,10 @@
       <% end %>
       
       <%= f.label :name %>
-      <%= f.text_field :name, class: 'form-control' %>
+      <%= f.text_field :name, class: "form-control" %>
       
       <%= f.label :timezone %>
-      <%= f.select :timezone, Timezones::select_options %>
+      <%= f.select :timezone, Timezones::select_options, {}, {class: "form-control"} %>
 
       <%= f.submit yield(:form_button), class: "btn btn-primary" %>
 
