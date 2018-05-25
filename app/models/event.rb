@@ -41,8 +41,20 @@ class Event < ActiveRecord::Base
   # Returns a summary of flight and layover data for each traveler
   def flight_data_by_traveler
     event_flights = Flight.where(traveler_id: self.travelers).includes(:airline, :origin_airport, :destination_airport, :traveler)
-    
     traveler_flights = Hash.new
+    
+    unless event_flights.any?
+      self.travelers.each do |traveler|
+        traveler_flights[traveler.id] = {
+          traveler_name: traveler.traveler_name,
+          traveler_note: traveler.traveler_note,
+          arrivals: {flights: Array.new, layovers: Array.new, info: traveler.arrival_info},
+          departures: {flights: Array.new, layovers: Array.new, info: traveler.departure_info}
+        }
+      end
+      return traveler_flights
+    end
+    
     event_flights.each do |flight|
       unless traveler_flights.key?(flight.traveler_id)
         traveler_flights[flight.traveler_id] = {
