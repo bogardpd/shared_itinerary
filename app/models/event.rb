@@ -165,32 +165,6 @@ class Event < ActiveRecord::Base
     
   end
   
-  # TEMPORARY method to convert flight origin and destination times from event local to UTC
-  def convert_to_utc
-    return nil if self.timezone.blank?
-    tz = TZInfo::Timezone.get(self.timezone)
-    puts "Event timezone: #{tz}"
-    flights = Flight.where(traveler_id: self.travelers).includes(:airline, :origin_airport, :destination_airport)
-  
-    flights.each do |flight|
-      if flight.updated_at > Time.new(2018,5,23)
-        puts "----------------------------------------"
-        puts "#{flight.origin_airport.iata_code}—#{flight.destination_airport.iata_code} #{flight.airline.iata_code} #{flight.flight_number}"
-        puts "#{self.timezone}:\n  #{flight.origin_time.strftime("%F %R")}        ... #{flight.destination_time.strftime("%F %R")}"
-        origin_utc = tz.local_to_utc(flight.origin_time)
-        destination_utc = tz.local_to_utc(flight.destination_time)
-        puts "UTC:\n  #{origin_utc} ... #{destination_utc}"
-        puts "\n"
-      
-        flight.origin_time = origin_utc
-        flight.destination_time = destination_utc
-        flight.save
-      end
-    end
-    
-    return nil
-  end
-  
   private
   
   def date_details(local_date)
