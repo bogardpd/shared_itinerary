@@ -1,5 +1,5 @@
-<% provide(:title, "Add a New Itinerary")%>
-<h1><%= "Add a New Itinerary" %></h1>
+<% provide(:title, "Add a New Traveler")%>
+<h1><%= "Add a New Traveler" %></h1>
 
 <div class="row">
 	<div class="col-md-6 col-md-offset-3">
@@ -10,9 +10,9 @@
 			
 			<%= render 'form_fields', :f => f %>
 			
-			<p>You will be able to add flights after you create this itinerary.</p>
+			<p>You will be able to add flights after you create this traveler.</p>
 			
-			<%= f.submit "Create itinerary", class: "btn btn-primary" %>
+			<%= f.submit "Create traveler", class: "btn btn-primary" %>
 			
 		<% end %> 
 	</div>
