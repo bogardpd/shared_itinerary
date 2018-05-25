@@ -1,38 +1,37 @@
-<% filtered_flights = traveler.flights.where(is_event_arrival: is_event_arrival).chronological %>
 <div class="flight">
   <table class="flight">
     
-    <% filtered_flights.each_with_index do |flight, index| %>
+    <% traveler[direction][:flights].each_with_index do |flight, index| %>
     
     <tr>
       <td class="flight-identifier">
-        <%= airline_icon(flight.airline.iata_code, show_blank_icon: false) %>
-        <div class="flight-airline"><%= flight.airline_name %></div>
-        <div class="flight-number"><%= flight.flight_number %></div>
+        <%= airline_icon(flight[:airline_iata], show_blank_icon: false) %>
+        <div class="flight-airline"><%= flight[:airline_name] %></div>
+        <div class="flight-number"><%= flight[:flight_number] %></div>
         <% if current_user?(@event.user) %>
           <div class="btn-group flight-edit">
-            <%= link_to("<span class=\"glyphicon glyphicon-pencil\"></span> <span class=\"glyphicon glyphicon-plane\"></span>".html_safe, edit_flight_path(flight[:id]), title: "Edit #{flight.airline_name} #{flight[:flight_number]}", class: "btn btn-default") %>
+            <%= link_to("<span class=\"glyphicon glyphicon-pencil\"></span> <span class=\"glyphicon glyphicon-plane\"></span>".html_safe, edit_flight_path(flight[:id]), title: "Edit #{flight[:airline_name]} #{flight[:flight_number]}", class: "btn btn-default") %>
           </div>
         <% end %>
       </td>
-      <td class="flight-airport flight-origin"<%= highlight(@airport_colors[flight.origin_airport_iata]) if !is_event_arrival && index == 0 %>>
-        <div class="flight-city"><%= flight.origin_airport_city %></div>
-        <div class="flight-iata"><%= flight.origin_airport_iata %></div>
+      <td class="flight-airport flight-origin"<%= highlight(@airport_colors[flight[:origin_iata]]) if direction == :departures && index == 0 %>>
+        <div class="flight-city"><%= flight[:origin_name] %></div>
+        <div class="flight-iata"><%= flight[:origin_iata] %></div>
         <div class="flight-date-time">
-          <%= short_date(flight.origin_time_local) %><br/>
-          <%= short_time(flight.origin_time_local) %> <span class="time-zone"><%= flight.origin_time_local.strftime("%Z") %></span>
+          <%= short_date(flight[:origin_time_local]) %><br/>
+          <%= short_time(flight[:origin_time_local]) %> <span class="time-zone"><%= flight[:origin_time_local].strftime("%Z") %></span>
           
         </div>
       </td>
       <td class="flight-separator">
         <span class="glyphicon glyphicon-arrow-right"></span>
       </td>
-      <td class="flight-airport flight-destination"<%= highlight(@airport_colors[flight.destination_airport_iata]) if is_event_arrival && index == filtered_flights.length-1 %>>
-        <div class="flight-city"><%= flight.destination_airport_city %></div>
-        <div class="flight-iata"><%= flight.destination_airport_iata %></div>
+      <td class="flight-airport flight-destination"<%= highlight(@airport_colors[flight[:destination_iata]]) if direction == :arrivals && index == traveler[direction][:flights].length-1 %>>
+        <div class="flight-city"><%= flight[:destination_name] %></div>
+        <div class="flight-iata"><%= flight[:destination_iata] %></div>
         <div class="flight-date-time">
-          <%= short_date(flight.destination_time_local) %><br/>
-          <%= short_time(flight.destination_time_local) %> <span class="time-zone"><%= flight.destination_time_local.strftime("%Z") %></span>
+          <%= short_date(flight[:destination_time_local]) %><br/>
+          <%= short_time(flight[:destination_time_local]) %> <span class="time-zone"><%= flight[:destination_time_local].strftime("%Z") %></span>
         </div>
       </td>
     </tr>
@@ -42,7 +41,7 @@
     <% if current_user?(@event.user) %> 
     <tr>
       <td colspan="4" class="flight-new-button">
-        <%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-plane\"></span> Add #{is_event_arrival ? "an arrival" : "a departure"} flight for #{traveler.traveler_name}".html_safe, new_flight_path(traveler: traveler, direction: is_event_arrival ? :arrival : :departure), title: "Add a new flight to #{traveler.traveler_name}’s itinerary", class: "btn btn-default") %>
+        <%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-plane\"></span> Add #{direction == :arrivals ? "an arrival" : "a departure"} flight for #{traveler[:traveler_name]}".html_safe, new_flight_path(traveler: traveler_id, direction: direction == :arrivals ? :arrival : :departure), title: "Add a new flight to #{traveler[:traveler_name]}’s itinerary", class: "btn btn-default") %>
       </td>
     </tr>
     <% end %>

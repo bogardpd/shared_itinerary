@@ -43,32 +43,32 @@
     <div class="button"><%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-user\"></span> Add new traveler".html_safe, new_traveler_path(event: @event), title: "Add a new traveler to #{@event.event_name}", class: "btn btn-default") %></div>
   <% end %>
   
-  <% @event.travelers.each do |traveler| %>
-		<div class="row traveler-itinerary" id="t-<%= traveler.id %>">
+  <% @event.flight_data_by_traveler.each do |traveler_id, traveler| %>
+		<div class="row traveler-itinerary" id="t-<%= traveler_id %>">
 
       <div class="col-md-12 traveler-name">
         <% if current_user?(@event.user) %>
           <div class="btn-group edit-button">
-            <%= link_to("<span class=\"glyphicon glyphicon-pencil\"></span> <span class=\"glyphicon glyphicon-user\"></span>".html_safe, edit_traveler_path(traveler), title: "Edit #{traveler.traveler_name}", class: "btn btn-default") %>
+            <%= link_to("<span class=\"glyphicon glyphicon-pencil\"></span> <span class=\"glyphicon glyphicon-user\"></span>".html_safe, edit_traveler_path(traveler_id), title: "Edit #{traveler[:traveler_name]}", class: "btn btn-default") %>
           </div>
         <% end %>   
-  			<h3><%= traveler.traveler_name %>&ensp;<small><%= traveler.traveler_note %></small></h3>
+  			<h3><%= traveler[:traveler_name] %>&ensp;<small><%= traveler[:traveler_note] %></small></h3>
         
   		</div>
 		
   		<div class="col-md-6 traveler-flights">
         <h4>Arrival <small>at <%= @event.event_name %></small></h4>
-        <%= render partial: "traveler_flights", locals: { traveler: traveler, is_event_arrival: true } %>
-        <% if traveler.arrival_info %>
-          <div class="traveler-info"><%= traveler.arrival_info %></div>
+        <%= render partial: "traveler_flights", locals: { traveler_id: traveler_id, traveler: traveler, direction: :arrivals } %>
+        <% if traveler[:arrivals][:info] %>
+          <div class="traveler-info"><%= traveler[:arrivals][:info] %></div>
         <% end %>
       </div>
     
       <div class="col-md-6 traveler-flights">
         <h4>Departure <small>from <%= @event.event_name %></small></h4>
-        <%= render partial: "traveler_flights", locals: { traveler: traveler, is_event_arrival: false } %>
-        <% if traveler.departure_info %>
-          <div class="traveler-info"><%= traveler.departure_info %></div>
+        <%= render partial: "traveler_flights", locals: { traveler_id: traveler_id, traveler: traveler, direction: :departures } %>
+        <% if traveler[:departures][:info] %>
+          <div class="traveler-info"><%= traveler[:departures][:info] %></div>
         <% end %>
   		</div>
     

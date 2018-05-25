@@ -61,9 +61,11 @@ class Event < ActiveRecord::Base
         origin_iata: flight.origin_airport.iata_code,
         origin_name: flight.origin_airport.name,
         origin_time_utc: flight.origin_time,
+        origin_time_local: flight.origin_time.in_time_zone(flight.origin_airport.timezone),
         destination_iata: flight.destination_airport.iata_code,
         destination_name: flight.destination_airport.name,
-        destination_time_utc: flight.destination_time
+        destination_time_utc: flight.destination_time,
+        destination_time_local: flight.destination_time.in_time_zone(flight.destination_airport.timezone)
       }) 
     end
     

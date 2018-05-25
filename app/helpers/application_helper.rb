@@ -2,16 +2,11 @@ module ApplicationHelper
 
   def airline_icon(airline_iata, show_blank_icon: true)
     icon_path = Airline.icon_path(airline_iata)
-    return image_tag(icon_path, class: "icon", onerror: "this.style.display='none';this.onerror='';").html_safe
-    return html.html_safe
-    if icon_path
-      return image_tag(icon_path, class: "icon")
-    elsif show_blank_icon
-      blank_path = "#{ExternalImage::ROOT_PATH}/flights/airline-icons/unknown-airline.png"
-      return image_tag(blank_path, class: "icon")
+    if show_blank_icon
+      return image_tag(icon_path, class: "icon", onerror: "this.src='#{ExternalImage::ROOT_PATH}/flights/airline-icons/unknown-airline.png';this.onerror='';").html_safe
     else
-      return ""
-    end    
+      return image_tag(icon_path, class: "icon", onerror: "this.style.display='none';this.onerror='';").html_safe
+    end
   end
   
   def admin_link
