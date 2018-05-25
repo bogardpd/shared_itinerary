@@ -173,17 +173,19 @@ class Event < ActiveRecord::Base
     flights = Flight.where(traveler_id: self.travelers).includes(:airline, :origin_airport, :destination_airport)
   
     flights.each do |flight|
-      puts "----------------------------------------"
-      puts "#{flight.origin_airport.iata_code}—#{flight.destination_airport.iata_code} #{flight.airline.iata_code} #{flight.flight_number}"
-      puts "#{self.timezone}:\n  #{flight.origin_time.strftime("%F %R")}        ... #{flight.destination_time.strftime("%F %R")}"
-      origin_utc = tz.local_to_utc(flight.origin_time)
-      destination_utc = tz.local_to_utc(flight.destination_time)
-      puts "UTC:\n  #{origin_utc} ... #{destination_utc}"
-      puts "\n"
+      if flight.updated_at > Time.new(2018,5,23)
+        puts "----------------------------------------"
+        puts "#{flight.origin_airport.iata_code}—#{flight.destination_airport.iata_code} #{flight.airline.iata_code} #{flight.flight_number}"
+        puts "#{self.timezone}:\n  #{flight.origin_time.strftime("%F %R")}        ... #{flight.destination_time.strftime("%F %R")}"
+        origin_utc = tz.local_to_utc(flight.origin_time)
+        destination_utc = tz.local_to_utc(flight.destination_time)
+        puts "UTC:\n  #{origin_utc} ... #{destination_utc}"
+        puts "\n"
       
-      flight.origin_time = origin_utc
-      flight.destination_time = destination_utc
-      flight.save
+        flight.origin_time = origin_utc
+        flight.destination_time = destination_utc
+        flight.save
+      end
     end
     
     return nil
