@@ -43,27 +43,16 @@ class Event < ActiveRecord::Base
     event_flights = Flight.where(traveler_id: self.travelers).includes(:airline, :origin_airport, :destination_airport, :traveler)
     traveler_flights = Hash.new
     
-    unless event_flights.any?
-      self.travelers.each do |traveler|
-        traveler_flights[traveler.id] = {
-          traveler_name: traveler.traveler_name,
-          traveler_note: traveler.traveler_note,
-          arrivals: {flights: Array.new, layovers: Array.new, info: traveler.arrival_info},
-          departures: {flights: Array.new, layovers: Array.new, info: traveler.departure_info}
-        }
-      end
-      return traveler_flights
+    self.travelers.each do |traveler|
+    traveler_flights[traveler.id] = {
+      traveler_name: traveler.traveler_name,
+      traveler_note: traveler.traveler_note,
+      arrivals: {flights: Array.new, layovers: Array.new, info: traveler.arrival_info},
+      departures: {flights: Array.new, layovers: Array.new, info: traveler.departure_info}
+    }
     end
-    
+        
     event_flights.each do |flight|
-      unless traveler_flights.key?(flight.traveler_id)
-        traveler_flights[flight.traveler_id] = {
-          traveler_name: flight.traveler.traveler_name,
-          traveler_note: flight.traveler.traveler_note,
-          arrivals: {flights: Array.new, layovers: Array.new, info: flight.traveler.arrival_info},
-          departures: {flights: Array.new, layovers: Array.new, info: flight.traveler.departure_info}
-        }
-      end
       flight_arr_dep = flight.is_event_arrival ? :arrivals : :departures
       traveler_flights[flight.traveler_id][flight_arr_dep][:flights].push({
         id: flight.id,
