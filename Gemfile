@@ -22,6 +22,8 @@ gem 'jbuilder', '~> 2.7'
 gem 'sdoc', '0.4.0', group: :doc
 # Use redcarpet for markdown formatting
 gem 'redcarpet'
+# Use savon for SOAP
+gem 'savon', '~> 2.11', '>= 2.11.1'
 
 # Force loofah to 2.2.1 for security update.
 # https://github.com/flavorjones/loofah/issues/144
