@@ -14,7 +14,13 @@
   <tr>
     <td><%= airline.iata_code %></td>
     <td><%= airline_icon(airline.iata_code, show_blank_icon: true) %> <%= airline.name %></td>
-    <td><%= link_to "Edit", edit_airline_path(airline) %>
+    <td>
+      <% if airline.name.nil? %>
+        <%= link_to %Q(<span class="label label-warning">Needs Review</span>).html_safe, edit_airline_path(airline) %>
+      <% else %>
+        <%= link_to "Edit", edit_airline_path(airline) %>
+      <% end %>
+    </td>
   </tr>
 <% end %>
 </table>
