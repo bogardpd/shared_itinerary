@@ -16,7 +16,13 @@
   <tr>
     <td><%= airport.iata_code %></td>
     <td><%= airport.name %></td>
-    <td><%= link_to "Edit", edit_airport_path(airport) %>
+    <td>
+      <% if airport.needs_review %>
+        <%= link_to %Q(<span class="label label-warning">Needs Review</span>).html_safe, edit_airport_path(airport) %>
+      <% else %>
+        <%= link_to "Edit", edit_airport_path(airport) %>
+      <% end %>
+    </td>
   </tr>
 <% end %>
 </table>

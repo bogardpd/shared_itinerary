@@ -3,7 +3,7 @@ class AirportsController < ApplicationController
   before_action :admin_user, only: [:index, :edit, :update]
   
   def index
-    @airports = Airport.all.order(:name, :iata_code)
+    @airports = Airport.order({needs_review: :desc}, :iata_code, :name)
   end
   
   def new

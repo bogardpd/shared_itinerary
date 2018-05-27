@@ -16,6 +16,8 @@
       <%= f.select :timezone, Timezones::select_options, {}, {class: "form-control"} %>
 
       <%= f.submit yield(:form_button), class: "btn btn-primary" %>
+      
+      <%= f.hidden_field(:needs_review, value: false) %>
 
 		<% end %>
 
