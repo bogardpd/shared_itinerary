@@ -24,11 +24,21 @@ class Airport < ActiveRecord::Base
   # attempts to create it and return the new airport.
   def self.find_or_create_by_iata(iata_code)
     return nil unless iata_code && iata_code.length == 3
-    if airport = Airport.find_by(iata_code: iata_code.upcase)
+    iata_code = iata_code.upcase
+    if airport = Airport.find_by(iata_code: iata_code)
       return airport
     else
-      # lookup timezone/name on FlightXML
-      return nil
+      # Look up timezone and name on FlightXML
+      airport_info = FlightXML::airport_info(iata_code)
+      return nil unless airport_info
+      
+      new_airport = Airport.new(iata_code: iata_code, name: airport_info[:name], timezone: airport_info[:timezone], needs_review: true)
+      if new_airport.save
+        return new_airport
+      else
+        return nil
+      end
+      
     end
   end
   
