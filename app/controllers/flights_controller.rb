@@ -60,12 +60,12 @@ class FlightsController < ApplicationController
   end
   
   def update
-    convert_iata_codes_to_ids
-    
+    # convert_iata_codes_to_ids
+    #
     @flight = Flight.find(params[:id])
-    timezones = {origin: TZInfo::Timezone.get(@flight.origin_airport.timezone), destination: TZInfo::Timezone.get(@flight.destination_airport.timezone)}
-    params[:flight][:origin_time] = convert_local_time_string_to_utc(params[:flight][:origin_time_local], timezones[:origin])
-    params[:flight][:destination_time] = convert_local_time_string_to_utc(params[:flight][:destination_time_local], timezones[:destination])
+    # # timezones = {origin: TZInfo::Timezone.get(@flight.origin_airport.timezone), destination: TZInfo::Timezone.get(@flight.destination_airport.timezone)}
+    # params[:flight][:origin_time] = convert_local_time_string_to_utc(params[:flight][:origin_time_local], timezones[:origin])
+    # params[:flight][:destination_time] = convert_local_time_string_to_utc(params[:flight][:destination_time_local], timezones[:destination])
     
     if @flight.update_attributes(flight_params)
       flash[:success] = "Flight updated! #{view_context.link_to("Jump to this flight’s itinerary", "#t-#{@flight.traveler.id}", class: "btn btn-default")}"
@@ -87,7 +87,7 @@ class FlightsController < ApplicationController
   private
   
     def flight_params
-      params.require(:flight).permit(:flight_number, :origin_time, :origin_airport_id, :destination_time, :destination_airport_id, :is_event_arrival, airline_attributes: [:iata_code])
+      params.require(:flight).permit(:flight_number, :origin_time, :destination_time, :is_event_arrival, airline_attributes: [:id, :iata_code], origin_airport_attributes: [:id, :iata_code], destination_airport_attributes: [:id, :iata_code])
     end
     
     def correct_user

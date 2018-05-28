@@ -4,42 +4,50 @@
 
 			<%= render 'shared/error_messages', object: f.object %>
       
+      <div>
+  			<%= f.label :is_event_arrival, "Arrival or departure?" %>
+  			<%= f.select(:is_event_arrival, options_for_select([["Arrival – this flight brings the traveler to the event", true],["Departure – this flight takes the traveler home from the event", false]], selected: (params[:direction] ? (params[:direction] != "departure") : f.object.is_event_arrival)), {}, {class: "form-control"}) %>
+      </div>
+      
       <%= f.fields_for :airline do |f_airline| %>
         <div>
-          <%= f_airline.label :iata_code, "Airline code <small>(2 character IATA code)</small>".html_safe %>
-          <%= f_airline.text_field :iata_code, class: "form-control code airline-iata", maxlength: 2, placeholder: 'AA' %>
+          <%= f_airline.label :iata_code, "Airline code" %>
+          <%= f_airline.text_field :iata_code, class: "form-control code airline-iata", maxlength: 2, placeholder: "AA" %>
         </div>
       <% end %>
       
       <div>
         <%= f.label :flight_number %>
-        <%= f.text_field :flight_number, class: "form-control flight-number", maxlength: 4, placeholder: '1234' %>
+        <%= f.text_field :flight_number, class: "form-control flight-number", maxlength: 4, placeholder: "1234" %>
       </div>
       
-      <div class="inline-label"><%= f.label :origin_airport_iata, "Origin" %></div> /
-      <div class="inline-label"><%= f.label :destination_airport_iata, "destination" %></div> airport codes
-      <div class="form-group form-inline">
-        <div class="input-group">
-          <%= f.text_field :origin_airport_iata, class: "form-control code airport-iata", maxlength: 3, value: (params.dig(:flight, :origin_airport_iata) || f.object.origin_airport&.iata_code), placeholder: 'AAA' %>
+      <%= f.fields_for :origin_airport do |f_orig| %>
+        <div>
+          <%= f_orig.label :iata_code, "Origin airport code" %>
+          <%= f_orig.text_field :iata_code, class: "form-control code airport-iata", maxlength: 3, placeholder: "ABC" %>
         </div>
-        <div class="input-group">
-          &ndash;
-        </div>
-        <div class="input-group">
-          <%= f.text_field :destination_airport_iata, class: "form-control code airport-iata", maxlength: 3, value: (params.dig(:flight, :destination_airport_iata) || f.object.destination_airport&.iata_code), placeholder: 'AAA' %>
-        </div>
+      <% end %>
+      
+      <div>
+        <%= f.label :origin_time, "Origin local departure date and time" %>
+        <%= f.datetime_field :origin_time_local, type: 'datetime', value: f.object.origin_time_local.try(:strftime, "%Y-%m-%d %H:%M"), class: 'form-control date-field', placeholder: "yyyy-mm-dd hh:mm" %>
       </div>
       
-			<%= f.label :is_event_arrival, "Arrival or departure?" %>
-			<%= f.select(:is_event_arrival, options_for_select([["Arrival – this flight brings the traveler to the event", true],["Departure – this flight takes the traveler home from the event", false]], selected: (params[:direction] ? (params[:direction] != "departure") : f.object.is_event_arrival)), {}, {class: "form-control"}) %>
-          
-      <%= f.label :origin_time, "Origin local departure date and time" %>
-      <%= f.datetime_field :origin_time_local, type: 'datetime', value: f.object.origin_time_local.try(:strftime, "%Y-%m-%d %H:%M"), class: 'form-control date-field', placeholder: "yyyy-mm-dd hh:mm" %>
-          
-      <%= f.label :destination_time, "Destination local arrival date and time" %>
-      <%= f.datetime_field :destination_time_local, type: 'datetime', value: f.object.destination_time_local.try(:strftime, "%Y-%m-%d %H:%M"), class: 'form-control date-field', placeholder: "yyyy-mm-dd hh:mm" %>
+      <%= f.fields_for :destination_airport do |f_dest| %>
+        <div>
+          <%= f_dest.label :iata_code, "Destination airport code" %>
+          <%= f_dest.text_field :iata_code, class: "form-control code airport-iata", maxlength: 3, placeholder: "XYZ" %>
+        </div>
+      <% end %>
       
-      <%= f.submit yield(:form_button), class: "btn btn-primary" %>
+      <div>
+        <%= f.label :destination_time, "Destination local arrival date and time" %>
+        <%= f.datetime_field :destination_time_local, type: 'datetime', value: f.object.destination_time_local.try(:strftime, "%Y-%m-%d %H:%M"), class: 'form-control date-field', placeholder: "yyyy-mm-dd hh:mm" %>
+      </div>
+      
+      <div>
+        <%= f.submit yield(:form_button), class: "btn btn-primary" %>
+      </div>
       
     <% end %>
     
