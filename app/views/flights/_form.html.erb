@@ -1,18 +1,19 @@
 <div class="row">
 	<div class="col-md-6 col-md-offset-3">
-		<%= form_for(@flight) do |f| %>
+		<%= form_for(setup_flight(@flight)) do |f| %>
 
 			<%= render 'shared/error_messages', object: f.object %>
       
-      <div class="inline-label"><%= f.label :airline_iata, "Airline code" %></div> /
-      <div class="inline-label"><%= f.label :flight_number %></div>
-      <div class="form-group form-inline">
-        <div class="input-group">
-          <%= f.text_field :airline_iata, class: "form-control code airline-iata", maxlength: 2, placeholder: 'AA' %>
+      <%= f.fields_for :airline do |f_airline| %>
+        <div>
+          <%= f_airline.label :iata_code, "Airline code <small>(2 character IATA code)</small>".html_safe %>
+          <%= f_airline.text_field :iata_code, class: "form-control code airline-iata", maxlength: 2, placeholder: 'AA' %>
         </div>
-        <div class="input-group">
-          <%= f.text_field :flight_number, class: "form-control flight-number", maxlength: 4, placeholder: '1234' %>
-        </div>
+      <% end %>
+      
+      <div>
+        <%= f.label :flight_number %>
+        <%= f.text_field :flight_number, class: "form-control flight-number", maxlength: 4, placeholder: '1234' %>
       </div>
       
       <div class="inline-label"><%= f.label :origin_airport_iata, "Origin" %></div> /

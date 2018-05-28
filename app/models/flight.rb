@@ -4,12 +4,15 @@ class Flight < ActiveRecord::Base
   belongs_to :origin_airport,      class_name: "Airport"
   belongs_to :destination_airport, class_name: "Airport"
   
+  accepts_nested_attributes_for :airline
+  
   validates :flight_number,          presence: true
-  validates :airline_id,             presence: true
   validates :origin_airport_id,      presence: true
   validates :destination_airport_id, presence: true
   validates :origin_time,            presence: true
   validates :destination_time,       presence: true
+    
+  before_validation :check_existing_airline
   
   before_save { self.origin_time = Time.parse(origin_time.to_s) }
   before_save { self.destination_time = Time.parse(destination_time.to_s)}
@@ -17,8 +20,6 @@ class Flight < ActiveRecord::Base
   scope :chronological, -> {
     order("flights.origin_time")
   }  
-
-  attr_accessor :airline_iata_code
   
   def departure_is_before_arrival
     errors[:base] << "The flight's departure must come before its arrival" unless self.origin_time && self.destination_time && self.origin_time < self.destination_time
@@ -69,6 +70,14 @@ class Flight < ActiveRecord::Base
   # without a origin_time.
   def destination_time_local
     return self.destination_time ?  Time.at(self.destination_time).in_time_zone(TZInfo::Timezone.get(self.destination_airport.timezone)) : ""
+  end
+  
+  private
+  
+  def check_existing_airline
+    if airline.new_record? && existing_airline = Airline.find_by(iata_code: airline.iata_code)
+      self.airline = existing_airline
+    end
   end
   
 end

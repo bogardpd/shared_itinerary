@@ -87,7 +87,7 @@ class FlightsController < ApplicationController
   private
   
     def flight_params
-      params.require(:flight).permit(:airline_id, :flight_number, :origin_time, :origin_airport_id, :destination_time, :destination_airport_id, :is_event_arrival)
+      params.require(:flight).permit(:flight_number, :origin_time, :origin_airport_id, :destination_time, :destination_airport_id, :is_event_arrival, airline_attributes: [:iata_code])
     end
     
     def correct_user
@@ -95,7 +95,6 @@ class FlightsController < ApplicationController
     end
     
     def convert_iata_codes_to_ids
-      params[:flight][:airline_id] = Airline.find_or_create_by!(:iata_code => params[:flight][:airline_iata].upcase).id
       params[:flight][:origin_airport_id]      = Airport.find_or_create_by_iata(params[:flight][:origin_airport_iata])&.id
       params[:flight][:destination_airport_id] = Airport.find_or_create_by_iata(params[:flight][:destination_airport_iata])&.id
       
