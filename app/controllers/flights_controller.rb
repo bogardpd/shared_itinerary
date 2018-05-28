@@ -3,55 +3,26 @@ class FlightsController < ApplicationController
   before_action :correct_user, only: [:edit, :update, :destroy]
   
   def new
-    @traveler = Traveler.find(params[:traveler])
+    traveler = Traveler.find(params[:traveler])
+    session[:current_traveler] ||= traveler.id
     @flight = Flight.new
-    @timezone = @traveler.event.timezone
-    session[:current_traveler] = @traveler.id
     
     rescue ActiveRecord::RecordNotFound
       redirect_to current_user
   end
   
   def create
-    convert_iata_codes_to_ids
-    
-    origin_airport = Airport.find_or_create_by_iata(params[:flight][:origin_airport_iata])
-    params[:flight][:origin_airport_id] = origin_airport&.id
-    destination_airport = Airport.find_or_create_by_iata(params[:flight][:destination_airport_iata])
-    params[:flight][:destination_airport_id] = destination_airport&.id
     current_traveler = Traveler.find(session[:current_traveler])
-    
-    timezones = Hash.new
-    if origin_airport
-      timezones[:origin] = TZInfo::Timezone.get(origin_airport.timezone)
-      params[:flight][:origin_time] = convert_local_time_string_to_utc(params[:flight][:origin_time_local], timezones[:origin])
-    end
-    if destination_airport
-      timezones[:destination] = TZInfo::Timezone.get(destination_airport.timezone)
-      params[:flight][:destination_time] = convert_local_time_string_to_utc(params[:flight][:destination_time_local], timezones[:destination])
-    end
-    
     @flight = current_traveler.flights.build(flight_params)
-    
-    if params[:flight][:origin_airport_id] && params[:flight][:destination_airport_id]
-      if @flight.save
-        flash[:success] = "Flight created! #{view_context.link_to("Jump to this flight’s itinerary", "#t-#{current_traveler.id}", class: "btn btn-default")} #{view_context.link_to(%Q[<span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-plane"></span>&ensp;Add another flight].html_safe, new_flight_path(traveler: current_traveler.id), class: "btn btn-default")}"
-        redirect_to event_path(current_traveler.event)
-      else
-        render "new"
-      end
+
+    if @flight.save
+      flash[:success] = "Flight created! #{view_context.link_to("Jump to this flight’s itinerary", "#t-#{current_traveler.id}", class: "btn btn-default")} #{view_context.link_to(%Q[<span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-plane"></span>&ensp;Add another flight].html_safe, new_flight_path(traveler: current_traveler.id), class: "btn btn-default")}"
+      session[:current_traveler] = nil
+      redirect_to event_path(current_traveler.event)
     else
-      if current_user.admin?
-        unknown_airports = Array.new
-        unknown_airports.push(params[:flight][:origin_airport_iata]&.upcase) unless params[:flight][:origin_airport_id]
-        unknown_airports.push(params[:flight][:destination_airport_iata]&.upcase) unless params[:flight][:destination_airport_id]
-        flash.now[:warning] = "We couldn't automatically look up some new airport names and time zones (#{unknown_airports.join(", ")}). You can try again later, or #{view_context.link_to("manually create airports", new_airport_path)}."
-        render "new"
-      else
-        flash.now[:danger] = "Something went wrong when we tried to look up your airport codes. The problem might be on our end, but please check that your airport codes are correct, or try again later."
-        render "new"
-      end
+      render "new"
     end
+    
   end
   
   def edit
@@ -60,13 +31,8 @@ class FlightsController < ApplicationController
   end
   
   def update
-    # convert_iata_codes_to_ids
-    #
     @flight = Flight.find(params[:id])
-    # # timezones = {origin: TZInfo::Timezone.get(@flight.origin_airport.timezone), destination: TZInfo::Timezone.get(@flight.destination_airport.timezone)}
-    # params[:flight][:origin_time] = convert_local_time_string_to_utc(params[:flight][:origin_time_local], timezones[:origin])
-    # params[:flight][:destination_time] = convert_local_time_string_to_utc(params[:flight][:destination_time_local], timezones[:destination])
-    
+
     if @flight.update_attributes(flight_params)
       flash[:success] = "Flight updated! #{view_context.link_to("Jump to this flight’s itinerary", "#t-#{@flight.traveler.id}", class: "btn btn-default")}"
       redirect_to @flight.traveler.event
@@ -87,24 +53,11 @@ class FlightsController < ApplicationController
   private
   
     def flight_params
-      params.require(:flight).permit(:flight_number, :origin_time, :destination_time, :is_event_arrival, airline_attributes: [:id, :iata_code], origin_airport_attributes: [:id, :iata_code], destination_airport_attributes: [:id, :iata_code])
+      params.require(:flight).permit(:flight_number, :origin_time, :destination_time, :is_event_arrival, airline_attributes: [:iata_code], origin_airport_attributes: [:iata_code], destination_airport_attributes: [:iata_code])
     end
     
     def correct_user
       redirect_to root_url if Flight.find(params[:id]).traveler.event.user != current_user
-    end
-    
-    def convert_iata_codes_to_ids
-      params[:flight][:origin_airport_id]      = Airport.find_or_create_by_iata(params[:flight][:origin_airport_iata])&.id
-      params[:flight][:destination_airport_id] = Airport.find_or_create_by_iata(params[:flight][:destination_airport_iata])&.id
-      
-    end
-    
-    def convert_local_time_string_to_utc(local_time_string, timezone)
-      local_time = Time.parse(local_time_string)
-      timezone.local_to_utc(local_time, dst=false)
-    rescue ArgumentError
-      return ""
     end
   
 end

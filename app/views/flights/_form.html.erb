@@ -30,7 +30,7 @@
       
       <div>
         <%= f.label :origin_time, "Origin local departure date and time" %>
-        <%= f.datetime_field :origin_time_local, type: 'datetime', value: f.object.origin_time_local.try(:strftime, "%Y-%m-%d %H:%M"), class: 'form-control date-field', placeholder: "yyyy-mm-dd hh:mm" %>
+        <%= f.datetime_field :origin_time, type: 'datetime', value: time_field_value_in_local(f.object.origin_time, f.object.origin_airport), class: 'form-control date-field', placeholder: "yyyy-mm-dd hh:mm" %>
       </div>
       
       <%= f.fields_for :destination_airport do |f_dest| %>
@@ -42,7 +42,7 @@
       
       <div>
         <%= f.label :destination_time, "Destination local arrival date and time" %>
-        <%= f.datetime_field :destination_time_local, type: 'datetime', value: f.object.destination_time_local.try(:strftime, "%Y-%m-%d %H:%M"), class: 'form-control date-field', placeholder: "yyyy-mm-dd hh:mm" %>
+        <%= f.datetime_field :destination_time, type: 'datetime', value: time_field_value_in_local(f.object.destination_time, f.object.destination_airport), class: 'form-control date-field', placeholder: "yyyy-mm-dd hh:mm" %>
       </div>
       
       <div>

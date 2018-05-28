@@ -13,6 +13,7 @@ class Flight < ActiveRecord::Base
   validates :destination_time,       presence: true
     
   before_validation :check_existing_airline_and_airports
+  before_validation :convert_local_times_to_utc
   
   before_save { self.origin_time = Time.parse(origin_time.to_s) }
   before_save { self.destination_time = Time.parse(destination_time.to_s)}
@@ -76,34 +77,54 @@ class Flight < ActiveRecord::Base
   
   def check_existing_airline_and_airports
     # Airline:
-    if (existing_airline = Airline.find_by(iata_code: self.airline.iata_code))
+    airline_iata = self.airline.iata_code&.upcase
+    if (existing_airline = Airline.find_by(iata_code: airline_iata))
       self.airline = existing_airline
     else
-      self.airline = Airline.new(iata_code: self.airline.iata_code)
+      self.airline = Airline.new(iata_code: airline_iata)
     end
     
     # Origin airport:
-    if (existing_origin = Airport.find_by(iata_code: self.origin_airport.iata_code))
+    origin_iata = self.origin_airport.iata_code&.upcase
+    if (existing_origin = Airport.find_by(iata_code: origin_iata))
       self.origin_airport = existing_origin
     else
-      if (orig_info = FlightXML::airport_info(self.origin_airport.iata_code))
-        self.origin_airport = Airport.new(iata_code: self.origin_airport.iata_code, name: orig_info[:name], timezone: orig_info[:timezone], needs_review: true)
+      if (orig_info = FlightXML::airport_info(origin_iata))
+        self.origin_airport = Airport.new(iata_code: origin_iata, name: orig_info[:name], timezone: orig_info[:timezone], needs_review: true)
       else
-        self.origin_airport = Airport.new(iata_code: self.origin_airport.iata_code)
+        self.origin_airport = Airport.new(iata_code: origin_iata)
       end
     end
           
     # Destination airport:
-    if (existing_destination = Airport.find_by(iata_code: self.destination_airport.iata_code))
+    destination_iata = self.destination_airport.iata_code&.upcase
+    if (existing_destination = Airport.find_by(iata_code: destination_iata))
       self.destination_airport = existing_destination
     else
-      if (dest_info = FlightXML::airport_info(self.destination_airport.iata_code))
-        self.destination_airport = Airport.new(iata_code: self.destination_airport.iata_code, name: dest_info[:name], timezone: dest_info[:timezone], needs_review: true)
+      if (dest_info = FlightXML::airport_info(destination_iata))
+        self.destination_airport = Airport.new(iata_code: destination_iata, name: dest_info[:name], timezone: dest_info[:timezone], needs_review: true)
       else
-        self.destination_airport = Airport.new(iata_code: self.destination_airport.iata_code)
+        self.destination_airport = Airport.new(iata_code: destination_iata)
       end
     end
     
+  end
+  
+  def convert_local_times_to_utc
+    if self.origin_airport.timezone
+      origin_timezone = TZInfo::Timezone.get(self.origin_airport.timezone)
+      self.origin_time = convert_local_time_to_utc(self.origin_time, origin_timezone)
+    end    
+    if self.destination_airport.timezone
+      destination_timezone = TZInfo::Timezone.get(self.destination_airport.timezone)
+      self.destination_time = convert_local_time_to_utc(self.destination_time, destination_timezone)
+    end    
+  end
+  
+  def convert_local_time_to_utc(local_time, timezone)
+    timezone.local_to_utc(local_time, dst=false)
+  rescue ArgumentError
+    return nil
   end
   
 end
