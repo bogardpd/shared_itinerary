@@ -16,7 +16,7 @@ class FlightsController < ApplicationController
     @flight = current_traveler.flights.build(flight_params)
 
     if @flight.save
-      flash[:success] = "Flight created! #{view_context.link_to("Jump to this flight’s itinerary", "#t-#{current_traveler.id}", class: "btn btn-default")} #{view_context.link_to(%Q[<span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-plane"></span>&ensp;Add another flight].html_safe, new_flight_path(traveler: current_traveler.id), class: "btn btn-default")}"
+      flash[:success] = "Flight created! #{view_context.link_to("Jump to this flight’s itinerary", "#t-#{current_traveler.id}", class: "btn btn-primary")} #{view_context.link_to("Add another flight", new_flight_path(traveler: current_traveler.id), class: "btn btn-outline-primary")}"
       session[:current_traveler] = nil
       redirect_to event_path(current_traveler.event)
     else
@@ -34,7 +34,7 @@ class FlightsController < ApplicationController
     @flight = Flight.find(params[:id])
 
     if @flight.update_attributes(flight_params)
-      flash[:success] = "Flight updated! #{view_context.link_to("Jump to this flight’s itinerary", "#t-#{@flight.traveler.id}", class: "btn btn-default")}"
+      flash[:success] = "Flight updated! #{view_context.link_to("Jump to this flight’s itinerary", "#t-#{@flight.traveler.id}", class: "btn btn-primary")}"
       redirect_to @flight.traveler.event
     else
       @timezone = @flight.traveler.event.timezone
@@ -46,7 +46,7 @@ class FlightsController < ApplicationController
     @flight = Flight.find(params[:id])
     current_event = @flight.traveler.event
     @flight.destroy
-    flash[:success] = "Flight deleted! #{view_context.link_to("Jump to the deleted flight’s itinerary", "#t-#{@flight.traveler.id}", class: "btn btn-default")}"
+    flash[:success] = "Flight deleted! #{view_context.link_to("Jump to the deleted flight’s itinerary", "#t-#{@flight.traveler.id}", class: "btn btn-primary")}"
     redirect_to current_event
   end
   

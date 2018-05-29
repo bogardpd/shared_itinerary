@@ -12,9 +12,9 @@ module ApplicationHelper
   def admin_link
     count = Airline.where(name: nil).count + Airport.where(needs_review: true).count
     if count > 0
-      link_to(%Q(Admin <span class="badge unread">#{count}</span>).html_safe, admin_path)
+      link_to(%Q(Admin <span class="badge badge-warning">#{count}</span>).html_safe, admin_path, class: "nav-link")
     else
-      link_to "Admin", admin_path
+      link_to "Admin", admin_path, class: "nav-link"
     end
   end
 
@@ -35,6 +35,10 @@ module ApplicationHelper
     else
       "<meta name=\"description\" content=\"#{page_meta_description}\" />".html_safe
     end
+  end
+  
+  def octicon(icon)
+    return image_tag("octicons/#{icon}.svg", class: "octicon")
   end
   
   def short_date(dt)

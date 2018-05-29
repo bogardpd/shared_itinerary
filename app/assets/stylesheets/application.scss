@@ -1,5 +1,6 @@
-@import "bootstrap-sprockets";
-@import "bootstrap";
+/* Bootstrap */
+/* Custom bootstrap variables must be set or imported *before* bootstrap. */
+  @import "bootstrap";
 
 /* Variables */
   @import "variables";
@@ -8,6 +9,7 @@
   @import "custom";
   
 /* Other stylesheets */
+  @import "layout";
   @import "chart";
   @import "events";
   @import "form";

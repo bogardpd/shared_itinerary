@@ -10,7 +10,7 @@
         <div class="flight-number"><%= flight[:flight_number] %></div>
         <% if current_user?(@event.user) %>
           <div class="btn-group flight-edit">
-            <%= link_to("<span class=\"glyphicon glyphicon-pencil\"></span> <span class=\"glyphicon glyphicon-plane\"></span>".html_safe, edit_flight_path(flight[:id]), title: "Edit #{flight[:airline_name]} #{flight[:flight_number]}", class: "btn btn-default") %>
+            <%= link_to("Edit flight", edit_flight_path(flight[:id]), title: "Edit #{flight[:airline_name]} #{flight[:flight_number]}", class: "badge badge-primary") %>
           </div>
         <% end %>
       </td>
@@ -24,7 +24,7 @@
         </div>
       </td>
       <td class="flight-separator">
-        <span class="glyphicon glyphicon-arrow-right"></span>
+        <%= octicon("arrow-right") %>
       </td>
       <td class="flight-airport flight-destination"<%= highlight(@airport_colors[flight[:destination_iata]]) if direction == :arrivals && index == traveler[direction][:flights].length-1 %>>
         <div class="flight-city"><%= flight[:destination_name] %></div>
@@ -41,7 +41,7 @@
     <% if current_user?(@event.user) %> 
     <tr>
       <td colspan="4" class="flight-new-button">
-        <%= link_to("<span class=\"glyphicon glyphicon-plus\"></span> <span class=\"glyphicon glyphicon-plane\"></span> Add #{direction == :arrivals ? "an arrival" : "a departure"} flight for #{traveler[:traveler_name]}".html_safe, new_flight_path(traveler: traveler_id, direction: direction == :arrivals ? :arrival : :departure), title: "Add a new flight to #{traveler[:traveler_name]}’s itinerary", class: "btn btn-default") %>
+        <%= link_to("Add #{direction == :arrivals ? "an arrival" : "a departure"} flight for #{traveler[:traveler_name]}".html_safe, new_flight_path(traveler: traveler_id, direction: direction == :arrivals ? :arrival : :departure), title: "Add a new flight to #{traveler[:traveler_name]}’s itinerary", class: "btn btn-sm btn-outline-primary") %>
       </td>
     </tr>
     <% end %>

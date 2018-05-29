@@ -1,0 +1,57 @@
+/* Header */
+
+header {
+  nav {
+    background-color: hsl(200,5%,93%);
+    margin-bottom: 1rem;
+  }
+}
+
+#logo {
+  font-size: 28px;
+  font-weight: 300;
+	&:hover {
+		text-decoration: none;
+	}
+  img {
+    margin-top: -5px;
+    width: 32px;
+    height: 32px;
+    border: 1px solid $color-border;
+    border-radius: 4px;
+  }
+}
+
+/* Footer */
+
+footer {
+	margin-top: 45px;
+  margin-bottom: 35px;
+	padding-top: 5px;
+	border-top: 1px solid $gray-300;
+	color: $gray-400;
+	a {
+		color: $gray-500;
+		&:hover {
+			color: $gray-700;
+		}
+	}
+	small {
+		float: left;
+	}
+	ul {
+		float: right;
+		list-style: none;
+		li {
+			float: left;
+			margin-left: 15px;
+		}
+	}
+}
+
+/* Admin */
+
+span.unread {
+  background-color: red;
+  color: white;
+}

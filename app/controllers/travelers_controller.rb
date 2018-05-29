@@ -10,7 +10,7 @@ class TravelersController < ApplicationController
     current_event = Event.find(params[:traveler][:event])
     @traveler = current_event.travelers.build(traveler_params)
     if @traveler.save
-      flash[:success] = "Itinerary created! #{view_context.link_to("Jump to this itinerary", "#t-#{@traveler.id}", class: "btn btn-default")} #{view_context.link_to(%Q[<span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-plane"></span>&ensp;Add a flight].html_safe, new_flight_path(traveler: @traveler.id), class: "btn btn-default")}"
+      flash[:success] = "Itinerary created! #{view_context.link_to("Jump to this itinerary", "#t-#{@traveler.id}", class: "btn btn-primary")} #{view_context.link_to("Add a flight", new_flight_path(traveler: @traveler.id), class: "btn btn-primary")}"
       redirect_to event_path(current_event)
     else
       render 'static_pages/home'
@@ -24,7 +24,7 @@ class TravelersController < ApplicationController
   def update
     @traveler = Traveler.find(params[:id])
     if @traveler.update_attributes(traveler_params)
-      flash[:success] = "Traveler info updated! #{view_context.link_to("Jump to this traveler’s itinerary", "#t-#{@traveler.id}", class: "btn btn-default")}"
+      flash[:success] = "Traveler info updated! #{view_context.link_to("Jump to this traveler’s itinerary", "#t-#{@traveler.id}", class: "btn btn-primary")}"
       redirect_to @traveler.event
     else
       render 'edit'

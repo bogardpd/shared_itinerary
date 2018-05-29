@@ -1,5 +1,18 @@
 /* forms */
 
+form {
+  div.card {
+    margin-bottom: 1em;
+  }
+  div.card-header {
+    font-weight: $font-weight-bold;
+  }
+}
+
+#event-edit-share-bar {
+  margin-bottom: 1rem;
+}
+
 .btn, .form-control, select, textarea, input {
   font-size: 13pt;
 }
@@ -12,6 +25,10 @@ input, textarea, select, .uneditable-input {
 	width: 100%;
 	margin-bottom: 15px;
 	@include box_sizing;
+}
+
+textarea.form-control {
+  height: 8em;
 }
 
 .checkbox {
@@ -41,10 +58,9 @@ input, textarea, select, .uneditable-input {
 }
 
 .field_with_errors {
-	@extend .has-error;
-  color: $state-danger-text;
+  color: $form-feedback-invalid-color;
 	.form-control {
-		color: $state-danger-text;
+		color: $form-feedback-invalid-color;
 	}
   
 }
@@ -76,4 +92,8 @@ input.code {
 
 input.flight-number {
   width: 5em;
+}
+
+textarea {
+	resize: vertical;
 }

@@ -6,10 +6,14 @@ gem 'rails', '~> 5.1'
 
 # Use bcrypt to hash passwords
 gem 'bcrypt', '3.1.7'
+
 # Use Bootstrap UI framework
-gem 'bootstrap-sass', '3.2.0.0'
+gem 'bootstrap', '~> 4.1', '>= 4.1.1'
 # Use SCSS for stylesheets
 gem 'sass-rails'
+# Use redcarpet for markdown formatting
+gem 'redcarpet'
+
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '2.5.3'
 # Use CoffeeScript for .coffee assets and views
@@ -18,10 +22,10 @@ gem 'coffee-rails', '~> 4.2'
 gem 'jquery-rails'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.7'
+
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '0.4.0', group: :doc
-# Use redcarpet for markdown formatting
-gem 'redcarpet'
+
 # Use savon for SOAP
 gem 'savon', '~> 2.11', '>= 2.11.1'
 

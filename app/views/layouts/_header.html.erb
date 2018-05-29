@@ -1,20 +1,26 @@
-<header class="navbar navbar-default">
-	<div><div class="container">
-		<%= link_to("#{image_tag("logo.png")} Shared Itinerary".html_safe, root_path, id: "logo", class: "navbar-brand", title: "Shared Itinerary") %>
-		<nav>
-			<ul class="nav navbar-nav navbar-right">
-				<% if logged_in? %>
-					<li><%= link_to "My Events", current_user %></li>
-					<li><%= link_to "Settings", edit_user_path(current_user) %></li>
-          <% if current_user.admin? %>
-            <li><%= admin_link %></li>
-          <% end %>
-					<li><%= link_to "Log out", logout_path, method: "delete" %></li>
-				<% else %>
-					<li><%= link_to("Create your own itinerary", signup_path) %></li>
-					<li><%= link_to("Log in", login_path) %></li>
-				<% end %>
-			</ul>
-		</nav>
-	</div></div>
+<header>
+  <nav class="navbar navbar-expand-md navbar-light">
+    <div class="container">
+      <%= link_to("#{image_tag("logo.png")} Shared Itinerary".html_safe, root_path, id: "logo", class: "navbar-brand", title: "Shared Itinerary") %>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
+  				<% if logged_in? %>
+  					<li class="nav-item"><%= link_to "My Events", current_user, class: "nav-link" %></li>
+  					<li class="nav-item"><%= link_to "Settings", edit_user_path(current_user), class: "nav-link" %></li>
+            <% if current_user.admin? %>
+              <li class="nav-item"><%= admin_link %></li>
+            <% end %>
+  					<li class="nav-item"><%= link_to "Log out", logout_path, method: "delete", class: "nav-link" %></li>
+  				<% else %>
+  					<li class="nav-item"><%= link_to("Create your own itinerary", signup_path, class: "nav-link") %></li>
+  					<li class="nav-item"><%= link_to("Log in", login_path, class: "nav-link") %></li>
+  				<% end %>
+        </ul>
+      </div>
+    </div>
+  </nav>
 </header>

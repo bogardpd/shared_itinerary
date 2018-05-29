@@ -1,9 +1,9 @@
 <% provide(:title, "Log in") %>
 <h1>Log in</h1>
 
-<div class="row">
-	<div class="col-md-6 col-md-offset-3">
-		<div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> New user? <%= link_to "Sign up now!", signup_path, class: "prominent" %></div>
+<div class="row justify-content-center">
+	<div class="col-md-6">
+		<div class="alert alert-info">New user? <%= link_to "Sign up now!", signup_path, class: "prominent" %></div>
     
     <%= form_for(:session, url: login_path) do |f| %>
 			

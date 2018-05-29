@@ -47,9 +47,13 @@ GEM
       nokogiri
     ansi (1.5.0)
     arel (9.0.0)
+    autoprefixer-rails (8.5.1)
+      execjs
     bcrypt (3.1.7)
-    bootstrap-sass (3.2.0.0)
-      sass (~> 3.2)
+    bootstrap (4.1.1)
+      autoprefixer-rails (>= 6.0.3)
+      popper_js (>= 1.12.9, < 2)
+      sass (>= 3.5.2)
     builder (3.2.3)
     byebug (3.4.0)
       columnize (~> 0.8)
@@ -115,6 +119,7 @@ GEM
       mini_portile2 (~> 2.3.0)
     nori (2.6.0)
     pg (0.18.4)
+    popper_js (1.12.9)
     puma (3.9.1)
     rack (2.0.5)
     rack-test (1.0.0)
@@ -215,7 +220,7 @@ PLATFORMS
 
 DEPENDENCIES
   bcrypt (= 3.1.7)
-  bootstrap-sass (= 3.2.0.0)
+  bootstrap (~> 4.1, >= 4.1.1)
   byebug (= 3.4.0)
   coffee-rails (~> 4.2)
   guard-minitest (~> 2.4, >= 2.4.6)

@@ -4,12 +4,7 @@ body {
 	font-family: "Source Sans Pro", sans-serif;
 	font-size: 20px;
   background-color: hsl(200,5%,97%);
-}
-
-header {
-  div {
-    background-color: hsl(200,5%,93%);
-  }
+  padding: 0;
 }
 
 svg {
@@ -28,10 +23,6 @@ table {
 
 .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
   background-color: hsl(200,5%,97%);
-}
-
-textarea {
-	resize: vertical;
 }
 
 .center {
@@ -65,7 +56,8 @@ h1 {
 h2 {
 	font-size: 2.5em;
   font-weight: 400;
-	margin-bottom: 30px;
+  margin-top: 0.25em;
+	margin-bottom: 0.5em;
 	color: hsl(0,50%,40%);
 }
 
@@ -83,59 +75,6 @@ p {
 	line-height: 1.7em;
 }
 
-/* header */
-
-#logo {
-  font-size: 28px;
-  font-weight: 300;
-  color: $gray;
-	&:hover {
-		text-decoration: none;
-	}
-  img {
-    margin-top: -5px;
-    width: 32px;
-    height: 32px;
-    border: 1px solid $color-border;
-    border-radius: 4px;
-  }
-}
-
-/* footer */
-
-footer {
-	margin-top: 45px;
-  margin-bottom: 35px;
-	padding-top: 5px;
-	border-top: 1px solid $gray-lighter;
-	color: $gray-light;
-	a {
-		color: $gray;
-		&:hover {
-			color: $gray-darker;
-		}
-	}
-	small {
-		float: left;
-	}
-	ul {
-		float: right;
-		list-style: none;
-		li {
-			float: left;
-			margin-left: 15px;
-		}
-	}
-}
-
-
-
-/* Admin */
-
-span.unread {
-  background-color: red;
-  color: white;
-}
 
 /* Users index */
 
@@ -145,7 +84,7 @@ span.unread {
 	li {
 		overflow: auto;
 		padding: 10px 0;
-		border-bottom: 1px solid $gray-lighter;
+		border-bottom: 1px solid $gray-300;
 	}
 }
 
@@ -155,4 +94,12 @@ img.icon {
   width:  48px;
   height: 24px;
   margin:  5px;
+}
+
+img.octicon {
+  height: 1em;
+}
+
+.icon-thumbs-up {
+  font-family: 'entypo';
 }

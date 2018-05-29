@@ -1,8 +1,8 @@
 <% provide(:title, 'Airlines')%>
 <h1>Airlines</h1>
 
-<div class="row">
-<div class="col-md-6 col-md-offset-3">
+<div class="row justify-content-center">
+<div class="col-md-6">
   
 <table class="table">
   <thead>
@@ -16,7 +16,7 @@
     <td><%= airline_icon(airline.iata_code, show_blank_icon: true) %> <%= airline.name %></td>
     <td>
       <% if airline.name.nil? %>
-        <%= link_to %Q(<span class="label label-warning">Needs Review</span>).html_safe, edit_airline_path(airline) %>
+        <%= link_to "Needs Review", edit_airline_path(airline), class: "badge badge-warning" %>
       <% else %>
         <%= link_to "Edit", edit_airline_path(airline) %>
       <% end %>
