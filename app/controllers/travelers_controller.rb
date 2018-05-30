@@ -3,7 +3,8 @@ class TravelersController < ApplicationController
   before_action :correct_user, only: [:create, :edit, :destroy]
   
   def new
-    @traveler = Event.find(params[:event]).travelers.build
+    @event = Event.find(params[:event])
+    @traveler = @event.travelers.build
   end
   
   def create
@@ -19,6 +20,7 @@ class TravelersController < ApplicationController
   
   def edit
     @traveler = Traveler.find(params[:id])
+    @event = @traveler.event
   end
   
   def update

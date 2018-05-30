@@ -44,13 +44,22 @@ a.prominent {
 /* typography */
 
 h1, h2, h3, h4, h5, h6 {
-	line-height: 1;
+	line-height: 0.75em;
 }
 
 h1 {
 	font-size: 3em;
-	margin-bottom: 30px;
+  margin-top: 0.5em;
+	margin-bottom: 1em;
 	text-align: center;
+  small {
+    font-size: 50%;
+    font-weight: $font-weight-light;
+    text-align: center;
+    span.subtitle-emphasis {
+      border-bottom: 1px solid $gray-300;
+    }
+  }
 }
 
 h2 {
@@ -74,6 +83,7 @@ h4 {
 p {
 	line-height: 1.7em;
 }
+
 
 
 /* Users index */

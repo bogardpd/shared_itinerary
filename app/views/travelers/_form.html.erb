@@ -1,0 +1,24 @@
+<div class="row justify-content-center">
+	<div class="col-md-6">
+		<%= form_for(@traveler) do |f| %>
+			<%= render 'shared/error_messages', object: f.object %>
+			
+			<%= f.hidden_field :event, value: params[:event] %>
+			
+      <%= f.label :traveler_name %>
+      <%= f.text_field :traveler_name, class: 'form-control' %>
+
+      <%= f.label :traveler_note %> <small>(department, nickname, etc.) (optional)</small>
+      <%= f.text_field :traveler_note, class: 'form-control' %>
+
+			<%= f.label :arrival_info %> <small>(e.g. "Rental Car" or "Riding with John Doe") (optional)</small>
+			<%= f.text_field :arrival_info, class: 'form-control' %>
+      
+			<%= f.label :departure_info %> <small>(e.g. "Rental Car" or "Riding with John Doe") (optional)</small>
+			<%= f.text_field :departure_info, class: 'form-control' %>
+			
+			<%= f.submit yield(:form_button), class: "btn btn-primary" %>
+			
+		<% end %>
+	</div>
+</div>
