@@ -1,6 +1,5 @@
 .edit-button {
   float: right;
-  font-size: $font-size-small;
 }
 
 a.edit-link {
@@ -13,6 +12,15 @@ a.inline-link {
 
 span.time-zone {
   font-weight: 300;
+}
+
+div.event-info {
+  a {
+    text-decoration: underline;
+  }
+  p:last-child {
+    margin-bottom: 0;
+  } 
 }
 
 div.traveler-itinerary {
