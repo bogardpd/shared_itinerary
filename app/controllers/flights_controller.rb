@@ -3,8 +3,9 @@ class FlightsController < ApplicationController
   before_action :correct_user, only: [:edit, :update, :destroy]
   
   def new
-    traveler = Traveler.find(params[:traveler])
-    session[:current_traveler] ||= traveler.id
+    session[:current_traveler] ||= Traveler.find(params[:traveler]).id
+    @traveler = Traveler.find(session[:current_traveler])
+    @event = @traveler.event
     @flight = Flight.new
     
     rescue ActiveRecord::RecordNotFound
@@ -27,7 +28,8 @@ class FlightsController < ApplicationController
   
   def edit
     @flight = Flight.find(params[:id])
-    @timezone = @flight.traveler.event.timezone
+    @traveler = @flight.traveler
+    @event = @traveler.event
   end
   
   def update

@@ -7,7 +7,7 @@
       <div class="row">
         <div class="col">
     			<%= f.label :is_event_arrival, "Arrival or departure?" %>
-    			<%= f.select(:is_event_arrival, options_for_select([["Arrival – this flight brings the traveler to the event", true],["Departure – this flight takes the traveler home from the event", false]], selected: (params[:direction] ? (params[:direction] != "departure") : f.object.is_event_arrival)), {}, {class: "form-control"}) %>
+    			<%= f.select(:is_event_arrival, options_for_select([["Arrival – this flight brings #{@traveler.traveler_name} to #{@event.event_name}", true],["Departure – this flight takes #{@traveler.traveler_name} home from #{@event.event_name}", false]], selected: (params[:direction] ? (params[:direction] != "departure") : f.object.is_event_arrival)), {}, {class: "form-control"}) %>
         </div>
       </div>
       

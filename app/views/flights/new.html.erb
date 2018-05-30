@@ -1,5 +1,9 @@
 <% provide(:title, "Add New Flight") %>
 <% provide(:form_button, "Add Flight") %>
-<h1>Add New Flight</h1>
+
+<h1>
+  Add New Flight<br/>
+  <small>for <span class="subtitle-emphasis"><%= @traveler.traveler_name %></span> in <span class="subtitle-emphasis"><%= @event.event_name %></span></small>
+</h1>
 
 <%= render "form" %>
