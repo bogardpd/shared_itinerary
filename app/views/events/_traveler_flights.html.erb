@@ -10,7 +10,7 @@
         <div class="flight-number"><%= flight[:flight_number] %></div>
         <% if current_user?(@event.user) %>
           <div class="btn-group flight-edit">
-            <%= link_to("Edit flight", edit_flight_path(flight[:id]), title: "Edit #{flight[:airline_name]} #{flight[:flight_number]}", class: "badge badge-primary") %>
+            <%= link_to("Edit", edit_flight_path(flight[:id]), title: "Edit #{flight[:airline_name]} #{flight[:flight_number]}", class: "btn btn-sm btn-outline-primary") %>
           </div>
         <% end %>
       </td>
