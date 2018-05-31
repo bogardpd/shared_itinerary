@@ -54,10 +54,11 @@
     
       </table>
       
-      <% if traveler[direction][:info] %>
-        <div class="traveler-info"><%= traveler[direction][:info] %></div>
-      <% end %>
+      
     
     </div>
+    <% if traveler[direction][:info] %>
+      <div class="card-footer"><%= traveler[direction][:info] %></div>
+    <% end %>
   </div>
 </div>
