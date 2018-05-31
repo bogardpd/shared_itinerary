@@ -2,12 +2,14 @@ $color-light:  hsl(0,0,70%);
 $color-background-light: hsl(200,5%,95%);
 $color-border: hsl(200,5%,90%);
 
-$font-size-small: 80%;
-$font-size-standard: 100%;
-$font-size-large: 150%;
+$font-size-small: 0.8rem;
+$font-size-standard: 1rem;
+$font-size-large: 1.5rem;
 
 $font-weight-light: 300;
 $font-weight-bold: 600;
+
+$line-height-compressed: 1.4em;
 
 $shadow: 2px 2px darken($color-border, 10%);
 
