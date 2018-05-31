@@ -24,17 +24,17 @@ div.event-info {
 }
 
 div.traveler-itinerary {
-  margin-top: 1em;
-  margin-bottom: 1em;
+  margin: 1rem 0;
+  padding: 1.5rem 0.75rem;
   background-color: #FFFFFF;
   @include box-visual;
   
   div.traveler-name {
-    padding: 15px;
+    
   }
   
   div.traveler-flights {
-    padding: 0 15px 15px 15px;
+    padding: 1em;
   }
   
   div.traveler-info {
@@ -46,23 +46,20 @@ div.traveler-itinerary {
   }
   
   h3 {
-    margin: 0;
+    margin-bottom: 1em;
   }
   
   h4 {
-    padding: 0.25em;
-    background-color: $color-background-light;
-    @include box-visual;
     text-align: center;
+    small {
+      font-weight: $font-weight-light;
+    }
   }
   
 }
 
-
-
 table.flight {
-  border: none;
-  width: 100%;
+  margin: 0;
   
   div.flight-airline {
   }
@@ -90,9 +87,6 @@ table.flight {
   
   td {
     padding: 0.5em;
-
-    border-top:    1px solid $color-border;
-    border-bottom: 1px solid $color-border;
   }
     
   td.flight-identifier {

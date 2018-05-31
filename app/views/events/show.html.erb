@@ -60,23 +60,9 @@
   			<h3><%= traveler[:traveler_name] %>&ensp;<small><%= traveler[:traveler_note] %></small></h3>
         
   		</div>
-		
-  		<div class="col-md-6 traveler-flights">
-        <h4>Arrival <small>at <%= @event.event_name %></small></h4>
-        <%= render partial: "traveler_flights", locals: { traveler_id: traveler_id, traveler: traveler, direction: :arrivals } %>
-        <% if traveler[:arrivals][:info] %>
-          <div class="traveler-info"><%= traveler[:arrivals][:info] %></div>
-        <% end %>
-      </div>
-    
-      <div class="col-md-6 traveler-flights">
-        <h4>Departure <small>from <%= @event.event_name %></small></h4>
-        <%= render partial: "traveler_flights", locals: { traveler_id: traveler_id, traveler: traveler, direction: :departures } %>
-        <% if traveler[:departures][:info] %>
-          <div class="traveler-info"><%= traveler[:departures][:info] %></div>
-        <% end %>
-  		</div>
-    
+		 
+      <%= [:arrivals, :departures].map{|dir| render partial: "traveler_direction", locals: { traveler_id: traveler_id, traveler: traveler, direction: dir }}.join.html_safe %>
+      
     </div>
 	<% end %>
   

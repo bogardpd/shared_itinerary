@@ -11,4 +11,9 @@ module EventsHelper
     return %Q( style="background-color: hsl(#{hsl_colors[:background]});").html_safe
   end
   
+  def traveler_direction_title(direction, event_name)
+    html = direction == :arrivals ? "Arrival <small>at #{event_name}</small>" : "Departure <small>from #{event_name}</small>"
+    return html.html_safe
+  end
+  
 end
