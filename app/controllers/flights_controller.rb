@@ -17,7 +17,7 @@ class FlightsController < ApplicationController
     @flight = current_traveler.flights.build(flight_params)
 
     if @flight.save
-      flash[:success] = "Flight created! #{view_context.link_to("Jump to this flight’s itinerary", "#t-#{current_traveler.id}", class: "btn btn-primary")} #{view_context.link_to("Add another flight", new_flight_path(traveler: current_traveler.id), class: "btn btn-success")}"
+      flash[:success] = "Flight created! #{view_context.link_to("Jump to this flight’s itinerary", "#t-#{current_traveler.id}", class: "btn btn-success")} #{view_context.link_to("Add another flight", new_flight_path(traveler: current_traveler.id), class: "btn btn-success")}"
       session[:current_traveler] = nil
       redirect_to event_path(current_traveler.event)
     else
