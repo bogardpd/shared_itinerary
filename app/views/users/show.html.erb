@@ -2,18 +2,28 @@
 <h1><%= @user.name %>’s Events</h1>
 
 <% if current_user?(@user) %>
-<%= link_to "Create a new event", new_event_path, class: "btn btn-primary" %>
+<div class="row">
+  <div class="col center">
+    <%= link_to "Create a new event", new_event_path, class: "btn btn-primary" %>
+  </div>
+</div>
 <% end %>
 
-<% if @user.events.any? %>
-<table class="table">
-	<thead>
-		<th>Event</th>
-	</thead>
-	<% @user.events.each do |event| %>
-		<tr>
-			<td><%= link_to(event.event_name, event_path(event)) %></td>
-		</tr>
-	<% end %>
-</table>
+<% if @events_table.any? %>
+<div class="row justify-content-center">
+  <div class="col-6">
+    <table class="table">
+    	<thead>
+    		<th>Event</th>
+        <th class="event-dates">Travel Dates</th>
+    	</thead>
+    	<% @events_table.each do |event| %>
+    		<tr>
+    			<td><%= link_to(event[:event_name], event_path(event[:event])) %></td>
+          <td class="event-dates"><%= short_date_range(event[:travel_date_range]) %>
+    		</tr>
+    	<% end %>
+    </table>
+  </div>
+</div>
 <% end %>

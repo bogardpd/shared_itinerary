@@ -16,6 +16,16 @@ class Event < ActiveRecord::Base
     return TZInfo::Timezone.get("UTC")      
   end
   
+  # Returns the range of dates this event's travel covers, in the event's
+  # timezone
+  def travel_date_range
+    flights = Flight.select(:origin_time, :destination_time).where(traveler_id: self.travelers)
+    return nil unless flights.any?
+    min_orig_time = flights.map{|f| f[:origin_time] }.min.in_time_zone(event_timezone).to_date
+    max_dest_time = flights.map{|f| f[:destination_time] }.max.in_time_zone(event_timezone).to_date
+    return min_orig_time..max_dest_time
+  end
+  
   # Returns a hash of key airports and hues for each airport
   def airport_hues
     data = flight_data_by_traveler

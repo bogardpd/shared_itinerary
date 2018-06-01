@@ -39,5 +39,9 @@ class User < ActiveRecord::Base
     update_attribute(:remember_digest, nil)
   end
   
+  def events_table
+    return self.events.map{|e| {event: e, event_name: e.event_name, travel_date_range: e.travel_date_range}}.sort_by{|e| e[:travel_date_range]&.begin || 0}.reverse
+  end
+  
 end
  
