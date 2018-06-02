@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   post "travelers/:id/new-flight-select" => "travelers#new_flight_select", as: :new_flight_select
   
   resources :flights
+  post "flights/create-from-flight-xml" => "flights#create_from_flight_xml", as: :create_flight_from_flight_xml
   resources :airlines, only: [:index, :edit, :update]
   resources :airports, except: [:show]
   

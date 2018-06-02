@@ -26,6 +26,10 @@ class FlightsController < ApplicationController
     
   end
   
+  def create_from_flight_xml
+    render plain: params
+  end
+  
   def edit
     @flight = Flight.find(params[:id])
     @traveler = @flight.traveler
