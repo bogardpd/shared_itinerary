@@ -1,0 +1,41 @@
+<% provide(:title, "Add New Flight") %>
+
+<h1>
+  Add New Flight<br/>
+  <small>for <span class="subtitle-emphasis"><%= @traveler.traveler_name %></span> in <span class="subtitle-emphasis"><%= @event.event_name %></span></small>
+</h1>
+
+<%= form_tag(new_flight_select_path(id: @traveler.id), method: :post) do %>
+  
+  <div class="form-row justify-content-center">
+    
+    <div class="col-auto">
+      <%= label_tag(:airline_code, "Airline code") %>
+      <%= text_field_tag(:airline_code, nil, size: 3, maxlength: 3, placeholder: "AA", class: "form-control") %>
+    </div>
+    
+    <div class="col-auto">
+      <%= label_tag(:flight_number) %>
+      <%= text_field_tag(:flight_number, nil, size: 5, maxlength: 5, placeholder: "1234", class: "form-control") %>
+    </div>
+    
+    <div class="col-auto">
+      <%= label_tag(:departure_date) %>
+      <%= date_field_tag(:departure_date, nil, size: 10, placeholder: "yyyy-mm-dd", class: "form-control") %>
+    </div>
+
+  </div>
+  
+  <div class="form-row justify-content-center">
+    <div class="col-auto">
+      <%= submit_tag("Search", class: "btn btn-primary") %>
+    </div>
+  </div>
+
+<% end %>
+
+<div class="row">
+  <div class="col">
+    <p><%= link_to "Manually add new flight", new_flight_path(traveler: @traveler.id) %>
+  </div>
+</div>

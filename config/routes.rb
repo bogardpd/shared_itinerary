@@ -17,6 +17,9 @@ Rails.application.routes.draw do
   resources :users
   resources :events
   resources :travelers
+  get  "travelers/:id/new-flight-search" => "travelers#new_flight_search", as: :new_flight_search
+  post "travelers/:id/new-flight-select" => "travelers#new_flight_select", as: :new_flight_select
+  
   resources :flights
   resources :airlines, only: [:index, :edit, :update]
   resources :airports, except: [:show]

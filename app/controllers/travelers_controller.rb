@@ -1,10 +1,20 @@
 class TravelersController < ApplicationController
-  before_action :logged_in_user, only: [:new, :create, :edit, :destroy]
-  before_action :correct_user, only: [:create, :edit, :destroy]
+  before_action :logged_in_user, only: [:new, :new_flight_search, :new_flight_select, :create, :edit, :destroy]
+  before_action :correct_user, only: [:new, :new_flight_search, :new_flight_select, :create, :edit, :destroy]
   
   def new
     @event = Event.find(params[:event])
     @traveler = @event.travelers.build
+  end
+  
+  def new_flight_search
+    @traveler = Traveler.find(params[:id])
+    @event = @traveler.event
+  end
+  
+  def new_flight_select
+    # Validate that fields are present
+    
   end
   
   def create
@@ -48,7 +58,7 @@ class TravelersController < ApplicationController
   end
     
   def correct_user
-    if params[:id] # edit
+    if params[:id]
       event_user = Traveler.find(params[:id]).event.user
     elsif params[:event]
       event_user = Event.find(params[:event]).user
