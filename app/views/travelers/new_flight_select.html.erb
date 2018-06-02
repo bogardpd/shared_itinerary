@@ -1,1 +1,26 @@
-Select a flight
+<% provide(:title, "Select a Flight") %>
+
+<h1>
+  Select a Flight<br/>
+  <small>for <span class="subtitle-emphasis"><%= @traveler.traveler_name %></span> in <span class="subtitle-emphasis"><%= @event.event_name %></span></small>
+</h1>
+
+<p class="center">Flights matching <%= params[:airline_code].upcase %> <%= params[:flight_number] %> on <%= short_date(Date.parse(params[:departure_date])) %>:</p>
+
+<div class="row justify-content-center">
+  <div class="col-6">
+    <% @matching_flights.each do |flight| %>
+    <div>
+      <%= form_for(@flight) do |f| %>
+        <p><code><%= flight %></code></p>
+        <%= f.submit(%Q(#{flight[:origin_airport_icao]} &rarr; #{flight[:destination_airport_icao]}).html_safe, class: "btn btn-outline-primary") %>
+      <% end %>
+    </div>
+    <hr />        
+    <% end %>
+    <div>
+      <%= link_to("None of the above", new_flight_path(traveler: @traveler.id), class: "btn btn-outline-secondary")%>
+    </div>
+ 
+  </div>
+</div>

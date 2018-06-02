@@ -5,13 +5,17 @@
   <small>for <span class="subtitle-emphasis"><%= @traveler.traveler_name %></span> in <span class="subtitle-emphasis"><%= @event.event_name %></span></small>
 </h1>
 
+<div class="row justify-content-center">
+<div class="col-md-8">
 <%= form_tag(new_flight_select_path(id: @traveler.id), method: :post) do %>
   
-  <div class="form-row justify-content-center">
+  
+  
+  <div class="form-row">
     
     <div class="col-auto">
       <%= label_tag(:airline_code, "Airline code") %>
-      <%= text_field_tag(:airline_code, nil, size: 3, maxlength: 3, placeholder: "AA", class: "form-control") %>
+      <%= text_field_tag(:airline_code, nil, size: 3, maxlength: 3, placeholder: "AA", class: "form-control code airline-iata") %>
     </div>
     
     <div class="col-auto">
@@ -26,16 +30,24 @@
 
   </div>
   
-  <div class="form-row justify-content-center">
-    <div class="col-auto">
-      <%= submit_tag("Search", class: "btn btn-primary") %>
+  <div class="form-row">
+    <div class="col">
+			<%= label_tag(:is_event_arrival, "Arrival or departure?") %>
+			<%= select_tag(:is_event_arrival, options_for_select([["Arrival – this flight brings #{@traveler.traveler_name} to #{@event.event_name}", true],["Departure – this flight takes #{@traveler.traveler_name} home from #{@event.event_name}", false]]), {class: "form-control"}) %>
+    </div>
+  </div>
+  
+  <div class="form-row">
+    <div class="col">
+      <%= submit_tag("Find flight", class: "btn btn-primary") %>
     </div>
   </div>
 
 <% end %>
+</div></div>
 
 <div class="row">
   <div class="col">
-    <p><%= link_to "Manually add new flight", new_flight_path(traveler: @traveler.id) %>
+    <p class="center"><%= link_to "Manually add new flight", new_flight_path(traveler: @traveler.id) %>
   </div>
 </div>

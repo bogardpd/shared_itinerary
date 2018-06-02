@@ -19,6 +19,13 @@ class TravelersControllerTest < ActionController::TestCase
     assert_redirected_to root_url
   end
   
+  test "should redirect new flight select for wrong traveler" do
+    log_in_as(users(:johndoe))
+    traveler = travelers(:two)
+    post :new_flight_select, params: { id: traveler, airline_code: "AA", flight_number: "1234", departure_date: "2018-01-01" }
+    assert_redirected_to root_url
+  end
+  
   test "should redirect create for wrong traveler" do
     log_in_as(users(:johndoe))
     event = events(:different_owner)
