@@ -3,7 +3,7 @@ class FlightsController < ApplicationController
   before_action :correct_user, only: [:edit, :update, :destroy]
   
   def new
-    session[:current_traveler] ||= Traveler.find(params[:traveler]).id
+    #session[:current_traveler] ||= Traveler.find(params[:traveler]).id
     @traveler = Traveler.find(session[:current_traveler])
     @event = @traveler.event
     @flight = Flight.new
@@ -13,14 +13,15 @@ class FlightsController < ApplicationController
   end
   
   def create
-    current_traveler = Traveler.find(session[:current_traveler])
-    @flight = current_traveler.flights.build(flight_params)
+    @traveler = Traveler.find(params[:flight][:traveler_id])
+    @flight = @traveler.flights.build(flight_params)
 
     if @flight.save
-      flash[:success] = "Flight created! #{view_context.link_to("Jump to this flight’s itinerary", "#t-#{current_traveler.id}", class: "btn btn-success")} #{view_context.link_to("Add another flight", new_flight_path(traveler: current_traveler.id), class: "btn btn-success")}"
+      flash[:success] = "Flight created! #{view_context.link_to("Jump to this flight’s itinerary", "#t-#{@traveler.id}", class: "btn btn-success")} #{view_context.link_to("Add another flight", new_flight_path(traveler: @traveler.id), class: "btn btn-success")}"
       session[:current_traveler] = nil
-      redirect_to event_path(current_traveler.event)
+      redirect_to event_path(@traveler.event)
     else
+      @event = @traveler.event
       render "new"
     end
     

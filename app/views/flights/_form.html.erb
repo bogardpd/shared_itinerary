@@ -4,6 +4,10 @@
 
 			<%= render 'shared/error_messages', object: f.object %>
       
+      <% if @flight.new_record? %>
+      <%= f.hidden_field(:traveler_id, value: @traveler.id ) %>
+      <% end %>
+      
       <div class="row">
         <div class="col">
     			<%= f.label :is_event_arrival, "Arrival or departure?" %>
