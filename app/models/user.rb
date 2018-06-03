@@ -40,7 +40,7 @@ class User < ActiveRecord::Base
   end
   
   def events_table
-    return self.events.map{|e| {event: e, event_name: e.event_name, travel_date_range: e.travel_date_range}}.sort_by{|e| e[:travel_date_range]&.begin || 0}.reverse
+    return self.events.map{|e| {event: e, event_name: e.event_name, travel_date_range: e.travel_date_range}}.sort_by{|e| e[:travel_date_range]&.begin || Time.at(0)}.reverse
   end
   
 end

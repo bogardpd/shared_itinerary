@@ -5,6 +5,7 @@ one:
   traveler_note: MyText
   arrival_info: MyText
   departure_info: MyText
+  event: one
 
 two:
   traveler_name: MyText

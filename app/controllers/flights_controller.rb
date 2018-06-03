@@ -3,7 +3,6 @@ class FlightsController < ApplicationController
   before_action :correct_user, only: [:edit, :update, :destroy]
   
   def new
-    #session[:current_traveler] ||= Traveler.find(params[:traveler]).id
     @traveler = Traveler.find(session[:current_traveler])
     @event = @traveler.event
     @flight = Flight.new

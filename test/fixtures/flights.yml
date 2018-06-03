@@ -1,11 +1,19 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-# This model initially had no columns defined.  If you add columns to the
-# model remove the '{}' from the fixture names and add the columns immediately
-# below each fixture, per the syntax in the comments below
-#
-one: {}
-# column: value
-#
-two: {}
-#  column: value
+one:
+  airline: panam
+  origin_airport: atlanta
+  destination_airport: ohare
+  traveler: one
+  flight_number: 1234
+  origin_time: <%= Time.now.utc %>
+  destination_time: <%= (Time.now + 2.hours).utc %>
+  
+flight_with_different_user:
+  airline: panam
+  origin_airport: atlanta
+  destination_airport: ohare
+  traveler: two
+  flight_number: 1234
+  origin_time: <%= Time.now.utc %>
+  destination_time: <%= (Time.now + 2.hours).utc %>

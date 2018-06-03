@@ -2,3 +2,8 @@ atlanta:
   iata_code: ATL
   name: Atlanta
   timezone: America/New_York
+
+ohare:
+  iata_code: ORD
+  name: Chicago OHare
+  timezone: America/Chicago

@@ -7,7 +7,7 @@ class TravelersControllerTest < ActionController::TestCase
   
   test "should redirect create when not logged in" do
     assert_no_difference "Traveler.count" do
-      post :create, params: { section: { traveler_name: "John Doe", traveler_note: "jdoe", pickup_info: "Rental Car", is_arrival: true}, event: @event }
+      post :create, params: { traveler: { traveler_name: "John Doe", traveler_note: "jdoe" }, event: @event }
     end
     assert_redirected_to login_url
   end
@@ -30,7 +30,7 @@ class TravelersControllerTest < ActionController::TestCase
     log_in_as(users(:johndoe))
     event = events(:different_owner)
     assert_no_difference "Traveler.count" do
-      post :create, params: { section: { traveler_name: "Bob Smith", traveler_note: "bsmith", pickup_info: "Rental Car", is_arrival: true}, event: event }
+      post :create, params: { traveler: { traveler_name: "Bob Smith", traveler_note: "bsmith"}, event: event }
     end
     assert_redirected_to root_url
   end
