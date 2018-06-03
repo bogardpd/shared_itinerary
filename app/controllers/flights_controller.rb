@@ -1,9 +1,10 @@
 class FlightsController < ApplicationController
-  before_action :logged_in_user, only: [:new, :create, :edit, :update, :destroy]
-  before_action :correct_user, only: [:edit, :update, :destroy]
+  before_action :logged_in_user,   only: [:new, :create, :edit, :update, :destroy]
+  before_action :correct_traveler, only: [:new, :create]
+  before_action :correct_user,     only: [:edit, :update, :destroy]
   
   def new
-    @traveler = Traveler.find(session[:current_traveler])
+    @traveler = Traveler.find(params[:traveler])
     @event = @traveler.event
     @flight = Flight.new
     
@@ -64,6 +65,16 @@ class FlightsController < ApplicationController
     
     def correct_user
       redirect_to root_url if Flight.find(params[:id]).traveler.event.user != current_user
+    end
+    
+    def correct_traveler
+      if params[:flight] && params[:flight][:traveler_id]
+        traveler = params[:flight][:traveler_id]
+      else
+        traveler = params[:traveler]
+      end
+      redirect_to root_url if traveler.nil?
+      redirect_to root_url if Traveler.find(traveler)&.event&.user != current_user
     end
   
 end

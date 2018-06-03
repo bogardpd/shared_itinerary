@@ -14,6 +14,12 @@ class FlightsControllerTest < ActionController::TestCase
     assert_redirected_to login_url
   end
   
+  test "should redirect new when wrong traveler" do
+    log_in_as(users(:johndoe))
+    get :new, params: { traveler: travelers(:two) }
+    assert_redirected_to root_url
+  end
+  
   # CREATE
   
   test "should redirect create when not logged in" do
@@ -25,6 +31,18 @@ class FlightsControllerTest < ActionController::TestCase
       post :create, params: { flight: { traveler_id: traveler.id, airline: airline, origin_airport: orig_airport, destination_airport: dest_airport, flight_number: 1234, origin_time: Time.now.utc, destination_time: (Time.now + 2.hours).utc} }
     end
     assert_redirected_to login_url
+  end
+  
+  test "should redirect create when wrong traveler" do
+    log_in_as(users(:johndoe))
+    assert_no_difference "Flight.count" do
+      airline = airlines(:panam)
+      orig_airport = airports(:atlanta)
+      dest_airport = airports(:ohare)
+      traveler = travelers(:two)
+      post :create, params: { flight: { traveler_id: traveler.id, airline: airline, origin_airport: orig_airport, destination_airport: dest_airport, flight_number: 1234, origin_time: Time.now.utc, destination_time: (Time.now + 2.hours).utc} }
+    end
+    assert_redirected_to root_url
   end
   
   # EDIT
