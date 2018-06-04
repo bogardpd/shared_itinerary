@@ -29,6 +29,7 @@ class FlightsController < ApplicationController
   
   def create_from_flight_xml
     render plain: params
+    # add to logged_in and correct_traveler check
   end
   
   def edit

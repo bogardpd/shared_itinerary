@@ -10,13 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_27_142416) do
+ActiveRecord::Schema.define(version: 2018_06_04_232549) do
 
   create_table "airlines", force: :cascade do |t|
     t.string "iata_code"
     t.string "name"
     t.boolean "needs_review", default: false
-    t.index ["iata_code"], name: "index_airlines_on_iata_code", unique: true
+    t.string "icao_code"
   end
 
   create_table "airports", force: :cascade do |t|
@@ -26,7 +26,7 @@ ActiveRecord::Schema.define(version: 2018_05_27_142416) do
     t.datetime "updated_at", null: false
     t.string "timezone"
     t.boolean "needs_review", default: false
-    t.index ["iata_code"], name: "index_airports_on_iata_code", unique: true
+    t.string "icao_code"
   end
 
   create_table "events", force: :cascade do |t|
