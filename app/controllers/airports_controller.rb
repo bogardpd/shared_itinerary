@@ -1,6 +1,6 @@
 class AirportsController < ApplicationController
-  before_action :logged_in_user, only: [:index, :edit, :update]
-  before_action :admin_user, only: [:index, :edit, :update]
+  before_action :logged_in_user
+  before_action :admin_user
   
   def index
     @airports = Airport.order({needs_review: :desc}, :iata_code, :name)

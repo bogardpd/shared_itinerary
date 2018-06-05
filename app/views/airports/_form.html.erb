@@ -4,13 +4,19 @@
     
 			<%= render 'shared/error_messages', object: f.object %>
       
-      <% if show_iata %>
-        <%= f.label :iata_code, "IATA code" %><br />
-        <%= f.text_field :iata_code, maxlength: 3, class: "form-control code airport-iata" %>
-      <% end %>
-      
       <%= f.label :name %>
       <%= f.text_field :name, class: "form-control" %>
+      
+      <div class="row">
+        <div class="col-auto">
+          <%= f.label :iata_code, "IATA code" %>
+          <%= f.text_field :iata_code, class: "form-control code airport-code", size: 3, maxlength: 3 %>
+        </div>
+        <div class="col-auto">
+          <%= f.label :icao_code, "ICAO code" %>
+          <%= f.text_field :icao_code, class: "form-control code airport-code", size: 4, maxlength: 4 %>
+        </div>
+      </div>
       
       <%= f.label :timezone %>
       <%= f.select :timezone, Timezones::select_options, {}, {class: "form-control"} %>

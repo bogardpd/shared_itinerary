@@ -19,7 +19,7 @@
         <%= f.fields_for :airline do |f_airline| %>
         <div class="col-auto">
           <%= f_airline.label :iata_code, "Airline code" %>
-          <%= f_airline.text_field :iata_code, class: "form-control code airline-iata", maxlength: 2, placeholder: "AA" %>
+          <%= f_airline.text_field :iata_code, class: "form-control code airline-code", maxlength: 2, placeholder: "AA" %>
         </div>
         <% end %>
         <div class="col-auto">
@@ -35,7 +35,7 @@
             <%= f.fields_for :origin_airport do |f_orig| %>
             <div class="col-auto">
               <%= f_orig.label :iata_code, "Code" %>
-              <%= f_orig.text_field :iata_code, class: "form-control code airport-iata", maxlength: 3, placeholder: "ABC" %>
+              <%= f_orig.text_field :iata_code, class: "form-control code airport-code", maxlength: 3, placeholder: "ABC" %>
             </div>
             <% end %>      
             <div class="col-auto">
@@ -53,7 +53,7 @@
             <%= f.fields_for :destination_airport do |f_dest| %>
             <div class="col-auto">
               <%= f_dest.label :iata_code, "Code" %>
-              <%= f_dest.text_field :iata_code, class: "form-control code airport-iata", maxlength: 3, placeholder: "XYZ" %>
+              <%= f_dest.text_field :iata_code, class: "form-control code airport-code", maxlength: 3, placeholder: "XYZ" %>
             </div>
             <% end %>
             <div class="col-auto">
