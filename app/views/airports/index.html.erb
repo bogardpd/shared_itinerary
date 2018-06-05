@@ -4,19 +4,23 @@
 <div class="button center"><%= link_to("Manually create new airport".html_safe, new_airport_path, title: "Manually create a new airport", class: "btn btn-outline-primary") %></div>
 
 <div class="row justify-content-center">
-<div class="col-md-6">
+<div class="col">
   
 <table class="table">
   <thead>
-    <th>IATA Code</th>
     <th>City</th>
-    <th>Edit</th>
+    <th>IATA</th>
+    <th>ICAO</th>
+    <th>Timezone</th>
+    <th></th>
   </thead>
 <% @airports.each do |airport| %>
-  <tr>
+  <%= tr_open_needs_review(airport.needs_review) %>
+    <th scope="row"><%= airport.name %></td>
     <td><%= airport.iata_code %></td>
-    <td><%= airport.name %></td>
-    <td>
+    <td><%= airport.icao_code %></td>
+    <td><%= airport.timezone %></td>
+    <td class="review-edit">
       <% if airport.needs_review %>
         <%= link_to "Needs Review", edit_airport_path(airport), class: "badge badge-warning" %>
       <% else %>

@@ -2,19 +2,23 @@
 <h1>Airlines</h1>
 
 <div class="row justify-content-center">
-<div class="col-md-6">
+<div class="col-md-8">
   
 <table class="table">
   <thead>
-    <th>IATA Code</th>
-    <th>Name</th>
-    <th>Edit</th>
+    <th class="airline-logo">Logo</th>
+    <th>Airline</th>
+    <th>IATA</th>
+    <th>ICAO</th>
+    <th></th>
   </thead>
 <% @airlines.each do |airline| %>
-  <tr>
+  <%= tr_open_needs_review(airline.name.nil?) %>
+    <td class="airline-logo"><%= airline_icon(airline.iata_code, show_blank_icon: true) %></td>
+    <th scope="row"><%= airline.name %></td>
     <td><%= airline.iata_code %></td>
-    <td><%= airline_icon(airline.iata_code, show_blank_icon: true) %> <%= airline.name %></td>
-    <td>
+    <td><%= airline.icao_code %></td>
+    <td class="review-edit">
       <% if airline.name.nil? %>
         <%= link_to "Needs Review", edit_airline_path(airline), class: "badge badge-warning" %>
       <% else %>

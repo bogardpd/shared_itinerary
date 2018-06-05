@@ -41,6 +41,11 @@ module ApplicationHelper
     return image_tag("octicons/#{icon}.svg", class: "octicon")
   end
   
+  def tr_open_needs_review(needs_review)
+    return "<tr>".html_safe unless needs_review
+    return %Q(<tr class="table-warning">).html_safe
+  end
+  
   def short_date_range(range)
     return "No flights" if range.nil?
     return %Q(<span class="light">from</span> #{short_date(range.begin)}<br/><span class="light">to</span> #{short_date(range.end)}).html_safe
@@ -57,7 +62,6 @@ module ApplicationHelper
   def short_time(dt)
     dt.strftime("%H:%M")
   end
-  
   
 
 end
