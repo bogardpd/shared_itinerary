@@ -3,9 +3,8 @@ class Airport < ActiveRecord::Base
   has_many :destination_flights, class_name: "Flight", foreign_key: "destination_airport_id"
   
   before_save :upcase_airport_codes
-  validates :iata_code, presence: true,
-                        length: { is: 3 },
-                        uniqueness: { case_sensitive: false }
+  validates :iata_code, length: { is: 3 }, allow_blank: true
+  validates :icao_code, length: { is: 4 }, allow_blank: true, uniqueness: { case_sensitive: false }
   validates :timezone, presence: true
                         
   def formatted_name

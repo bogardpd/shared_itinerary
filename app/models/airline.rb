@@ -1,9 +1,8 @@
 class Airline < ActiveRecord::Base
   has_many :flights
   before_save :upcase_airline_codes
-  validates :iata_code, presence: true,
-                        length: { is: 2 },
-                        uniqueness: { case_sensitive: false }
+  validates :iata_code, length: { is: 2 }, allow_blank: true
+  validates :icao_code, length: { is: 3 }, allow_blank: true, uniqueness: { case_sensitive: false }
   
   def formatted_name
     self.name ? self.name : self.iata_code
