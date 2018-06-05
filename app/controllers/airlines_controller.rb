@@ -23,7 +23,7 @@ class AirlinesController < ApplicationController
   private
   
     def airline_params
-      params.require(:airline).permit(:iata_code, :name, :needs_review)
+      params.require(:airline).permit(:iata_code, :icao_code, :name, :needs_review)
     end
     
 end

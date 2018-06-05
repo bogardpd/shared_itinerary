@@ -37,7 +37,7 @@ class AirportsController < ApplicationController
   private
   
     def airport_params
-      params.require(:airport).permit(:iata_code, :name, :timezone, :needs_review)
+      params.require(:airport).permit(:iata_code, :icao_code, :name, :timezone, :needs_review)
     end
   
 end

@@ -2,7 +2,7 @@ class Airport < ActiveRecord::Base
   has_many :origin_flights,      class_name: "Flight", foreign_key: "origin_airport_id"
   has_many :destination_flights, class_name: "Flight", foreign_key: "destination_airport_id"
   
-  before_save { self.iata_code = iata_code.upcase }
+  before_save :upcase_airport_codes
   validates :iata_code, presence: true,
                         length: { is: 3 },
                         uniqueness: { case_sensitive: false }
@@ -40,6 +40,13 @@ class Airport < ActiveRecord::Base
       end
       
     end
+  end
+  
+  private
+  
+  def upcase_airport_codes
+    self.iata_code = iata_code.upcase
+    self.icao_code = icao_code.upcase
   end
   
 end
