@@ -34,7 +34,7 @@ class Event < ActiveRecord::Base
     key_airports = Set.new
     data.each do |traveler_id, traveler|
       [:arrivals, :departures].each do |direction|
-        key_airports.add(traveler[direction][:key_iata])
+        key_airports.add(traveler[direction][:key_code])
       end
     end
     
@@ -66,14 +66,14 @@ class Event < ActiveRecord::Base
       flight_arr_dep = flight.is_event_arrival ? :arrivals : :departures
       traveler_flights[flight.traveler_id][flight_arr_dep][:flights].push({
         id: flight.id,
-        airline_iata: flight.airline.iata_code,
+        airline_code: flight.airline.code,
         airline_name: flight.airline.name,
         flight_number: flight.flight_number,
-        origin_iata: flight.origin_airport.iata_code,
+        origin_code: flight.origin_airport.code,
         origin_name: flight.origin_airport.name,
         origin_time_utc: flight.origin_time,
         origin_time_local: flight.origin_time.in_time_zone(flight.origin_airport.timezone),
-        destination_iata: flight.destination_airport.iata_code,
+        destination_code: flight.destination_airport.code,
         destination_name: flight.destination_airport.name,
         destination_time_utc: flight.destination_time,
         destination_time_local: flight.destination_time.in_time_zone(flight.destination_airport.timezone)
@@ -84,14 +84,14 @@ class Event < ActiveRecord::Base
     traveler_flights.each do |traveler, directions|
       if directions[:arrivals][:flights].any?
         directions[:arrivals][:flights].sort_by!{|f| f[:destination_time_utc]}
-        directions[:arrivals][:key_iata] = directions[:arrivals][:flights].last[:destination_iata]
+        directions[:arrivals][:key_code] = directions[:arrivals][:flights].last[:destination_code]
         directions[:arrivals][:key_time_utc] = directions[:arrivals][:flights].last[:destination_time_utc]
         directions[:arrivals][:alt_time_utc] = directions[:arrivals][:flights].first[:origin_time_utc]
         directions[:arrivals][:layovers] = layovers(directions[:arrivals][:flights])
       end
       if directions[:departures][:flights].any?
         directions[:departures][:flights].sort_by!{|f| f[:origin_time_utc]}
-        directions[:departures][:key_iata] = directions[:departures][:flights].first[:origin_iata]
+        directions[:departures][:key_code] = directions[:departures][:flights].first[:origin_code]
         directions[:departures][:key_time_utc] = directions[:departures][:flights].first[:origin_time_utc]
         directions[:departures][:alt_time_utc] = directions[:departures][:flights].last[:destination_time_utc]
         directions[:departures][:layovers] = layovers(directions[:departures][:flights])
@@ -129,13 +129,13 @@ class Event < ActiveRecord::Base
               # Create traveler hash if needed:
               unless data[direction][local_date][:travelers].key?(traveler_id)
               
-                # Determine key_iata, key_time_utc, alt_time_utc
+                # Determine key_code, key_time_utc, alt_time_utc
                 if direction == :arrivals
-                  key_iata     = by_traveler[traveler_id][:arrivals][:key_iata]
+                  key_code     = by_traveler[traveler_id][:arrivals][:key_code]
                   key_time_utc = by_traveler[traveler_id][:arrivals][:key_time_utc]
                   alt_time_utc = by_traveler[traveler_id][:arrivals][:alt_time_utc]
                 else
-                  key_iata     = by_traveler[traveler_id][:departures][:key_iata]
+                  key_code     = by_traveler[traveler_id][:departures][:key_code]
                   key_time_utc = by_traveler[traveler_id][:departures][:key_time_utc]
                   alt_time_utc = by_traveler[traveler_id][:departures][:alt_time_utc]
                 end
@@ -143,7 +143,7 @@ class Event < ActiveRecord::Base
                 data[direction][local_date][:travelers].store(traveler_id, {
                   name: traveler[:traveler_name],
                   note: traveler[:traveler_note],
-                  key_iata: key_iata,
+                  key_code: key_code,
                   key_time_utc: key_time_utc,
                   alt_time_utc: alt_time_utc,
                   arrival_departure_info: traveler[direction][:info],
@@ -165,10 +165,10 @@ class Event < ActiveRecord::Base
       end
     end
     
-    # Sort each direction/date by key_iata, key_time_utc, alt_time_utc:
+    # Sort each direction/date by key_code, key_time_utc, alt_time_utc:
     [:arrivals, :departures].each do |direction|
       data[direction].each do |local_date, local_date_data|
-        data[direction][local_date][:travelers] = data[direction][local_date][:travelers].sort_by{|k,v| [v[:key_iata], v[:key_time_utc], v[:alt_time_utc]]}.to_h
+        data[direction][local_date][:travelers] = data[direction][local_date][:travelers].sort_by{|k,v| [v[:key_code], v[:key_time_utc], v[:alt_time_utc]]}.to_h
       end
     end
     
@@ -196,10 +196,10 @@ class Event < ActiveRecord::Base
     (1..flights.length-1).each do |flight_index|
       if flights[flight_index-1][:destination_time_utc] < flights[flight_index][:origin_time_utc]
         layovers_result.push({
-          start_iata:     flights[flight_index-1][:destination_iata],
+          start_code:     flights[flight_index-1][:destination_code],
           start_name:     flights[flight_index-1][:destination_name],
           start_time_utc: flights[flight_index-1][:destination_time_utc],
-          end_iata:       flights[flight_index][:origin_iata],
+          end_code:       flights[flight_index][:origin_code],
           end_name:       flights[flight_index][:origin_name],
           end_time_utc:   flights[flight_index][:origin_time_utc]
         })

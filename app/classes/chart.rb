@@ -183,7 +183,7 @@ class Chart
       end
       
       # Draw chart grid:
-      key_airports = date_local_data[:travelers].map{|k,v| v[:key_iata]}
+      key_airports = date_local_data[:travelers].map{|k,v| v[:key_code]}
       prior_key_airport = nil
       for x in 0..number_of_rows
         current_key_airport = key_airports[x]
@@ -295,10 +295,10 @@ class Chart
       # Draw flight number:
       if width >= @flight_bar_no_text_width
         if width < @flight_bar_line_break_width
-          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height * 0.41}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" fill-opacity="#{@bar_opacity}">#{flight[:airline_iata]}</text>\n)
+          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height * 0.41}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" fill-opacity="#{@bar_opacity}">#{flight[:airline_code]}</text>\n)
           html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height * 0.81}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" fill-opacity="#{@bar_opacity}">#{flight[:flight_number]}</text>\n)
         else
-          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*0.61}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" fill-opacity="#{@bar_opacity}">#{flight[:airline_iata]} #{flight[:flight_number]}</text>\n)
+          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*0.61}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" fill-opacity="#{@bar_opacity}">#{flight[:airline_code]} #{flight[:flight_number]}</text>\n)
         end
       end
       html += "\t</g>\n"
@@ -338,10 +338,10 @@ class Chart
 
       # Draw layover airport label:
       if width >= @flight_bar_no_text_width
-        html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*0.61}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" fill-opacity="#{@bar_opacity}">#{layover[:start_iata]}</text>\n)
+        html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*0.61}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" fill-opacity="#{@bar_opacity}">#{layover[:start_code]}</text>\n)
       else
         [0.30,0.61,0.92].each_with_index do |ypos, index|
-          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*ypos}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" fill-opacity="#{@bar_opacity}">#{layover[:start_iata][index]}</text>\n)
+          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*ypos}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" fill-opacity="#{@bar_opacity}">#{layover[:start_code][index]}</text>\n)
         end
       end
 
@@ -360,7 +360,7 @@ class Chart
     def draw_row(direction, day_time_range_utc, traveler_id, traveler_data, row_index)
       html = String.new
       
-      hue = @airport_hues[traveler_data[:key_iata]]
+      hue = @airport_hues[traveler_data[:key_code]]
 
       html += %Q(\t<a xlink:href="#t-#{traveler_id}">\n)
       html += %Q(\t\t<text x="#{@image_padding}" y="#{flight_bar_top(row_index) + (@flight_bar_height * 0.4)}" class="svg_person_name">#{traveler_data[:name]}</text>\n)
@@ -391,14 +391,14 @@ class Chart
       if start_x
         html += %Q(<g cursor="default">\n)
         html += %Q(<title>#{traveler_data[:flights].first[:origin_name]}</title>\n)
-        html += %Q(<text x="#{start_x - @airport_margin}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.42}" class="svg_airport_label svg_airport_block_start">#{traveler_data[:flights].first[:origin_iata]}</text>\n)
+        html += %Q(<text x="#{start_x - @airport_margin}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.42}" class="svg_airport_label svg_airport_block_start">#{traveler_data[:flights].first[:origin_code]}</text>\n)
         html += %Q(<text x="#{start_x - @airport_margin}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.92}" class="svg_time_label svg_airport_block_start">#{format_time_short(travel_start_time_utc.in_time_zone(@timezone))}</text>\n)
         html += %Q(</g>\n)
       end
       if end_x
         html += %Q(<g cursor="default">\n)
         html += %Q(<title>#{traveler_data[:flights].last[:destination_name]}</title>\n)
-        html += %Q(<text x="#{end_x + @airport_margin}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.42}" class="svg_airport_label svg_airport_block_end">#{traveler_data[:flights].last[:destination_iata]}</text>\n)
+        html += %Q(<text x="#{end_x + @airport_margin}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.42}" class="svg_airport_label svg_airport_block_end">#{traveler_data[:flights].last[:destination_code]}</text>\n)
         html += %Q(<text x="#{end_x + @airport_margin}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.92}" class="svg_time_label svg_airport_block_end">#{format_time_short(travel_end_time_utc.in_time_zone(@timezone))}</text>\n)
         html += %Q(</g>\n)
       end
