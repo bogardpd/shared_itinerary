@@ -6,6 +6,12 @@ class Airport < ActiveRecord::Base
   validates :iata_code, length: { is: 3 }, allow_blank: true
   validates :icao_code, length: { is: 4 }, allow_blank: true, uniqueness: { case_sensitive: false }
   validates :timezone, presence: true
+  
+  def code
+    return self.iata_code if self.iata_code.present?
+    return self.icao_code if self.icao_code.present?
+    return ""
+  end
                         
   def formatted_name
     self.name ? "#{self.name} (#{self.iata_code})" : self.iata_code
