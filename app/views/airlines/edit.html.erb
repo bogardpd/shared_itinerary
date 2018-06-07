@@ -25,6 +25,8 @@
         </div>
       </div>
 
+      <%= f.hidden_field(:needs_review, value: false) %>
+
       <%= f.submit "Edit Airline", class: "btn btn-primary" %>
 
 		<% end %>
