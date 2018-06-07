@@ -40,30 +40,55 @@ module FlightXML
     departure_date_array = [departure_date_local.year, departure_date_local.month, departure_date_local.day]
     departure_utc_range = (Time.new(*departure_date_array, 0, 0, 0, "+14:00").utc)..(Time.new(*departure_date_array, 24, 0, 0, "-12:00").utc) # Calculate the largest possible time range for the departure date in all timezones
     
-    begin
-      flights = client.call(:airline_flight_schedules, message: {
-        start_date: departure_utc_range.begin.to_i,
-        end_date:   departure_utc_range.end.to_i,
-        airline:    airline_code,
-        flightno:   flight_number.to_s
-        }).to_hash[:airline_flight_schedules_results][:airline_flight_schedules_result][:data]
-        return [] if flights.nil?
-    rescue
-      return []
-    end
+    # begin
+    #   flights = client.call(:airline_flight_schedules, message: {
+    #     start_date: departure_utc_range.begin.to_i,
+    #     end_date:   departure_utc_range.end.to_i,
+    #     airline:    airline_code,
+    #     flightno:   flight_number.to_s
+    #     }).to_hash[:airline_flight_schedules_results][:airline_flight_schedules_result][:data]
+    #     return [] if flights.nil?
+    # rescue
+    #   return []
+    # end
     
-    # Get timezones of origin airports:
-    origin_airports = flights.map{|f| f[:origin]}.uniq
+    flights = [{:ident=>"SWA291", :actual_ident=>nil, :departuretime=>"1532360100", :arrivaltime=>"1532365500", :origin=>"KELP", :destination=>"KSAT", :aircrafttype=>"B737", :meal_service=>nil, :seats_cabin_first=>"0", :seats_cabin_business=>"0", :seats_cabin_coach=>"143"}, {:ident=>"SWA291", :actual_ident=>nil, :departuretime=>"1532373600", :arrivaltime=>"1532384700", :origin=>"KHOU", :destination=>"KLAS", :aircrafttype=>"B737", :meal_service=>nil, :seats_cabin_first=>"0", :seats_cabin_business=>"0", :seats_cabin_coach=>"143"}, {:ident=>"SWA291", :actual_ident=>nil, :departuretime=>"1532394900", :arrivaltime=>"1532400600", :origin=>"KOAK", :destination=>"KPDX", :aircrafttype=>"B737", :meal_service=>nil, :seats_cabin_first=>"0", :seats_cabin_business=>"0", :seats_cabin_coach=>"143"}, {:ident=>"SWA291", :actual_ident=>nil, :departuretime=>"1532367300", :arrivaltime=>"1532370300", :origin=>"KSAT", :destination=>"KHOU", :aircrafttype=>"B737", :meal_service=>nil, :seats_cabin_first=>"0", :seats_cabin_business=>"0", :seats_cabin_coach=>"143"}, {:ident=>"SWA291", :actual_ident=>nil, :departuretime=>"1532387700", :arrivaltime=>"1532393100", :origin=>"KLAS", :destination=>"KOAK", :aircrafttype=>"B737", :meal_service=>nil, :seats_cabin_first=>"0", :seats_cabin_business=>"0", :seats_cabin_coach=>"143"}] 
+    
+    # Get data for airports:
+    airports = (flights.map{|f| f[:origin]} | flights.map{|f| f[:destination]}).uniq
     origin_airport_timezones = Hash.new
-    origin_airports.each do |airport_code|
-      return [] unless origin_airport_timezones[airport_code] = airport_timezone(airport_code)
+    airport_data = Hash.new
+    airports.each do |icao_code|
+      unless airport = Airport.find_by(icao_code: icao_code)
+        info = airport_info(icao_code)
+        return [] unless info
+        airport = Airport.new(icao_code: icao_code, name: info[:name], timezone: info[:timezone], needs_review: true)
+        return [] unless airport.save
+      end
+      airport_data[icao_code] = {name: airport[:name], iata_code: airport[:iata_code], timezone: airport[:timezone]}
     end
+    puts "\e[93m#{airport_data}\e[0m"
     
     # Create results hash:
-    flights = flights.map{|f| {airline: f[:ident][0..2], flight_number: f[:ident][3..-1], origin_airport_icao: f[:origin], destination_airport_icao: f[:destination], origin_time_utc: Time.at(f[:departuretime].to_i).utc, destination_time_utc: Time.at(f[:arrivaltime].to_i).utc, origin_date_local: Time.at(f[:departuretime].to_i).in_time_zone(origin_airport_timezones[f[:origin]]).to_date }}.sort_by{|f| f[:origin_time_utc]}
+    flights = flights.map{|f| {
+      airline: f[:ident][0..2],
+      flight_number: f[:ident][3..-1],
+      origin_airport_name: airport_data[f[:origin]][:name],
+      origin_airport_icao: f[:origin],
+      origin_airport_iata: airport_data[f[:origin]][:iata_code],
+      origin_time_utc: Time.at(f[:departuretime].to_i).utc,
+      origin_time_local: Time.at(f[:departuretime].to_i).in_time_zone(airport_data[f[:origin]][:timezone]),
+      destination_airport_name: airport_data[f[:destination]][:name],
+      destination_airport_icao: f[:destination],
+      destination_airport_iata: airport_data[f[:destination]][:iata_code],
+      destination_time_utc: Time.at(f[:arrivaltime].to_i).utc,
+      destination_time_local: Time.at(f[:arrivaltime].to_i).in_time_zone(airport_data[f[:destination]][:timezone])
+      }}
     
     # Filter flights by local date:
-    flights = flights.select{|f| f[:origin_date_local] == departure_date_local}
+    flights = flights.select{|f| f[:origin_time_local].to_date == departure_date_local}
+    
+    flights = flights.sort_by{|f| f[:origin_time_utc]}
     
     return flights
   end

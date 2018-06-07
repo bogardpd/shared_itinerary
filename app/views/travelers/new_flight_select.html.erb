@@ -16,9 +16,8 @@
         <%= f.hidden_field(:traveler_id, value: params[:id]) %>
         <%= f.hidden_field(:is_event_arrival, value: params[:is_event_arrival]) %>
         <%= f.hidden_field(:flight_number, value: params[:flight_number]) %>
-        <%= f.hidden_field(:times_are_utc, value: true) %>
-        <%= f.hidden_field(:origin_time, value: flight[:origin_time_utc]) %>
-        <%= f.hidden_field(:destination_time, value: flight[:destination_time_utc]) %>
+        <%= f.hidden_field(:origin_time, value: flight[:origin_time_local]&.strftime("%Y-%m-%d %H:%M")) %>
+        <%= f.hidden_field(:destination_time, value: flight[:destination_time_local]&.strftime("%Y-%m-%d %H:%M")) %>
         
         <%= f.fields_for :airline do |f_airline| %>
           <%= f_airline.hidden_field(:icao_code, value: flight[:airline]) %>
@@ -32,13 +31,12 @@
           <%= f_dest.hidden_field(:icao_code, value: flight[:destination_airport_icao]) %>
         <% end %>
         
-        <%= f.submit(%Q(#{flight[:origin_airport_icao]} &rarr; #{flight[:destination_airport_icao]}).html_safe, class: "btn btn-outline-primary") %>
+        <%= f.submit(%Q(#{flight[:origin_airport_name]} &rarr; #{flight[:destination_airport_name]}).html_safe, class: "btn btn-outline-primary") %>
       <% end %>
-    </div>
-    <hr />        
+    </div>    
     <% end %>
-    <div>
-      <%= link_to("None of the above", new_flight_path(traveler: @traveler.id), class: "btn btn-outline-secondary")%>
+    <div class="center">
+      <%= link_to("None of the above", new_flight_path(traveler: @traveler.id), class: "btn btn-outline-secondary") %>
     </div>
  
   </div>

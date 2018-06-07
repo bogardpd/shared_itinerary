@@ -23,8 +23,8 @@ class Airline < ActiveRecord::Base
   private
   
   def upcase_airline_codes
-    self.iata_code = iata_code.upcase
-    self.icao_code = icao_code.upcase
+    self.iata_code = iata_code&.upcase
+    self.icao_code = icao_code&.upcase
   end
   
 end

@@ -1,4 +1,4 @@
-class Flight < ActiveRecord::Base
+class Flight < ActiveRecord::Base  
   belongs_to :traveler
   belongs_to :airline
   belongs_to :origin_airport,      class_name: "Airport"

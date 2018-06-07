@@ -22,8 +22,7 @@ class TravelersController < ApplicationController
       render "new_flight_search"
     end
     
-    #@matching_flights = FlightXML::matching_flights(params[:airline_code]&.upcase, params[:flight_number], Date.parse(params[:departure_date]))
-    @matching_flights = [{:airline=>"SWA", :flight_number=>"291", :origin_airport_icao=>"KELP", :destination_airport_icao=>"KSAT", :origin_time_utc=>Time.parse("2018-07-23 15:35:00 UTC"), :destination_time_utc=>Time.parse("2018-07-23 17:05:00 UTC"), :origin_date_local=>Date.parse("Mon, 23 Jul 2018")}, {:airline=>"SWA", :flight_number=>"291", :origin_airport_icao=>"KSAT", :destination_airport_icao=>"KHOU", :origin_time_utc=>Time.parse("2018-07-23 17:35:00 UTC"), :destination_time_utc=>Time.parse("2018-07-23 18:25:00 UTC"), :origin_date_local=>Date.parse("Mon, 23 Jul 2018")}, {:airline=>"SWA", :flight_number=>"291", :origin_airport_icao=>"KHOU", :destination_airport_icao=>"KLAS", :origin_time_utc=>Time.parse("2018-07-23 19:20:00 UTC"), :destination_time_utc=>Time.parse("2018-07-23 22:25:00 UTC"), :origin_date_local=>Date.parse("Mon, 23 Jul 2018")}, {:airline=>"SWA", :flight_number=>"291", :origin_airport_icao=>"KLAS", :destination_airport_icao=>"KOAK", :origin_time_utc=>Time.parse("2018-07-23 23:15:00 UTC"), :destination_time_utc=>Time.parse("2018-07-24 00:45:00 UTC"), :origin_date_local=>Date.parse("Mon, 23 Jul 2018")}, {:airline=>"SWA", :flight_number=>"291", :origin_airport_icao=>"KOAK", :destination_airport_icao=>"KPDX", :origin_time_utc=>Time.parse("2018-07-24 01:15:00 UTC"), :destination_time_utc=>Time.parse("2018-07-24 02:50:00 UTC"), :origin_date_local=>Date.parse("Mon, 23 Jul 2018")}]
+    @matching_flights = FlightXML::matching_flights(params[:airline_code]&.upcase, params[:flight_number], Date.parse(params[:departure_date]))
     
   end
   
