@@ -85,7 +85,11 @@ class Flight < ActiveRecord::Base
     if (airline_icao.present? && existing_airline = Airline.find_by(icao_code: airline_icao)) || (airline_iata.present? && existing_airline = Airline.find_by(iata_code: airline_iata))
       self.airline = existing_airline
     elsif airline_iata.present? || airline_icao.present?
-      self.airline = Airline.new(iata_code: airline_iata, icao_code: airline_icao, needs_review: true)
+      if (airline_icao.present? && airline_info = FlightXML::airline_info(airline_icao))
+        self.airline = Airline.new(iata_code: airline_iata, icao_code: airline_icao, name: airline_info[:name], needs_review: true)
+      else
+        self.airline = Airline.new(iata_code: airline_iata, icao_code: airline_icao, needs_review: true)
+      end
     else
       self.airline = nil
     end
