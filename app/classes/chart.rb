@@ -226,7 +226,6 @@ class Chart
           this_time = day_time_range_utc.end - x.hours
           html += %Q(\t<text x="#{@chart_right - (x * dst_hour_width)}" y="#{@chart_top - @time_axis_padding}" text-anchor="middle" class="svg_time_label">#{time_label(24-x)}</text>\n)
           html += %Q(\t<line x1="#{@chart_right - (x * dst_hour_width)}" y1="#{@chart_top}" x2="#{@chart_right - (x * dst_hour_width)}" y2="#{@chart_top + chart_height}" class="#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}" />\n) unless (x == hours_in_day-switch_x && seconds_in_day%3600 == 0)
-          puts "**** #{seconds_in_day} #{seconds_in_day%3600}"
         end
 
       end

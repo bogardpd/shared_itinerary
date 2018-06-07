@@ -65,7 +65,6 @@ module FlightXML
       end
       airport_data[icao_code] = {name: airport[:name], iata_code: airport[:iata_code], timezone: airport[:timezone]}
     end
-    puts "\e[93m#{airport_data}\e[0m"
     
     # Create results hash:
     flights = flights.map{|f| {
@@ -82,10 +81,14 @@ module FlightXML
       destination_time_utc: Time.at(f[:arrivaltime].to_i).utc,
       destination_time_local: Time.at(f[:arrivaltime].to_i).in_time_zone(airport_data[f[:destination]][:timezone])
       }}
+      
+    # Filter flights by flight number to hide other codeshares:
+    flights = flights.select{|f| f[:flight_number].to_s == flight_number.to_s}
     
     # Filter flights by local date:
     flights = flights.select{|f| f[:origin_time_local].to_date == departure_date_local}
     
+    # Sort flights by departure time:
     flights = flights.sort_by{|f| f[:origin_time_utc]}
     
     return flights
