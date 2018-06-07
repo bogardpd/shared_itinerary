@@ -7,27 +7,27 @@ module FlightXML
     return Savon.client(wsdl: "https://flightxml.flightaware.com/soap/FlightXML2/wsdl", basic_auth: [ENV["FLIGHTAWARE_USERNAME"], ENV["FLIGHTAWARE_API_KEY"]])
   end
   
+  # Accepts an airline ICAO code, and returns a hash of info about the airport
+  # from FlightXML.
+  def self.airline_info(airline_icao_code)
+    begin
+      info = client.call(:airline_info, message: {
+        airline_code: airline_icao_code&.upcase
+        }).to_hash[:airline_info_results][:airline_info_result]
+      return {name: info[:name]}
+    rescue
+      return nil
+    end
+  end
+
   # Accepts an airport IATA or ICAO code, and returns a hash of info about the
   # airport from FlightXML.
   def self.airport_info(airport_code)
     begin
       info = client.call(:airport_info, message: {
-        airport_code: airport_code
+        airport_code: airport_code&.upcase
         }).to_hash[:airport_info_results][:airport_info_result]
       return {name: info[:name], timezone: info[:timezone].tr(":","")}
-    rescue
-      return nil
-    end
-  end
-  
-  # Accepts an airport IATA or ICAO code, and returns the airport IANA timezone
-  # string.
-  def self.airport_timezone(airport_code)
-    begin
-      timezone = client.call(:airport_info, message: {
-        airport_code: airport_code
-      }).to_hash[:airport_info_results][:airport_info_result][:timezone].tr(":","")
-      return timezone
     rescue
       return nil
     end

@@ -100,7 +100,7 @@ class Flight < ActiveRecord::Base
       if (orig_info = FlightXML::airport_info(origin_info_code))
         self.origin_airport = Airport.new(iata_code: origin_iata, icao_code: origin_icao, name: orig_info[:name], timezone: orig_info[:timezone], needs_review: true)
       else
-        self.origin_airport = Airport.new(iata_code: origin_iata, icao_code: origin_icao)
+        self.origin_airport = Airport.new(iata_code: origin_iata, icao_code: origin_icao, needs_review: true)
       end
     else
       self.origin_airport = nil
@@ -116,7 +116,7 @@ class Flight < ActiveRecord::Base
       if (dest_info = FlightXML::airport_info(destination_info_code))
         self.destination_airport = Airport.new(iata_code: destination_iata, icao_code: destination_icao, name: dest_info[:name], timezone: dest_info[:timezone], needs_review: true)
       else
-        self.destination_airport = Airport.new(iata_code: destination_iata, icao_code: destination_icao)
+        self.destination_airport = Airport.new(iata_code: destination_iata, icao_code: destination_icao, needs_review: true)
       end
     else
       self.destination_airport = nil
