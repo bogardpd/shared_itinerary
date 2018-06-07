@@ -24,11 +24,11 @@ class TravelersController < ApplicationController
     end
     
     @matching_flights = FlightXML::matching_flights(params[:airline_code]&.upcase, params[:flight_number], Date.parse(params[:departure_date]))
+    @direction = params[:is_event_arrival] == "true" ? "arrival" : "departure"
 
     unless @matching_flights.any?
       flash[:info] = "We couldn’t automatically look up #{params[:airline_code].upcase} #{params[:flight_number]} on #{view_context.short_date(Date.parse(params[:departure_date]))}. Please enter your flight details."
-      direction = params[:is_event_arrival] == "true" ? "arrival" : "departure"
-      redirect_to new_flight_path(traveler: @traveler.id, direction: direction)
+      redirect_to new_flight_path(traveler: @traveler.id, direction: @direction)
     end
     
   end
