@@ -1,6 +1,7 @@
 module ApplicationHelper
 
   def airline_icon(airline_code, show_blank_icon: true)
+    return "" unless airline_code
     icon_path = Airline.icon_path(airline_code)
     if show_blank_icon
       return image_tag(icon_path, class: "icon", onerror: "this.src='#{ExternalImage::ROOT_PATH}/flights/airline-icons/unknown-airline.png';this.onerror='';").html_safe
