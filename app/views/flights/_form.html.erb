@@ -18,8 +18,13 @@
       <div class="row">
         <%= f.fields_for :airline do |f_airline| %>
         <div class="col-auto">
-          <%= f_airline.label :iata_code, "Airline code" %>
-          <%= f_airline.text_field :iata_code, class: "form-control code airline-code", maxlength: 2, placeholder: "AA" %>
+          <% if f_airline.object.iata_code? || f_airline.object.new_record? %>
+            <%= f_airline.label :iata_code, "Airline code" %>
+            <%= f_airline.text_field :iata_code, class: "form-control code airline-code", maxlength: 2, placeholder: "AA" %>
+          <% else %>
+            <%= f_airline.label :icao_code, "Airline ICAO code" %>
+            <%= f_airline.text_field :icao_code, class: "form-control code airline-code", maxlength: 3, placeholder: "AAA" %>
+          <% end %>
         </div>
         <% end %>
         <div class="col-auto">
@@ -34,8 +39,13 @@
           <div class="row">
             <%= f.fields_for :origin_airport do |f_orig| %>
             <div class="col-auto">
-              <%= f_orig.label :iata_code, "Code" %>
-              <%= f_orig.text_field :iata_code, class: "form-control code airport-code", maxlength: 3, placeholder: "ABC" %>
+              <% if f_orig.object.iata_code || f_orig.object.new_record? %>
+                <%= f_orig.label :iata_code, "Code" %>
+                <%= f_orig.text_field :iata_code, class: "form-control code airport-code", maxlength: 3, placeholder: "ABC" %>
+              <% else %>
+                <%= f_orig.label :icao_code, "ICAO code" %>
+                <%= f_orig.text_field :icao_code, class: "form-control code airport-code", maxlength: 4, placeholder: "ABCD" %>
+              <% end %>
             </div>
             <% end %>      
             <div class="col-auto">
@@ -52,8 +62,13 @@
           <div class="row">
             <%= f.fields_for :destination_airport do |f_dest| %>
             <div class="col-auto">
-              <%= f_dest.label :iata_code, "Code" %>
-              <%= f_dest.text_field :iata_code, class: "form-control code airport-code", maxlength: 3, placeholder: "XYZ" %>
+              <% if f_dest.object.iata_code || f_dest.object.new_record? %>
+                <%= f_dest.label :iata_code, "Code" %>
+                <%= f_dest.text_field :iata_code, class: "form-control code airport-code", maxlength: 3, placeholder: "XYZ" %>
+              <% else %>
+                <%= f_dest.label :icao_code, "ICAO code" %>
+                <%= f_dest.text_field :icao_code, class: "form-control code airport-code", maxlength: 4, placeholder: "WXYZ" %>
+              <% end %>
             </div>
             <% end %>
             <div class="col-auto">

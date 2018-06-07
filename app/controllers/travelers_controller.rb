@@ -20,6 +20,7 @@ class TravelersController < ApplicationController
     if params[:airline_code].blank? || params[:flight_number].blank? || params[:departure_date].blank?
       flash.now[:danger] = "Some form fields are blank!"
       render "new_flight_search"
+      return
     end
     
     @matching_flights = FlightXML::matching_flights(params[:airline_code]&.upcase, params[:flight_number], Date.parse(params[:departure_date]))

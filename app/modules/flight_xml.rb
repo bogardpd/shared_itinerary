@@ -40,19 +40,17 @@ module FlightXML
     departure_date_array = [departure_date_local.year, departure_date_local.month, departure_date_local.day]
     departure_utc_range = (Time.new(*departure_date_array, 0, 0, 0, "+14:00").utc)..(Time.new(*departure_date_array, 24, 0, 0, "-12:00").utc) # Calculate the largest possible time range for the departure date in all timezones
     
-    # begin
-    #   flights = client.call(:airline_flight_schedules, message: {
-    #     start_date: departure_utc_range.begin.to_i,
-    #     end_date:   departure_utc_range.end.to_i,
-    #     airline:    airline_code,
-    #     flightno:   flight_number.to_s
-    #     }).to_hash[:airline_flight_schedules_results][:airline_flight_schedules_result][:data]
-    #     return [] if flights.nil?
-    # rescue
-    #   return []
-    # end
-    
-    flights = [{:ident=>"SWA291", :actual_ident=>nil, :departuretime=>"1532360100", :arrivaltime=>"1532365500", :origin=>"KELP", :destination=>"KSAT", :aircrafttype=>"B737", :meal_service=>nil, :seats_cabin_first=>"0", :seats_cabin_business=>"0", :seats_cabin_coach=>"143"}, {:ident=>"SWA291", :actual_ident=>nil, :departuretime=>"1532373600", :arrivaltime=>"1532384700", :origin=>"KHOU", :destination=>"KLAS", :aircrafttype=>"B737", :meal_service=>nil, :seats_cabin_first=>"0", :seats_cabin_business=>"0", :seats_cabin_coach=>"143"}, {:ident=>"SWA291", :actual_ident=>nil, :departuretime=>"1532394900", :arrivaltime=>"1532400600", :origin=>"KOAK", :destination=>"KPDX", :aircrafttype=>"B737", :meal_service=>nil, :seats_cabin_first=>"0", :seats_cabin_business=>"0", :seats_cabin_coach=>"143"}, {:ident=>"SWA291", :actual_ident=>nil, :departuretime=>"1532367300", :arrivaltime=>"1532370300", :origin=>"KSAT", :destination=>"KHOU", :aircrafttype=>"B737", :meal_service=>nil, :seats_cabin_first=>"0", :seats_cabin_business=>"0", :seats_cabin_coach=>"143"}, {:ident=>"SWA291", :actual_ident=>nil, :departuretime=>"1532387700", :arrivaltime=>"1532393100", :origin=>"KLAS", :destination=>"KOAK", :aircrafttype=>"B737", :meal_service=>nil, :seats_cabin_first=>"0", :seats_cabin_business=>"0", :seats_cabin_coach=>"143"}] 
+    begin
+      flights = client.call(:airline_flight_schedules, message: {
+        start_date: departure_utc_range.begin.to_i,
+        end_date:   departure_utc_range.end.to_i,
+        airline:    airline_code,
+        flightno:   flight_number.to_s
+        }).to_hash[:airline_flight_schedules_results][:airline_flight_schedules_result][:data]
+        return [] if flights.nil?
+    rescue
+      return []
+    end
     
     # Get data for airports:
     airports = (flights.map{|f| f[:origin]} | flights.map{|f| f[:destination]}).uniq

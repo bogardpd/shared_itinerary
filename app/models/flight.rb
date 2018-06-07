@@ -8,9 +8,12 @@ class Flight < ActiveRecord::Base
   accepts_nested_attributes_for :origin_airport
   accepts_nested_attributes_for :destination_airport
   
-  validates :flight_number,          presence: true
-  validates :origin_time,            presence: true
-  validates :destination_time,       presence: true
+  validates :flight_number,       presence: true
+  validates :origin_time,         presence: true
+  validates :destination_time,    presence: true
+  validates :airline,             presence: true
+  validates :origin_airport,      presence: true
+  validates :destination_airport, presence: true
     
   before_validation :check_existing_airline_and_airports
   before_validation :convert_local_times_to_utc
@@ -78,44 +81,55 @@ class Flight < ActiveRecord::Base
   def check_existing_airline_and_airports
     # Airline:
     airline_iata = self.airline.iata_code&.upcase
-    if (existing_airline = Airline.find_by(iata_code: airline_iata))
+    airline_icao = self.airline.icao_code&.upcase
+    if (airline_icao.present? && existing_airline = Airline.find_by(icao_code: airline_icao)) || (airline_iata.present? && existing_airline = Airline.find_by(iata_code: airline_iata))
       self.airline = existing_airline
+    elsif airline_iata.present? || airline_icao.present?
+      self.airline = Airline.new(iata_code: airline_iata, icao_code: airline_icao, needs_review: true)
     else
-      self.airline = Airline.new(iata_code: airline_iata)
+      self.airline = nil
     end
     
     # Origin airport:
     origin_iata = self.origin_airport.iata_code&.upcase
-    if (existing_origin = Airport.find_by(iata_code: origin_iata))
+    origin_icao = self.origin_airport.icao_code&.upcase
+    if (origin_icao.present? && existing_origin = Airport.find_by(icao_code: origin_icao)) || (origin_iata.present? && existing_origin = Airport.find_by(iata_code: origin_iata))
       self.origin_airport = existing_origin
-    else
-      if (orig_info = FlightXML::airport_info(origin_iata))
-        self.origin_airport = Airport.new(iata_code: origin_iata, name: orig_info[:name], timezone: orig_info[:timezone], needs_review: true)
+    elsif origin_icao.present? || origin_iata.present?
+      origin_info_code = origin_icao || origin_iata
+      if (orig_info = FlightXML::airport_info(origin_info_code))
+        self.origin_airport = Airport.new(iata_code: origin_iata, icao_code: origin_icao, name: orig_info[:name], timezone: orig_info[:timezone], needs_review: true)
       else
-        self.origin_airport = Airport.new(iata_code: origin_iata)
+        self.origin_airport = Airport.new(iata_code: origin_iata, icao_code: origin_icao)
       end
+    else
+      self.origin_airport = nil
     end
           
     # Destination airport:
     destination_iata = self.destination_airport.iata_code&.upcase
-    if (existing_destination = Airport.find_by(iata_code: destination_iata))
+    destination_icao = self.destination_airport.icao_code&.upcase
+    if (destination_icao.present? && existing_destination = Airport.find_by(icao_code: destination_icao)) || (destination_iata.present? && existing_destination = Airport.find_by(iata_code: destination_iata))
       self.destination_airport = existing_destination
-    else
-      if (dest_info = FlightXML::airport_info(destination_iata))
-        self.destination_airport = Airport.new(iata_code: destination_iata, name: dest_info[:name], timezone: dest_info[:timezone], needs_review: true)
+    elsif destination_icao.present? || destination_iata.present?
+      destination_info_code = destination_icao || destination_iata
+      if (dest_info = FlightXML::airport_info(destination_info_code))
+        self.destination_airport = Airport.new(iata_code: destination_iata, icao_code: destination_icao, name: dest_info[:name], timezone: dest_info[:timezone], needs_review: true)
       else
-        self.destination_airport = Airport.new(iata_code: destination_iata)
+        self.destination_airport = Airport.new(iata_code: destination_iata, icao_code: destination_icao)
       end
+    else
+      self.destination_airport = nil
     end
     
   end
   
   def convert_local_times_to_utc
-    if self.origin_airport.timezone
+    if self.origin_airport&.timezone
       origin_timezone = TZInfo::Timezone.get(self.origin_airport.timezone)
       self.origin_time = convert_local_time_to_utc(self.origin_time, origin_timezone)
     end    
-    if self.destination_airport.timezone
+    if self.destination_airport&.timezone
       destination_timezone = TZInfo::Timezone.get(self.destination_airport.timezone)
       self.destination_time = convert_local_time_to_utc(self.destination_time, destination_timezone)
     end    

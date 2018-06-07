@@ -27,11 +27,6 @@ class FlightsController < ApplicationController
     
   end
   
-  def create_from_flight_xml
-    render plain: params
-    # add to logged_in and correct_traveler check
-  end
-  
   def edit
     @flight = Flight.find(params[:id])
     @traveler = @flight.traveler
@@ -40,6 +35,8 @@ class FlightsController < ApplicationController
   
   def update
     @flight = Flight.find(params[:id])
+    @traveler = @flight.traveler
+    @event = @traveler.event
 
     if @flight.update_attributes(flight_params)
       flash[:success] = "Flight updated! #{view_context.link_to("Jump to this flight’s itinerary", "#t-#{@flight.traveler.id}", class: "btn btn-success")}"
@@ -61,7 +58,7 @@ class FlightsController < ApplicationController
   private
   
     def flight_params
-      params.require(:flight).permit(:flight_number, :origin_time, :destination_time, :is_event_arrival, airline_attributes: [:iata_code], origin_airport_attributes: [:iata_code], destination_airport_attributes: [:iata_code])
+      params.require(:flight).permit(:flight_number, :origin_time, :destination_time, :is_event_arrival, airline_attributes: [:iata_code, :icao_code], origin_airport_attributes: [:iata_code, :icao_code], destination_airport_attributes: [:iata_code, :icao_code])
     end
     
     def correct_user
