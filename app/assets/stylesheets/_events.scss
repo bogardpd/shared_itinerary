@@ -40,11 +40,13 @@ div.traveler-itinerary {
   }
   
   h3 {
+    margin-top: 0;
     margin-bottom: 1em;
   }
   
   h4 {
     text-align: center;
+    margin: 0;
     small {
       font-weight: $font-weight-light;
     }
@@ -124,4 +126,7 @@ table.flight {
 
 td.event-dates, th.event-dates {
   text-align: right;
+  div:not(:last-child) {
+    margin-bottom: 0.5em;
+  }
 }

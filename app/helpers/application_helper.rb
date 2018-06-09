@@ -49,11 +49,15 @@ module ApplicationHelper
   
   def short_date_range(range)
     return "No flights" if range.nil?
-    return %Q(<span class="light">from</span> #{short_date(range.begin)}<br/><span class="light">to</span> #{short_date(range.end)}).html_safe
+    return %Q(<div><span class="light">from</span> #{short_date_nonbreaking(range.begin)}</div><div><span class="light">to</span> #{short_date_nonbreaking(range.end)}</div>).html_safe
   end
   
   def short_date(dt)
     dt.strftime("%a %-d %b %Y")
+  end
+
+  def short_date_nonbreaking(dt)
+    dt.strftime("%a %-d&nbsp;%b&nbsp;%Y")
   end
   
   def short_datetime(dt)
