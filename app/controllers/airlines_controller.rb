@@ -3,7 +3,7 @@ class AirlinesController < ApplicationController
   before_action :admin_user
   
   def index
-    @airlines = Airline.all.order({needs_review: :desc}, :name, :iata_code, :icao_code)
+    @airlines = Airline.all.sort_by{|a| [a.needs_review ? -1 : 0, a.name&.downcase || "", a.iata_code || "", a.icao_code || ""]}
   end
   
   def edit

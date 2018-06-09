@@ -19,6 +19,21 @@ class Airline < ActiveRecord::Base
     return nil unless airline_code
     return "#{ExternalImage::ROOT_PATH}/flights/airline-icons/#{airline_code.upcase}.png"
   end
+
+   # Temporary method to bulk import airlines.
+   def self.import
+    File.open("app/assets/data/top-airlines.txt").each_line do |line|
+      name, iata_code, icao_code = line.split("\t").map{|e| e.strip.gsub('"','')}
+      if Airline.find_by(icao_code: icao_code)
+        puts "#{icao_code} is already in the database!"
+      else
+        puts "Adding #{name} - #{iata_code} - #{icao_code}"
+        airline = Airline.new(name: name, iata_code: iata_code, icao_code: icao_code, needs_review: false)
+        airline.save
+      end
+    end
+    return nil
+  end
   
   private
   

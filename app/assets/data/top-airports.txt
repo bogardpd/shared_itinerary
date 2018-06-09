@@ -1,0 +1,242 @@
+City	IATA	ICAO	Timezone
+Reykjavík	KEF	BIKF	Atlantic/Reykjavik
+Montréal	YUL	CYUL	America/Toronto
+Vancouver	YVR	CYVR	America/Vancouver
+Calgary	YYC	CYYC	America/Edmonton
+Toronto	YYZ	CYYZ	America/Toronto
+Algiers	ALG	DAAG	Africa/Algiers
+Lagos	LOS	DNMM	Africa/Lagos
+Tunis	TUN	DTTA	Africa/Tunis
+Brussels	BRU	EBBR	Europe/Brussels
+Charleroi	CRL	EBCI	Europe/Brussels
+Berlin	SXF	EDDB	Europe/Berlin
+Frankfurt	FRA	EDDF	Europe/Berlin
+Hamburg	HAM	EDDH	Europe/Berlin
+Cologne / Bonn	CGN	EDDK	Europe/Berlin
+Düsseldorf	DUS	EDDL	Europe/Berlin
+Munich	MUC	EDDM	Europe/Berlin
+Stuttgart	STR	EDDS	Europe/Berlin
+Berlin	TXL	EDDT	Europe/Berlin
+Hanover	HAJ	EDDV	Europe/Berlin
+Helsinki	HEL	EFHK	Europe/Helsinki
+Belfast	BFS	EGAA	Europe/London
+Birmingham	BHX	EGBB	Europe/London
+Manchester	MAN	EGCC	Europe/London
+Bristol	BRS	EGGD	Europe/London
+Liverpool	LPL	EGGP	Europe/London
+London	LTN	EGGW	Europe/London
+London	LGW	EGKK	Europe/London
+London	LHR	EGLL	Europe/London
+Newcastle upon Tyne	NCL	EGNT	Europe/London
+Derby / Leicester / Nottingham	EMA	EGNX	Europe/London
+Glasgow	GLA	EGPF	Europe/London
+Edinburgh	EDI	EGPH	Europe/London
+London	STN	EGSS	Europe/London
+Amsterdam	AMS	EHAM	Europe/Amsterdam
+Eindhoven	EIN	EHEH	Europe/Amsterdam
+Dublin	DUB	EIDW	Europe/Dublin
+Copenhagen	CPH	EKCH	Europe/Copenhagen
+Bergen	BGO	ENBR	Europe/Oslo
+Oslo	OSL	ENGM	Europe/Oslo
+Kraków	KRK	EPKK	Europe/Warsaw
+Warsaw	WAW	EPWA	Europe/Warsaw
+Gothenburg	GOT	ESGG	Europe/Stockholm
+Stockholm	ARN	ESSA	Europe/Stockholm
+Riga	RIX	EVRA	Europe/Riga
+Cape Town	CPT	FACT	Africa/Johannesburg
+Johannesburg	JNB	FAOR	Africa/Johannesburg
+Puerto del Rosario	FUE	GCFV	Atlantic/Canary
+Las Palmas de Gran Canaria	LPA	GCLP	Atlantic/Canary
+Lanzarote	ACE	GCRR	Atlantic/Canary
+Santa Cruz de Tenerife	TFS	GCTS	Atlantic/Canary
+Casablanca	CMN	GMMN	Africa/Casablanca
+Cairo	CAI	HECA	Africa/Cairo
+Hurghada	HRG	HEGN	Africa/Cairo
+Sharm el-Sheikh	SSH	HESH	Africa/Cairo
+Nairobi	NBO	HKJK	Africa/Nairobi
+Albuquerque	ABQ	KABQ	America/Denver
+Anchorage	ANC	KANC	America/Chicago
+Atlanta	ATL	KATL	America/New_York
+Hartford	BDL	KBDL	America/New_York
+Buffalo	BUF	KBUF	America/New_York
+Burbank	BUR	KBUR	America/Los_Angeles
+Cleveland	CLE	KCLE	America/New_York
+Charlotte	CLT	KCLT	America/New_York
+Columbus	CMH	KCMH	America/New_York
+Cincinnati	CVG	KCVG	America/New_York
+Denver	DEN	KDEN	America/Denver
+Dallas / Fort Worth	DFW	KDFW	America/Chicago
+Newark	EWR	KEWR	America/New_York
+Guam	GUM	KGUM	America/Denver
+"Washington, DC"	IAD	KIAD	America/New_York
+Houston	IAH	KIAH	America/Chicago
+Indianapolis	IND	KIND	America/New_York
+Jacksonville	JAX	KJAX	America/New_York
+New York	JFK	KJFK	America/New_York
+Las Vegas	LAS	KLAS	America/Los_Angeles
+Los Angeles	LAX	KLAX	America/Los_Angeles
+Kansas City	MCI	KMCI	America/Chicago
+Orlando	MCO	KMCO	America/New_York
+Miami	MIA	KMIA	America/New_York
+Milwaukee	MKE	KMKE	America/Chicago
+Kahului	OGG	KOGG	America/Denver
+Omaha	OMA	KOMA	America/Chicago
+Chicago	ORD	KORD	America/Chicago
+West Palm Beach	PBI	KPBI	America/New_York
+Phoenix	PHX	KPHX	America/Phoenix
+Pittsburgh	PIT	KPIT	America/New_York
+Raleigh/Durham	RDU	KRDU	America/New_York
+Fort Myers	RSW	KRSW	America/New_York
+San Antonio	SAT	KSAT	America/Chicago
+Seattle	SEA	KSEA	America/Los_Angeles
+San Francisco	SFO	KSFO	America/Los_Angeles
+San Jose	SJC	KSJC	America/Los_Angeles
+San Juan	SJU	KSJU	America/Chicago
+Sacramento	SMF	KSMF	America/Los_Angeles
+Santa Ana	SNA	KSNA	America/Los_Angeles
+Sofia	SOF	LBSF	Europe/Sofia
+Larnaca	LCA	LCLK	Asia/Nicosia
+Alicante	ALC	LEAL	Europe/Madrid
+Bilbao	BIO	LEBB	Europe/Madrid
+Barcelona	BCN	LEBL	Europe/Madrid
+Ibiza	IBZ	LEIB	Europe/Madrid
+Madrid	MAD	LEMD	Europe/Madrid
+Málaga	AGP	LEMG	Europe/Madrid
+Palma de Mallorca	PMI	LEPA	Europe/Madrid
+Valencia	VLC	LEVC	Europe/Madrid
+Seville	SVQ	LEZL	Europe/Madrid
+Bordeaux	BOD	LFBD	Europe/Paris
+Toulouse	TLS	LFBO	Europe/Paris
+Lyon	LYS	LFLL	Europe/Paris
+Marseille	MRS	LFML	Europe/Paris
+Nice	NCE	LFMN	Europe/Paris
+Paris	CDG	LFPG	Europe/Paris
+Paris	ORY	LFPO	Europe/Paris
+Nantes	NTE	LFRS	Europe/Paris
+Basel / Mulhouse / Freiburg	MLH	LFSB	Europe/Paris
+Athens	ATH	LGAV	Europe/Athens
+Heraklion	HER	LGIR	Europe/Athens
+Rhodes	RHO	LGRP	Europe/Athens
+Thessaloniki	SKG	LGTS	Europe/Athens
+Budapest	BUD	LHBP	Europe/Budapest
+Catania	CTA	LICC	Europe/Rome
+Palermo	PMO	LICJ	Europe/Rome
+Milan	MXP	LIMC	Europe/Rome
+Bergamo / Milan	BGY	LIME	Europe/Rome
+Milan	LIN	LIML	Europe/Rome
+Bologna	BLQ	LIPE	Europe/Rome
+Venice	VCE	LIPZ	Europe/Rome
+Rome	CIA	LIRA	Europe/Rome
+Rome	FCO	LIRF	Europe/Rome
+Naples	NAP	LIRN	Europe/Rome
+Pisa	PSA	LIRP	Europe/Rome
+Prague	PRG	LKPR	Europe/Prague
+Central District	TLV	LLBG	Asia/Jerusalem
+Malta	MLA	LMML	Europe/Malta
+Vienna	VIE	LOWW	Europe/Vienna
+Faro	FAO	LPFR	Europe/Lisbon
+Porto	OPO	LPPR	Europe/Lisbon
+Lisbon	LIS	LPPT	Europe/Lisbon
+Bucharest	OTP	LROP	Europe/Bucharest
+Geneva	GVA	LSGG	Europe/Paris
+Zürich	ZRH	LSZH	Europe/Zurich
+Basel / Mulhouse / Freiburg	BSL	LSZM	Europe/Zurich
+Ankara	ESB	LTAC	Europe/Istanbul
+Adana	ADA	LTAF	Europe/Istanbul
+Antalya	AYT	LTAI	Europe/Istanbul
+Istanbul	IST	LTBA	Europe/Istanbul
+İzmir	ADB	LTBJ	Europe/Istanbul
+Istanbul	SAW	LTFJ	Europe/Istanbul
+Belgrade	BEG	LYBE	Europe/Belgrade
+Mexico City	MEX	MMMX	America/Mexico_City
+Cancún	CUN	MMUN	America/Cancun
+Panama City	PTY	MPTO	America/Panama
+Auckland	AKL	NZAA	Pacific/Auckland
+Christchurch	CHC	NZCH	Pacific/Auckland
+Queenstown	ZQN	NZQN	Pacific/Auckland
+Wellington	WLG	NZWN	Pacific/Auckland
+Jeddah	JED	OEJN	Asia/Riyadh
+Riyadh	RUH	OERK	Asia/Riyadh
+Abu Dhabi	AUH	OMAA	Asia/Dubai
+Dubai	DXB	OMDB	Asia/Dubai
+Doha	DOH	OTHH	Asia/Qatar
+Taipei	TPE	RCTP	Asia/Taipei
+Tokyo	NRT	RJAA	Asia/Tokyo
+Osaka	KIX	RJBB	Asia/Tokyo
+Sapporo	CTS	RJCC	Asia/Tokyo
+Fukuoka	FUK	RJFF	Asia/Tokyo
+Tokyo	HND	RJTT	Asia/Tokyo
+Jeju	CJU	RKPC	Asia/Seoul
+Seoul	ICN	RKSI	Asia/Seoul
+Seoul	GMP	RKSS	Asia/Seoul
+Naha	OKA	ROAH	Asia/Tokyo
+Manila	MNL	RPLL	Asia/Manila
+Buenos Aires	AEP	SABE	America/Buenos_Aires
+Buenos Aires	EZE	SAEZ	America/Buenos_Aires
+Brasília	BSB	SBBR	America/Sao_Paulo
+Belo Horizonte	CNF	SBCF	America/Sao_Paulo
+Curitiba	CWB	SBCT	America/Sao_Paulo
+Fortaleza	FOR	SBFZ	America/Fortaleza
+Rio de Janeiro	GIG	SBGL	America/Sao_Paulo
+São Paulo	GRU	SBGR	America/Sao_Paulo
+Campinas	VCP	SBKP	America/Sao_Paulo
+Porto Alegre	POA	SBPA	America/Sao_Paulo
+Recife	REC	SBRF	America/Fortaleza
+Rio de Janeiro	SDU	SBRJ	America/Sao_Paulo
+São Paulo	CGH	SBSP	America/Sao_Paulo
+Salvador	SSA	SBSV	America/Fortaleza
+Santiago	SCL	SCEL	America/Santiago
+Quito	UIO	SEQM	America/Guayaquil
+Bogotá	BOG	SKBO	America/Bogota
+Lima	LIM	SPJC	America/Lima
+Caracas	CCS	SVMI	America/Caracas
+Kyiv	KBP	UKBB	Europe/Kiev
+Saint Petersburg	LED	ULLI	Europe/Moscow
+Simferopol	SIP	URFF	Asia/Krasnoyarsk
+Sochi	AER	URSS	Europe/Moscow
+Moscow	DME	UUDD	Europe/Moscow
+Moscow	SVO	UUEE	Europe/Moscow
+Moscow	VKO	UUWW	Europe/Moscow
+Mumbai	BOM	VABB	Asia/Calcutta
+Hong Kong	HKG	VHHH	Asia/Hong_Kong
+Delhi	DEL	VIDP	Asia/Calcutta
+Bangalore	BLR	VOBL	Asia/Calcutta
+Chennai	MAA	VOMM	Asia/Calcutta
+Bangkok SGD	DMK	VTBD	Asia/Bangkok
+Bangkok	BKK	VTBS	Asia/Bangkok
+Hanoi	HAN	VVNB	Asia/Saigon
+Ho Chi Minh City	SGN	VVTS	Asia/Saigon
+Denpesar	DPS	WADD	Asia/Makassar
+Surabaya	SUB	WARR	Asia/Jakarta
+Jakarta	CGK	WIII	Asia/Jakarta
+Kuala Lumpur	KUL	WMKK	Asia/Kuala_Lumpur
+Singapore	SIN	WSSS	Asia/Singapore
+Brisbane	BNE	YBBN	Australia/Brisbane
+Cairns	CNS	YBCS	Australia/Brisbane
+Gold Coast	OOL	YBGC	Australia/Adelaide
+Hobart	HBA	YMHB	Australia/Melbourne
+Melbourne	MEL	YMML	Australia/Hobart
+Adelaide	ADL	YPAD	Australia/Adelaide
+Darwin	DRW	YPDN	Australia/Darwin
+Perth	PER	YPPH	Australia/Perth
+Canberra	CBR	YSCB	Australia/Sydney
+Sydney	SYD	YSSY	Australia/Sydney
+Beijing	PEK	ZBAA	Asia/Shanghai
+Guangzhou	CAN	ZGGG	Asia/Shanghai
+Changsha	CSX	ZGHA	Asia/Shanghai
+Shenzhen	SZX	ZGSZ	Asia/Shanghai
+Zhengzhou	CGO	ZHCC	Asia/Shanghai
+Wuhan	WUH	ZHHH	Asia/Shanghai
+Haikou	HAK	ZJHK	Asia/Shanghai
+Sanya	SYX	ZJSY	Asia/Shanghai
+Xi'an	XIY	ZLXY	Asia/Shanghai
+Kunming	KMG	ZPPP	Asia/Shanghai
+Xiamen	XMN	ZSAM	Asia/Shanghai
+Hangzhou	HGH	ZSHC	Asia/Shanghai
+Nanjing	NKG	ZSNJ	Asia/Shanghai
+Shanghai	PVG	ZSPD	Asia/Shanghai
+Qingdao	TAO	ZSQD	Asia/Shanghai
+Shanghai	SHA	ZSSS	Asia/Shanghai
+Chongqing	CKG	ZUCK	Asia/Shanghai
+Chengdu	CTU	ZUUU	Asia/Shanghai
+Ürümqi	URC	ZWWW	Asia/Shanghai

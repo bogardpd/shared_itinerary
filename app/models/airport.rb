@@ -24,6 +24,27 @@ class Airport < ActiveRecord::Base
   def self.airport_names
     return Airport.all.map{ |a| [a.iata_code, a.formatted_name] }.to_h
   end
+
+  # Temporary method to bulk import airports.
+  def self.import
+    File.open("app/assets/data/top-airports.txt").each_line do |line|
+      name, iata_code, icao_code, timezone = line.split("\t").map{|e| e.strip.gsub('"','')}
+      begin #Check that timezone identifier is valid
+        TZInfo::Timezone.get(timezone)
+      rescue TZInfo::InvalidTimezoneIdentifier
+        puts "INVALID TIMEZONE for #{icao_code}"
+        next
+      end
+      if Airport.find_by(icao_code: icao_code)
+        puts "#{icao_code} is already in the database!"
+      else
+        puts "Adding #{name} - #{iata_code} - #{icao_code} - #{timezone}"
+        airport = Airport.new(name: name, iata_code: iata_code, icao_code: icao_code, timezone: timezone, needs_review: false)
+        airport.save
+      end
+    end
+    return nil
+  end
   
   private
   

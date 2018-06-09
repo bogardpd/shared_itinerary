@@ -1,0 +1,123 @@
+Name	IATA	ICAO
+Adria	JP	ADR
+Aegean	A3	AEE
+Aer Lingus	EI	EIN
+Aeroflot	SU	AFL
+Aerolíneas Argentinas	AR	ARG
+Aeroméxico	AM	AMX
+Air Algérie	AH	DAH
+Air Asia	AK	AXM
+Air Caraïbes	TX	FWI
+Air China	CA	CCA
+Air Europa	UX	AEA
+Air France	AF	AFR
+Air India	AI	AIC
+Air Italy	IG	ISS
+Air Malta	KM	AMC
+Air Mauritius	MK	MAU
+Air New Zealand	NZ	ANZ
+Air Niugini	PX	ANG
+Air Serbia	JU	ASL
+Air Tahiti Nui	TN	THT
+Air Canada	AC	ACA
+airBaltic	BT	BTI
+Alaska	AS	ASA
+Alitalia	AZ	AZA
+ANA	NH	ANA
+Allegiant	G4	AAY
+American	AA	AAL
+Asiana Airlines	OZ	AAR
+AtlasGlobal	KK	KKK
+Avianca	AV	AVA
+Azerbaijan	J2	AHY
+Azul	AD	AZU
+Bahamasair	UP	BHS
+Belavia	B2	BRU
+Blue Air	0B	JOR
+BoA	OB	BOV
+British Airways	BA	BAW
+Bulgaria	FB	LZB
+Caribbean	BW	BWA
+Cathay Pacific	CX	CPA
+Cayman Airways	KX	CAY
+Cebu Pacific	5J	CEB
+China Airlines	CI	CAL
+China Eastern	MU	CES
+China Southern	CZ	CSN
+Conviasa	V0	VCV
+Copa	CM	CMP
+Croatia	OU	CTN
+Cubana	CU	CUB
+Czech	OK	CSA
+Delta	DL	DAL
+easyJet	U2	EZY
+EgyptAir	MS	MSR
+Emirates	EK	UAE
+Ethiopian	ET	ETH
+Etihad	EY	ETD
+EVA Air	BR	EVA
+Fiji	FJ	FJI
+Finnair	AY	FIN
+flybe	BE	BEE
+Frontier	F9	FFT
+Garuda Indonesia	GA	GIA
+GoAir	G8	GOW
+Gol	G3	GLO
+Hainan	HU	CHH
+Hawaiian	HA	HAL
+Iberia	IB	IBE
+Icelandair	FI	ICE
+IndiGo	6E	IGO
+Interjet	4O	AIJ
+JAL	JL	JAL
+Jet Airways	9W	JAI
+Jet2.com	LS	EXS
+JetBlue	B6	JBU
+Kenya	KQ	KQA
+Korean	KE	KAL
+LATAM	LA	LAN
+Libyan	LN	LAA
+Lion Air	JT	LNI
+LOT	LO	LOT
+Lufthansa	LH	DLH
+Luxair	LG	LGL
+Malaysia	MH	MAS
+Nordwind	N4	NWS
+Norwegian	DY	NAX
+OnurAir	8Q	OHY
+Pegasus	PC	PGT
+Philippine	PR	PAL
+Qantas	QF	QFA
+Qatar	QR	QTR
+Royal Air Maroc	AT	RAM
+Ryanair	FR	RYR
+S7	S7	SBI
+SAS	SK	SAS
+Saudia	SV	SVA
+Singapore	SQ	SIA
+South African	SA	SAA
+Southwest	WN	SWA
+SpiceJet	SG	SEJ
+Spirit	NK	NKS
+Sun Country	SY	SCX
+SunExpress	XQ	SXS
+TAME	EQ	TAE
+TAP	TP	TAP
+TAROM	RO	ROT
+Thai	TG	THA
+Tunisair	TU	TAR
+Turkish	TK	THY
+UIA	PS	AUI
+United	UA	UAL
+Ural	U6	SVR
+Utair	UT	UTA
+VietJet	VJ	VJC
+Vietnam	VN	HVN
+Virgin Atlantic	VS	VIR
+Virgin Australia	VA	VOZ
+VivaAerobus	VB	VIV
+Volaris	Y4	VOI
+Volotea	V7	VOE
+WestJet	WS	WJA
+Wizz Air	W6	WZZ
+WOW air	WW	WOW
