@@ -62,8 +62,8 @@ div.traveler-itinerary {
 
   div.flight-number {
     line-height: $line-height-compressed;
-    margin: 0.25em 0;
-    padding: 0;
+    margin-top: 0;
+    margin-bottom: 0.75em;
   }
   
   div.flight-city {
