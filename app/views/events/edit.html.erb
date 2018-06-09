@@ -5,6 +5,21 @@
 <%= render 'form' %>
 			
 <hr />
-<div class="delete-button">
-	<%= link_to "Delete this entire #{@event.event_name} event".html_safe, @event, method: :delete, data: { confirm: "Are you sure you want to delete #{@event.event_name}? This will also delete all #{@event.event_name} itineraries!"}, class: "btn btn-danger" %>
+
+
+<div class="form-row justify-content-center">
+
+<%= form_for(:event, url: update_share_link_path, html: { class: "form-inline" } ) do |f| %>
+  
+  <div class="col-auto">
+    <%= link_to "Delete this entire #{@event.event_name} event".html_safe, @event, method: :delete, data: { confirm: "Are you sure you want to delete #{@event.event_name}? This will also delete all #{@event.event_name} itineraries!"}, class: "btn btn-danger" %>
+  </div>
+  
+  <div class="col-auto">
+    <div class="input-group">
+      <%= f.submit "Generate new share link", class: "btn btn-warning form-control", data: { confirm: "Are you sure you want to generate a new share link? Anyone with the current link will no longer be able to see this page." } %>
+    </div>
+  </div>
+  
+<% end %>
 </div>

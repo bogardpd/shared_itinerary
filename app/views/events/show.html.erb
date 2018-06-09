@@ -2,32 +2,24 @@
 <% provide(:meta_description, "See when everyone arrives at and departs from #{@event.event_name}.")%>
 
 <% if current_user?(@event.user) %>
-  <div class="form-row justify-content-center" id="event-edit-share-bar">
-
-  <%= form_for(:event, url: update_share_link_path, html: { class: "form-inline" } ) do |f| %>
-    
-    <div class="col-auto">
-      <%= link_to "Edit event details", edit_event_path(@event), class: "btn btn-primary" %> 
-    </div>
-    
-    <div class="col-auto">
-      <%= f.label :share_link, class: "sr-only" %>
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text">Share:</span>
-        </div>
-        <%= f.text_field :share_link, class: "form-control", value: @share_link, style: "width: 450px" %>
-      </div>      
-    </div>
-    
-    <div class="col-auto">
-      <div class="input-group">
-        <%= f.submit "Generate new share link", class: "btn btn-warning form-control", data: { confirm: "Are you sure you want to generate a new share link? Anyone with the current link will no longer be able to see this page." } %>
+  <div id="event-edit-share-bar">
+    <div class="row justify-content-center">
+      
+      <div class="col-auto">
+        <%= link_to "Edit event details", edit_event_path(@event), class: "btn btn-primary" %> 
       </div>
-    </div>
+
+      <div class="col-auto">
+        <%= link_to "Share event with others", @share_link, target: :_blank, class: "btn btn-outline-primary" %>
+      </div>
     
-  <% end %>
+    </div>
   </div>
+
+  <% if params[:share_link] %>
+    <div class="alert alert-info event-info">Copy this link to share the event with other people: <%= link_to(@share_link, @share_link, class: "share-link") %></div>
+  <% end %>
+
 <% end %>
 
 <h1><%= @event.event_name %></h1>
@@ -49,19 +41,24 @@
   <% end %>
   
   <% @event.flight_data_by_traveler.each do |traveler_id, traveler| %>
-		<div class="row traveler-itinerary" id="t-<%= traveler_id %>">
+		<div class="traveler-itinerary" id="t-<%= traveler_id %>">
 
-      <div class="col-md-12 traveler-name">
-        <% if current_user?(@event.user) %>
-          <div class="btn-group edit-button">
-            <%= link_to("Edit traveler".html_safe, edit_traveler_path(traveler_id), title: "Edit #{traveler[:traveler_name]}", class: "btn btn-sm btn-outline-primary") %> <%= link_to("Add flight", new_flight_search_path(id: traveler_id), title: "Add a new flight to #{traveler[:traveler_name]}’s itinerary", class: "btn btn-sm btn-outline-primary") %>
-          </div>
-        <% end %>   
-  			<h3><%= traveler[:traveler_name] %>&ensp;<small><%= traveler[:traveler_note] %></small></h3>
-        
-  		</div>
+      <div class="row">
+        <div class="col-12">        
+          <% if current_user?(@event.user) %>
+            <div class="btn-group edit-button">
+              <%= link_to("Edit traveler".html_safe, edit_traveler_path(traveler_id), title: "Edit #{traveler[:traveler_name]}", class: "btn btn-sm btn-outline-primary") %> <%= link_to("Add flight", new_flight_search_path(id: traveler_id), title: "Add a new flight to #{traveler[:traveler_name]}’s itinerary", class: "btn btn-sm btn-outline-primary") %>
+            </div>
+          <% end %>
+          <h3><%= traveler[:traveler_name] %>&ensp;<small><%= traveler[:traveler_note] %></small></h3>
+        </div>
+      </div>
+
+      <div class="row">
 		 
-      <%= [:arrivals, :departures].map{|dir| render partial: "traveler_direction", locals: { traveler_id: traveler_id, traveler: traveler, direction: dir }}.join.html_safe %>
+        <%= [:arrivals, :departures].map{|dir| render partial: "traveler_direction", locals: { traveler_id: traveler_id, traveler: traveler, direction: dir }}.join.html_safe %>
+
+      </div>
       
     </div>
 	<% end %>

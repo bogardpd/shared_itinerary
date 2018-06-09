@@ -8,6 +8,10 @@ a.edit-link {
   text-decoration: underline;
 }
 
+a.share-link {
+  word-wrap: break-word;
+}
+
 a.inline-link {
   margin-left: 1.5em;
 }
@@ -26,22 +30,66 @@ div.event-info {
 }
 
 div.traveler-itinerary {
-  margin: 1rem 0;
-  padding: 1.5rem 0.75rem;
-  background-color: #FFFFFF;
-  @include box-visual;
-  
-  div.traveler-name {
-    
+  margin-top: 2.5em;
+  margin-bottom: 1em;
+
+  div.card {
+    margin: 0.5em 0;
   }
     
   div.flight {
     margin-bottom: 10px;
   }
+
+  div.flight-identifier {
+    font-size: $font-size-small;
+    text-align: center;
+  }
+
+  div.flight-origin {
+    text-align: left;
+  }
+  
+  div.flight-separator {
+    vertical-align: top;
+    padding-top: 0.5em;
+    font-size: 150%;
+  }
+  
+  div.flight-destination {
+    text-align: right;
+  }
+
+  div.flight-number {
+    line-height: $line-height-compressed;
+    margin: 0.25em 0;
+    padding: 0;
+  }
+  
+  div.flight-city {
+    font-weight: $font-weight-bold;
+    font-size: $font-size-small;
+  }
+  
+  div.flight-date-time {
+    font-size: $font-size-small;
+    line-height: $line-height-compressed;
+  }
+  
+  div.flight-edit {
+    text-align: center;
+    margin-top: 0.25em;
+  }
+  
+  div.flight-code {
+    margin-bottom: 0.2em;
+    font-weight: $font-weight-bold;
+    font-size: $font-size-large;
+    line-height: 1.1;
+  }
   
   h3 {
-    margin-top: 0;
-    margin-bottom: 1em;
+    margin: 0;
   }
   
   h4 {
