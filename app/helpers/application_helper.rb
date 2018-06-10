@@ -1,10 +1,10 @@
 module ApplicationHelper
 
-  def airline_icon(airline_code, show_blank_icon: true)
-    return "" unless airline_code
-    icon_path = Airline.icon_path(airline_code)
+  def airline_icon(icao_code, show_blank_icon: true)
+    return "" unless icao_code
+    icon_path = Airline.icon_path(icao_code)
     if show_blank_icon
-      return image_tag(icon_path, class: "icon", onerror: "this.src='#{ExternalImage::ROOT_PATH}/flights/airline-icons/unknown-airline.png';this.onerror='';").html_safe
+      return image_tag(icon_path, class: "icon", onerror: "this.src='#{ExternalImage::ROOT_PATH}/flights/airline-icons/icao/unknown-airline.png';this.onerror='';").html_safe
     else
       return image_tag(icon_path, class: "icon", onerror: "this.style.display='none';this.onerror='';").html_safe
     end

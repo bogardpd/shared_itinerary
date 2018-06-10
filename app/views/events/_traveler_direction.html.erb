@@ -6,7 +6,7 @@
       <li class="list-group-item">
         <div class="row">
           <div class="col-md-3 flight-identifier">
-            <%= airline_icon(flight[:airline_code], show_blank_icon: false) %>
+            <%= airline_icon(flight[:airline_icao], show_blank_icon: false) %>
             <div class="flight-number"><%= flight[:airline_name] %> <%= flight[:flight_number] %></div>
             <% if current_user?(@event.user) %>
             <div class="flight-edit">

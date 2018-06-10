@@ -17,7 +17,7 @@ class Airline < ActiveRecord::Base
   # Accepts an airline code and returns an image path
   def self.icon_path(airline_code)
     return nil unless airline_code
-    return "#{ExternalImage::ROOT_PATH}/flights/airline-icons/#{airline_code.upcase}.png"
+    return "#{ExternalImage::ROOT_PATH}/flights/airline-icons/icao/#{airline_code.upcase}.png"
   end
   
   private

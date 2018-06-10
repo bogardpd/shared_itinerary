@@ -67,6 +67,7 @@ class Event < ActiveRecord::Base
       traveler_flights[flight.traveler_id][flight_arr_dep][:flights].push({
         id: flight.id,
         airline_code: flight.airline.code,
+        airline_icao: flight.airline.icao_code,
         airline_name: flight.airline.name,
         flight_number: flight.flight_number,
         origin_code: flight.origin_airport.code,
