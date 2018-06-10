@@ -9,7 +9,12 @@
 <div class="col-md-8">
 <%= form_tag(new_flight_select_path(id: @traveler.id), method: :post) do %>
   
-  
+  <div class="form-row">
+    <div class="col">
+			<%= label_tag(:is_event_arrival, "Arrival or departure?") %>
+			<%= select_tag(:is_event_arrival, options_for_select([["Arrival – this flight brings #{@traveler.traveler_name} to #{@event.event_name}", true],["Departure – this flight takes #{@traveler.traveler_name} home from #{@event.event_name}", false]]), {class: "form-control"}) %>
+    </div>
+  </div>
   
   <div class="form-row">
     
@@ -28,13 +33,6 @@
       <%= date_field_tag(:departure_date, nil, size: 10, placeholder: "yyyy-mm-dd", class: "form-control") %>
     </div>
 
-  </div>
-  
-  <div class="form-row">
-    <div class="col">
-			<%= label_tag(:is_event_arrival, "Arrival or departure?") %>
-			<%= select_tag(:is_event_arrival, options_for_select([["Arrival – this flight brings #{@traveler.traveler_name} to #{@event.event_name}", true],["Departure – this flight takes #{@traveler.traveler_name} home from #{@event.event_name}", false]]), {class: "form-control"}) %>
-    </div>
   </div>
   
   <div class="form-row">
