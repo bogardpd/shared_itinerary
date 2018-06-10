@@ -18,8 +18,8 @@
           <div class="col-md-9">
             <div class="row">
               <div class="col-5 flight-origin rounded"<%= highlight(@airport_colors[flight[:origin_code]]) if direction == :departures && index == 0 %>>
-                <div class="flight-city"><%= flight[:origin_name] %></div>
                 <div class="flight-code"><%= flight[:origin_code] %></div>
+                <div class="flight-city"><%= flight[:origin_name] %></div>
                 <div class="flight-date-time">
                   <%= short_date(flight[:origin_time_local]) %><br/>
                   <%= short_time(flight[:origin_time_local]) %> <span class="time-zone"><%= flight[:origin_time_local].strftime("%Z") %></span>
@@ -29,8 +29,8 @@
                 <%= octicon("arrow-right") %>
               </div>
               <div class="col-5 flight-destination rounded"<%= highlight(@airport_colors[flight[:destination_code]]) if direction == :arrivals && index == traveler[direction][:flights].length-1 %>>
-                <div class="flight-city"><%= flight[:destination_name] %></div>
                 <div class="flight-code"><%= flight[:destination_code] %></div>
+                <div class="flight-city"><%= flight[:destination_name] %></div>
                 <div class="flight-date-time">
                   <%= short_date(flight[:destination_time_local]) %><br/>
                   <%= short_time(flight[:destination_time_local]) %> <span class="time-zone"><%= flight[:destination_time_local].strftime("%Z") %></span>

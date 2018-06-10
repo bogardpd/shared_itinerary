@@ -53,7 +53,6 @@ div.traveler-itinerary {
   div.flight-separator {
     text-align: center;
     vertical-align: top;
-    padding-top: 0.5em;
     font-size: 150%;
   }
   
@@ -68,8 +67,10 @@ div.traveler-itinerary {
   }
   
   div.flight-city {
+    line-height: $line-height-compressed;
     font-weight: $font-weight-bold;
     font-size: $font-size-small;
+    margin-bottom: 0.75em;
   }
   
   div.flight-date-time {
@@ -83,10 +84,9 @@ div.traveler-itinerary {
   }
   
   div.flight-code {
-    margin-bottom: 0.2em;
     font-weight: $font-weight-bold;
     font-size: $font-size-large;
-    line-height: 1.1;
+    line-height: $line-height-compressed;
   }
   
   h3 {
