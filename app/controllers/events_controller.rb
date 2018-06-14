@@ -8,6 +8,7 @@ class EventsController < ApplicationController
     @chart = @event.chart
     @share_link = url_for(share_link: @event.share_link)
     @airport_colors = @chart.colors
+    @flight_data_by_traveler = @event.flight_data_by_traveler.sort_by{|k,v| v[:traveler_name]}.to_h
         
     rescue ActiveRecord::RecordNotFound
       flash[:warning] = "We couldnʼt find an event with an ID of #{params[:id]}."

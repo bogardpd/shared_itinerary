@@ -40,7 +40,7 @@
     <div class="button"><%= link_to("Add new traveler", new_traveler_path(event: @event), title: "Add a new traveler to #{@event.event_name}", class: "btn btn-outline-primary") %></div>
   <% end %>
   
-  <% @event.flight_data_by_traveler.each do |traveler_id, traveler| %>
+  <% @flight_data_by_traveler.each do |traveler_id, traveler| %>
 		<div class="traveler-itinerary" id="t-<%= traveler_id %>">
 
       <div class="row">
