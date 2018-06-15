@@ -27,7 +27,7 @@ class Chart
   def colors
     airport_colors = Hash.new
     @airport_hues.each do |airport, hue|
-      airport_colors.store(airport, {background: "#{hue},#{@saturation},#{@lightness_lf_ft}", border: "#{hue},#{@saturation},#{@lightness_ff_lt}"})
+      airport_colors.store(airport, {background: "#{hue},#{@saturation},#{@lightness_layover_fill}", border: "#{hue},#{@saturation},#{@lightness_flight_fill}"})
     end
     return airport_colors
   end
@@ -37,8 +37,10 @@ class Chart
     # Define chart visual settings.
     def initialize_settings
       # Settable colors:
-      @lightness_ff_lt             = '40%' # Flight fill, layover text
-      @lightness_lf_ft             = '90%' # Layover fill, flight text
+      @lightness_flight_fill       = '35%'
+      @lightness_flight_text       = '100%'
+      @lightness_layover_fill      = '95%'
+      @lightness_layover_text      = '15%'
       @lightness_stroke            = '30%'
       @saturation                  = '50%'
       @bar_opacity                 = '0.9'
@@ -177,7 +179,7 @@ class Chart
         arriving_departing = (direction == :arrivals) ? "Arriving at" : "Departing from"
         html += %Q(\t<g cursor="default">\n)
         html += %Q(\t\t<title>#{@airport_names[airport] || airport}</title>\n)
-        html += %Q(\t\t<rect width="#{@legend_box_size}" height="#{@legend_box_size}" x="#{legend_left}" y="#{@image_padding}" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" fill-opacity="#{@bar_opacity}" stroke="hsl(#{hue},#{@saturation},#{@lightness_stroke})" stroke-opacity="#{@bar_opacity}"/>\n)
+        html += %Q(\t\t<rect width="#{@legend_box_size}" height="#{@legend_box_size}" x="#{legend_left}" y="#{@image_padding}" fill="hsl(#{hue},#{@saturation},#{@lightness_flight_fill})" fill-opacity="#{@bar_opacity}" stroke="hsl(#{hue},#{@saturation},#{@lightness_stroke})" stroke-opacity="#{@bar_opacity}"/>\n)
         html += %Q(\t\t<text x="#{text_left}" y="#{@image_padding + @legend_box_size*0.75}" text-anchor="start">#{arriving_departing} #{airport}</text>\n)
         html += %Q(\t</g>\n)
       end
@@ -289,15 +291,15 @@ class Chart
       html += "</title>\n"
 
       # Draw flight bar:
-      html += %Q(\t\t<polygon id="flight-#{flight[:id]}" points="#{points}" class="svg_bar" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" stroke="hsl(#{hue},#{@saturation},#{@lightness_stroke})" fill-opacity="#{@bar_opacity}" stroke-opacity="#{@bar_opacity}" />\n)
+      html += %Q(\t\t<polygon id="flight-#{flight[:id]}" points="#{points}" class="svg_bar" fill="hsl(#{hue},#{@saturation},#{@lightness_flight_fill})" stroke="hsl(#{hue},#{@saturation},#{@lightness_stroke})" fill-opacity="#{@bar_opacity}" stroke-opacity="#{@bar_opacity}" />\n)
 
       # Draw flight number:
       if width >= @flight_bar_no_text_width
         if width < @flight_bar_line_break_width
-          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height * 0.41}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" fill-opacity="#{@bar_opacity}">#{flight[:airline_code]}</text>\n)
-          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height * 0.81}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" fill-opacity="#{@bar_opacity}">#{flight[:flight_number]}</text>\n)
+          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height * 0.41}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_flight_text})" fill-opacity="#{@bar_opacity}">#{flight[:airline_code]}</text>\n)
+          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height * 0.81}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_flight_text})" fill-opacity="#{@bar_opacity}">#{flight[:flight_number]}</text>\n)
         else
-          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*0.61}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" fill-opacity="#{@bar_opacity}">#{flight[:airline_code]} #{flight[:flight_number]}</text>\n)
+          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*0.61}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_flight_text})" fill-opacity="#{@bar_opacity}">#{flight[:airline_code]} #{flight[:flight_number]}</text>\n)
         end
       end
       html += "\t</g>\n"
@@ -333,14 +335,14 @@ class Chart
       html += %Q(</title>\n)
 
       # Draw layover bar:
-      html += %Q(\t\t<polygon points="#{points}" class="svg_bar" fill="hsl(#{hue},#{@saturation},#{@lightness_lf_ft})" stroke="hsl(#{hue},#{@saturation},#{@lightness_stroke})" fill-opacity="#{@bar_opacity}" stroke-opacity="#{@bar_opacity}" />\n)
+      html += %Q(\t\t<polygon points="#{points}" class="svg_bar" fill="hsl(#{hue},#{@saturation},#{@lightness_layover_fill})" stroke="hsl(#{hue},#{@saturation},#{@lightness_stroke})" fill-opacity="#{@bar_opacity}" stroke-opacity="#{@bar_opacity}" />\n)
 
       # Draw layover airport label:
       if width >= @flight_bar_no_text_width
-        html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*0.61}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" fill-opacity="#{@bar_opacity}">#{layover[:start_code]}</text>\n)
+        html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*0.61}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_layover_text})" fill-opacity="#{@bar_opacity}">#{layover[:start_code]}</text>\n)
       else
         [0.30,0.61,0.92].each_with_index do |ypos, index|
-          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*ypos}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_ff_lt})" fill-opacity="#{@bar_opacity}">#{layover[:start_code][index]}</text>\n)
+          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*ypos}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_layover_text})" fill-opacity="#{@bar_opacity}">#{layover[:start_code][index]}</text>\n)
         end
       end
 
