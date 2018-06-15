@@ -32,13 +32,24 @@
 
 <hr />
 
-<h2>Traveler Details</h2>
+<h2 id="travelers">Traveler Details</h2>
 
 <% if @event.travelers.any? %>
 	
-  <% if current_user?(@event.user) %>
-    <div class="button"><%= link_to("Add new traveler", new_traveler_path(event: @event), title: "Add a new traveler to #{@event.event_name}", class: "btn btn-outline-primary") %></div>
-  <% end %>
+  
+
+  <div class="btn-toolbar">
+    <div class="btn-group" role="group" aria-label="Sort Travelers">
+      <%= sort_button("Name") %>
+      <%= sort_button("Arrival") %>
+      <%= sort_button("Departure") %>
+    </div>
+
+    <% if current_user?(@event.user) %>
+      <div class="btn-group ml-2"><%= link_to("Add new traveler", new_traveler_path(event: @event), title: "Add a new traveler to #{@event.event_name}", class: "btn btn-outline-primary") %></div>
+    <% end %>
+
+  </div>
   
   <% @flight_data_by_traveler.each do |traveler_id, traveler| %>
 		<div class="traveler-itinerary" id="t-<%= traveler_id %>">
