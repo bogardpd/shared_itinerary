@@ -17,13 +17,12 @@ module EventsHelper
   end
 
   def sort_button(text)
-    classes = %w(btn btn-primary)
-    if params[:travelersort].nil?
-      classes.push("active") if text == "Name"
-    elsif params[:travelersort].downcase == text.downcase
-      classes.push ("active")
+    if (params[:travelersort].nil? && text == "Name") || (params[:travelersort].present? && params[:travelersort].downcase == text.downcase)
+      classes = "btn btn-secondary active"
+    else
+      classes = "btn btn-outline-secondary"
     end
-    return link_to("Sort by #{text}", params.permit(:share_link, :travelersort, :anchor).merge(travelersort: text.downcase, anchor: "travelers"), class: classes.join(" "))
+    return link_to("Sort by #{text}", params.permit(:share_link, :travelersort, :anchor).merge(travelersort: text.downcase, anchor: "travelers"), class: classes)
   end
   
 end
