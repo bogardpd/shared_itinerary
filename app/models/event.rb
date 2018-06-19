@@ -197,12 +197,14 @@ class Event < ActiveRecord::Base
     (1..flights.length-1).each do |flight_index|
       if flights[flight_index-1][:destination_time_utc] < flights[flight_index][:origin_time_utc]
         layovers_result.push({
-          start_code:     flights[flight_index-1][:destination_code],
-          start_name:     flights[flight_index-1][:destination_name],
-          start_time_utc: flights[flight_index-1][:destination_time_utc],
-          end_code:       flights[flight_index][:origin_code],
-          end_name:       flights[flight_index][:origin_name],
-          end_time_utc:   flights[flight_index][:origin_time_utc]
+          start_code:       flights[flight_index-1][:destination_code],
+          start_name:       flights[flight_index-1][:destination_name],
+          start_time_utc:   flights[flight_index-1][:destination_time_utc],
+          start_time_local: flights[flight_index-1][:destination_time_local],
+          end_code:         flights[flight_index][:origin_code],
+          end_name:         flights[flight_index][:origin_name],
+          end_time_utc:     flights[flight_index][:origin_time_utc],
+          end_time_local:   flights[flight_index][:origin_time_local]
         })
       end
     end

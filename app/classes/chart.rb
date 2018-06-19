@@ -286,9 +286,10 @@ class Chart
 
       # Draw tooltip:
       html += "\t\t<title>"
-      html += "#{flight[:airline_name]} #{flight[:flight_number]} \n"
-      html += "#{flight[:origin_name]} – #{flight[:destination_name]} \n"
-      html += time_range(flight_time_range_local, flight_time_range_local.begin.strftime("%Z"))
+      html += "#{flight[:airline_name]} #{flight[:flight_number]}\n"
+      html += "#{flight[:origin_time_local].strftime("%-l:%M%P %Z")}\t#{flight[:origin_name]} (#{flight[:origin_code]})\n"
+      html += "#{flight[:destination_time_local].strftime("%-l:%M%P %Z")}\t#{flight[:destination_name]} (#{flight[:destination_code]})\n"
+      html += "(#{elapsed_time(flight_time_range_utc)})"
       html += "</title>\n"
 
       # Draw flight bar:
@@ -318,7 +319,7 @@ class Chart
       html = String.new
       
       layover_time_range_utc = layover[:start_time_utc]..layover[:end_time_utc]
-      layover_time_range_local = layover[:start_time_utc].in_time_zone(@timezone)..layover[:end_time_utc].in_time_zone(@timezone)
+      layover_time_range_local = layover[:start_time_local]..layover[:end_time_local]
       
       bar_values = bar_points(day_time_range_utc, layover_time_range_utc, row)
       return nil if bar_values.nil?
@@ -331,7 +332,7 @@ class Chart
 
       # Draw tooltip:
       html += %Q(\t\t<title>)
-      html += %Q(Layover at #{layover[:start_name]}\n)
+      html += "Layover at #{layover[:start_name]} (#{layover[:start_code]})\n"
       html += time_range(layover_time_range_local, layover_time_range_local.begin.strftime("%Z"))
       html += %Q(</title>\n)
 
