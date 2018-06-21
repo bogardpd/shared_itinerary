@@ -70,7 +70,7 @@ class TravelersController < ApplicationController
   private
   
   def traveler_params
-    params.require(:traveler).permit(:traveler_name, :traveler_note, :arrival_info, :departure_info)
+    params.require(:traveler).permit(:traveler_name, :traveler_note, :arrival_info, :departure_info, :contact_info)
   end
     
   def correct_user
