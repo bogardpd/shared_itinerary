@@ -57,6 +57,7 @@ class Event < ActiveRecord::Base
     traveler_flights[traveler.id] = {
       traveler_name: traveler.traveler_name,
       traveler_note: traveler.traveler_note,
+      traveler_contact_info: traveler.contact_info,
       arrivals: {flights: Array.new, layovers: Array.new, info: traveler.arrival_info},
       departures: {flights: Array.new, layovers: Array.new, info: traveler.departure_info}
     }

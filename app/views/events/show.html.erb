@@ -62,6 +62,9 @@
             </div>
           <% end %>
           <h3><%= traveler[:traveler_name] %>&ensp;<small><%= traveler[:traveler_note] %></small></h3>
+          <% if traveler[:traveler_contact_info] %>
+            <div class="traveler-contact-info"><%= traveler[:traveler_contact_info] %></div>
+          <% end %>
         </div>
       </div>
 
