@@ -98,6 +98,7 @@ Even if multiple travelers are taking the same flight, each traveler's flight is
 | Parameter        | Type    | Required? | Purpose |
 | ---------------- | ------- | --------- | ------- |
 | `arrival_info`   | string  | No        | Details for how the traveler will get from the airport to the event |
+| `contact_info`   | string  | No        | Details for how to contact the traveler |
 | `departure_info` | string  | No        | Details for how the traveler will get from the event to the airport |
 | `event_id`       | integer | Yes       | [`Event`](#event) that this traveler is attending |
 | `traveler_name`  | string  | Yes       | Traveler name |
