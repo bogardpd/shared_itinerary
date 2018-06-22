@@ -19,6 +19,10 @@ input, textarea, select, .uneditable-input {
 	@include box_sizing;
 }
 
+input[type="date"] {
+	height: 2.375rem;
+}
+
 textarea.form-control {
   height: 8em;
 }

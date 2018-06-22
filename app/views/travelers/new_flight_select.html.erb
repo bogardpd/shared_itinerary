@@ -8,7 +8,7 @@
 <p class="center">Flights matching <%= params[:airline_code].upcase %> <%= params[:flight_number] %> on <%= short_date(Date.parse(params[:departure_date])) %>:</p>
 
 <div class="row justify-content-center">
-  <div class="col-6">
+  <div class="col-md-6">
     <% @matching_flights.each do |flight| %>
     <div>
       <%= form_for(setup_flight(@flight)) do |f| %>
