@@ -2,7 +2,14 @@
   <div class="card">
     <h4 class="card-header"><%= traveler_direction_title(direction, @event.event_name) %></h4>
     <ul class="list-group list-group-flush">
+    <% last_destination_code = nil %>
+    <% last_destination_time = nil %>
     <% traveler[direction][:flights].each_with_index do |flight, index| %>
+      <% if index > 0 && flight[:origin_code] != last_destination_code %>
+        <li class="list-group-item list-group-item-warning">
+          <strong>Change airports:</strong> <%= last_destination_code %> to <%= flight[:origin_code] %> (<%= elapsed_time(last_destination_time..flight[:origin_time_utc]) %>)
+        </li>
+      <% end %>
       <li class="list-group-item">
         <div class="row">
           <div class="col-md-3 flight-identifier">
@@ -40,6 +47,8 @@
           </div>
         </div>
       </li>
+      <% last_destination_code = flight[:destination_code] %>
+      <% last_destination_time = flight[:destination_time_utc] %>
     <% end %>
     </ul>
 

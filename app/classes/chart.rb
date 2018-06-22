@@ -41,7 +41,7 @@ class Chart
       @lightness_flight_text       = '99%'
       @lightness_layover_fill      = '95%'
       @lightness_layover_text      = '30%'
-      @lightness_stroke            = '30%'
+      @lightness_stroke            = '35%'
       @saturation                  = '50%'
       @bar_opacity                 = '0.9'
       @bar_text_opacity            = '1'
@@ -67,6 +67,12 @@ class Chart
       @flight_bar_buffer_width     = 48
       @flight_bar_line_break_width = 50 # If flight bar width is less than this, add a line break
       @flight_bar_no_text_width    = 23 # If flight bar width is less than this, do not display text
+
+      @bar_text_row_y_position = {
+        single: [0.61],
+        double: [0.41,0.81],
+        triple: [0.33,0.63,0.94]
+      }
   
       @airport_margin              = 3
   
@@ -298,10 +304,10 @@ class Chart
       # Draw flight number:
       if width >= @flight_bar_no_text_width
         if width < @flight_bar_line_break_width
-          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height * 0.41}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_flight_text})" fill-opacity="#{@bar_text_opacity}">#{flight[:airline_code]}</text>\n)
-          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height * 0.81}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_flight_text})" fill-opacity="#{@bar_text_opacity}">#{flight[:flight_number]}</text>\n)
+          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height * @bar_text_row_y_position[:double][0]}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_flight_text})" fill-opacity="#{@bar_text_opacity}">#{flight[:airline_code]}</text>\n)
+          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height * @bar_text_row_y_position[:double][1]}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_flight_text})" fill-opacity="#{@bar_text_opacity}">#{flight[:flight_number]}</text>\n)
         else
-          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*0.61}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_flight_text})" fill-opacity="#{@bar_text_opacity}">#{flight[:airline_code]} #{flight[:flight_number]}</text>\n)
+          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*@bar_text_row_y_position[:single][0]}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_flight_text})" fill-opacity="#{@bar_text_opacity}">#{flight[:airline_code]} #{flight[:flight_number]}</text>\n)
         end
       end
       html += "\t</g>\n"
@@ -332,7 +338,11 @@ class Chart
 
       # Draw tooltip:
       html += %Q(\t\t<title>)
-      html += "Layover at #{layover[:start_name]} (#{layover[:start_code]})\n"
+      if layover[:start_code] == layover[:end_code]
+        html += "Layover at #{layover[:start_name]} (#{layover[:start_code]})\n"
+      else
+        html += "Layover between #{layover[:start_name]} (#{layover[:start_code]}) and #{layover[:end_name]} (#{layover[:end_code]})\n"
+      end
       html += time_range(layover_time_range_local, layover_time_range_local.begin.strftime("%Z"))
       html += %Q(</title>\n)
 
@@ -341,10 +351,17 @@ class Chart
 
       # Draw layover airport label:
       if width >= @flight_bar_no_text_width
-        html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*0.61}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_layover_text})" fill-opacity="#{@bar_text_opacity}">#{layover[:start_code]}</text>\n)
+        if layover[:start_code] == layover[:end_code]
+          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*@bar_text_row_y_position[:single][0]}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_layover_text})" fill-opacity="#{@bar_text_opacity}">#{layover[:start_code]}</text>\n)
+        else
+          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*@bar_text_row_y_position[:double][0]}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_layover_text})" fill-opacity="#{@bar_text_opacity}">#{layover[:start_code]}</text>\n)
+          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*@bar_text_row_y_position[:double][1]}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_layover_text})" fill-opacity="#{@bar_text_opacity}">#{layover[:end_code]}</text>\n)
+        end
       else
-        [0.33,0.63,0.94].each_with_index do |ypos, index|
-          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*ypos}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_layover_text})" fill-opacity="#{@bar_text_opacity}">#{layover[:start_code][index]}</text>\n)
+        if layover[:start_code] == layover[:end_code]
+          @bar_text_row_y_position[:triple].each_with_index do |ypos, index|
+            html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*ypos}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_layover_text})" fill-opacity="#{@bar_text_opacity}">#{layover[:start_code][index]}</text>\n)
+          end
         end
       end
 
