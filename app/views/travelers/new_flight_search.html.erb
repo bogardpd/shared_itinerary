@@ -9,14 +9,21 @@
 <div class="col-md-8">
 <%= form_tag(new_flight_select_path(id: @traveler.id), method: :post) do %>
   
-  <div class="form-row">
+  <div class="form-row mb-4">
+
     <div class="col">
-			<%= label_tag(:is_event_arrival, "Arrival or departure?") %>
-			<%= select_tag(:is_event_arrival, options_for_select([["Arrival – this flight brings #{@traveler.traveler_name} to #{@event.event_name}", true],["Departure – this flight takes #{@traveler.traveler_name} home from #{@event.event_name}", false]]), {class: "form-control"}) %>
+      <div class="form-check">
+        <%= radio_button_tag(:is_event_arrival, true, params[:is_event_arrival] ? params[:is_event_arrival] == "true" : true, class: "form-check-input") %>
+        <%= label_tag(:is_event_arrival_true, "<strong>Arrival</strong>".html_safe + " – this flight brings #{@traveler.traveler_name} to #{@event.event_name}", class: "form-check-label") %>
+      </div>
+      <div class="form-check">
+        <%= radio_button_tag(:is_event_arrival, false, params[:is_event_arrival] ? params[:is_event_arrival] != "true" : false, class: "form-check-input") %>
+        <%= label_tag(:is_event_arrival_false, "<strong>Departure</strong>".html_safe + " – this flight takes #{@traveler.traveler_name} home from #{@event.event_name}", class: "form-check-label") %>
+      </div>
     </div>
   </div>
   
-  <div class="form-row">
+  <div class="form-row mb-4">
     
     <div class="col-auto">
       <%= label_tag(:airline_code, "Airline code") %>

@@ -1,5 +1,5 @@
 <div class="row justify-content-center">
-	<div class="col-md-6">
+	<div class="col-md-8">
 		<%= form_for(setup_flight(@flight)) do |f| %>
 
 			<%= render 'shared/error_messages', object: f.object %>
@@ -8,28 +8,54 @@
       <%= f.hidden_field(:traveler_id, value: @traveler.id ) %>
       <% end %>
       
-      <div class="row">
-        <div class="col">
-    			<%= f.label :is_event_arrival, "Arrival or departure?" %>
-    			<%= f.select(:is_event_arrival, options_for_select([["Arrival – this flight brings #{@traveler.traveler_name} to #{@event.event_name}", true],["Departure – this flight takes #{@traveler.traveler_name} home from #{@event.event_name}", false]], selected: (params[:direction] ? (params[:direction] != "departure") : f.object.is_event_arrival)), {}, {class: "form-control"}) %>
+      <% 
+      if f.object.new_record?
+        if params[:direction]
+          is_arrival = (params[:direction] != "departure")
+        else
+          is_arrival = true
+        end
+      else
+        is_arrival = f.object.is_event_arrival
+      end
+      %>
+
+      <div class="card">
+        <div class="card-header">Arrival or Departure</div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-check">
+              <%= f.radio_button(:is_event_arrival, true, class: "form-check-input", checked: is_arrival) %>
+              <%= f.label(:is_event_arrival_true, "<strong>Arrival</strong>".html_safe + " – this flight brings #{@traveler.traveler_name} to #{@event.event_name}", class: "form-check-label") %>
+            </div>
+            <div class="form-check">
+              <%= f.radio_button(:is_event_arrival, false, class: "form-check-input", checked: !is_arrival) %>
+              <%= f.label(:is_event_arrival_false, "<strong>Departure</strong>".html_safe + " – this flight takes #{@traveler.traveler_name} home from #{@event.event_name}", class: "form-check-label") %>
+            </div>
+          </div>
         </div>
       </div>
-      
-      <div class="row">
-        <%= f.fields_for :airline do |f_airline| %>
-        <div class="col-auto">
-          <% if f_airline.object.iata_code? || f_airline.object.new_record? %>
-            <%= f_airline.label :iata_code, "Airline code" %>
-            <%= f_airline.text_field :iata_code, class: "form-control code airline-code", maxlength: 2, placeholder: "AA" %>
-          <% else %>
-            <%= f_airline.label :icao_code, "Airline ICAO code" %>
-            <%= f_airline.text_field :icao_code, class: "form-control code airline-code", maxlength: 3, placeholder: "AAA" %>
-          <% end %>
-        </div>
-        <% end %>
-        <div class="col-auto">
-          <%= f.label :flight_number %>
-          <%= f.text_field :flight_number, class: "form-control flight-number", maxlength: 4, placeholder: "1234" %>
+
+      <div class="card">
+        <div class="card-header">Airline and Flight Number</div>
+        <div class="card-body">
+          <div class="row">
+            <%= f.fields_for :airline do |f_airline| %>
+            <div class="col-auto">
+              <% if f_airline.object.iata_code? || f_airline.object.new_record? %>
+                <%= f_airline.label :iata_code, "Airline code" %>
+                <%= f_airline.text_field :iata_code, class: "form-control code airline-code", maxlength: 2, placeholder: "AA" %>
+              <% else %>
+                <%= f_airline.label :icao_code, "Airline ICAO code" %>
+                <%= f_airline.text_field :icao_code, class: "form-control code airline-code", maxlength: 3, placeholder: "AAA" %>
+              <% end %>
+            </div>
+            <% end %>
+            <div class="col-auto">
+              <%= f.label :flight_number %>
+              <%= f.text_field :flight_number, class: "form-control flight-number", maxlength: 4, placeholder: "1234" %>
+            </div>
+          </div>
         </div>
       </div>
       
