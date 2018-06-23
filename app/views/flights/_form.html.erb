@@ -8,28 +8,16 @@
       <%= f.hidden_field(:traveler_id, value: @traveler.id ) %>
       <% end %>
       
-      <% 
-      if f.object.new_record?
-        if params[:direction]
-          is_arrival = (params[:direction] != "departure")
-        else
-          is_arrival = true
-        end
-      else
-        is_arrival = f.object.is_event_arrival
-      end
-      %>
-
       <div class="card">
         <div class="card-header">Arrival or Departure</div>
         <div class="card-body">
           <div class="form-row">
             <div class="form-check">
-              <%= f.radio_button(:is_event_arrival, true, class: "form-check-input", checked: is_arrival) %>
+              <%= f.radio_button(:is_event_arrival, true, class: "form-check-input", checked: is_arrival(f.object)) %>
               <%= f.label(:is_event_arrival_true, "<strong>Arrival</strong>".html_safe + " – this flight brings #{@traveler.traveler_name} to #{@event.event_name}", class: "form-check-label") %>
             </div>
             <div class="form-check">
-              <%= f.radio_button(:is_event_arrival, false, class: "form-check-input", checked: !is_arrival) %>
+              <%= f.radio_button(:is_event_arrival, false, class: "form-check-input", checked: !is_arrival(f.object)) %>
               <%= f.label(:is_event_arrival_false, "<strong>Departure</strong>".html_safe + " – this flight takes #{@traveler.traveler_name} home from #{@event.event_name}", class: "form-check-label") %>
             </div>
           </div>

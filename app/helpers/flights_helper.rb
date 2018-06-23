@@ -15,5 +15,19 @@ module FlightsHelper
   rescue TZInfo::InvalidTimezoneIdentifier
     return nil
   end
+
+  # Determines whether arrival or departure should be preselected based on
+  # object values an parameter inputs. Returns true if arrival, false if departure.
+  def is_arrival(f)
+    if f.new_record?
+      if params[:direction]
+        return (params[:direction] != "departure")
+      else
+        return true
+      end
+    else
+      return f.is_event_arrival
+    end
+  end
   
 end
