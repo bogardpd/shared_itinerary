@@ -36,6 +36,17 @@ class AirlinesControllerTest < ActionController::TestCase
     get :edit, params: { id: @airline }
     assert_redirected_to root_url
   end
+
+  test "should redirect edit when not logged in" do
+    get :index
+    assert_redirected_to login_url
+  end
+
+  test "should allow update when logged in as an admin" do
+    log_in_as(@admin_user)
+    patch :update, params: { id: @airline, airline: { name: "TWA" } }
+    assert_redirected_to airlines_url
+  end
   
   test "should redirect update when logged in as a non-admin" do
     log_in_as(@other_user)

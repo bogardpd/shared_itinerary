@@ -7,6 +7,8 @@ class AirportsControllerTest < ActionController::TestCase
     @other_user = users(:archer)
     @airport = airports(:atlanta)
   end
+
+  # INDEX
   
   test "should get index when logged in as an admin" do
     log_in_as(@admin_user)
@@ -24,6 +26,8 @@ class AirportsControllerTest < ActionController::TestCase
     get :index
     assert_redirected_to login_url
   end
+
+  # NEW
   
   test "should get new when logged in as admin" do
     log_in_as(@admin_user)
@@ -41,17 +45,29 @@ class AirportsControllerTest < ActionController::TestCase
     get :new
     assert_redirected_to login_url
   end
+
+  # CREATE
+
+  test "should allow create when logged in as an admin" do
+    log_in_as(@admin_user)
+    assert_difference "Airport.count", 1 do
+      post :create, params: { airport: { name: "Des Moines", iata_code: "DSM", icao_code: "KDSM", timezone: "America/Chicago"}}
+    end
+    assert_redirected_to airports_url
+  end
   
   test "should redirect create when logged in as non-admin" do
     log_in_as(@other_user)
-    post :create, params: { airport: { name: "Chicago", iata_code: "ORD", icao_code: "KORD", timezone: "America/Chicago"}}
+    post :create, params: { airport: { name: "Des Moines", iata_code: "DSM", icao_code: "KDSM", timezone: "America/Chicago"}}
     assert_redirected_to root_url
   end
   
   test "should redirect create when not logged in" do
-    post :create, params: { airport: { name: "Chicago", iata_code: "ORD", icao_code: "KORD", timezone: "America/Chicago"}}
+    post :create, params: { airport: { name: "Des Moines", iata_code: "DSM", icao_code: "KDSM", timezone: "America/Chicago"}}
     assert_redirected_to login_url    
   end
+
+  # EDIT
   
   test "should get edit when logged in as an admin" do
     log_in_as(@admin_user)
@@ -68,6 +84,14 @@ class AirportsControllerTest < ActionController::TestCase
   test "should redirect edit when not logged in" do
     get :edit, params: { id: @airport }
     assert_redirected_to login_url
+  end
+
+  # UPDATE
+  
+  test "should allow update when logged in as an admin" do
+    log_in_as(@admin_user)
+    patch :update, params: { id: @airport, airport: { name: "Atlanta2" } }
+    assert_redirected_to airports_url
   end
   
   test "should redirect update when logged in as a non-admin" do

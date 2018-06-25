@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
-  before_action :logged_in_user, only: [:new, :create, :edit, :update, :share_link, :destroy]
-  before_action :correct_user, only: [:edit, :update, :share_link, :destroy]
+  before_action :logged_in_user, only: [:new, :create, :edit, :update, :update_share_link, :destroy]
+  before_action :correct_user, only: [:edit, :update, :update_share_link, :destroy]
   before_action :correct_user_or_share_link, only: [:show]
   
   def show
