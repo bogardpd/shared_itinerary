@@ -18,7 +18,7 @@ Please see this [sample event](https://www.shareditinerary.com/events/1/share/08
 | ----:| ------- | ---- |
 | (In progress) |     | Add timezones and flight search |
 |  5 Oct 2016 | 0.2 | Move chart code to `Chart` class |
-| 29 Jun 2016 | 0.1 | Initial beta release |
+| 19 Jun 2016 | 0.1 | Initial beta release |
 
 ## Models
 
