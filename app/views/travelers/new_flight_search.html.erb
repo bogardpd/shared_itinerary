@@ -12,14 +12,24 @@
   <div class="form-row mb-4">
 
     <div class="col">
-      <div class="form-check">
-        <%= radio_button_tag(:is_event_arrival, true, params[:is_event_arrival] ? params[:is_event_arrival] == "true" : true, class: "form-check-input") %>
-        <%= label_tag(:is_event_arrival_true, "<strong>Arrival</strong>".html_safe + " – this flight brings #{@traveler.traveler_name} to #{@event.event_name}", class: "form-check-label") %>
-      </div>
-      <div class="form-check">
-        <%= radio_button_tag(:is_event_arrival, false, params[:is_event_arrival] ? params[:is_event_arrival] != "true" : false, class: "form-check-input") %>
-        <%= label_tag(:is_event_arrival_false, "<strong>Departure</strong>".html_safe + " – this flight takes #{@traveler.traveler_name} home from #{@event.event_name}", class: "form-check-label") %>
-      </div>
+      <table class="checkboxes">
+        <tr>
+          <td>
+            <%= radio_button_tag(:is_event_arrival, true, params[:is_event_arrival] ? params[:is_event_arrival] == "true" : true) %>
+          </td>
+          <td>
+            <%= label_tag(:is_event_arrival_true, "<strong>Arrival</strong>".html_safe + " – this flight brings #{@traveler.traveler_name} to #{@event.event_name}") %>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <%= radio_button_tag(:is_event_arrival, false, params[:is_event_arrival] ? params[:is_event_arrival] != "true" : false) %>
+          </td>
+          <td>
+            <%= label_tag(:is_event_arrival_false, "<strong>Departure</strong>".html_safe + " – this flight takes #{@traveler.traveler_name} home from #{@event.event_name}") %>
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
   
