@@ -31,7 +31,7 @@
           <%= f_dest.hidden_field(:icao_code, value: flight[:destination_airport_icao]) %>
         <% end %>
         
-        <%= f.submit(%Q(#{flight[:origin_airport_name]} &rarr; #{flight[:destination_airport_name]}).html_safe, class: "btn btn-outline-primary") %>
+        <%= f.submit(%Q(#{flight[:origin_airport_name]} &rarr; #{flight[:destination_airport_name]}).html_safe, class: "btn btn-outline-primary w-100") %>
       <% end %>
     </div>    
     <% end %>
