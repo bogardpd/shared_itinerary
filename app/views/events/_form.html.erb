@@ -19,5 +19,19 @@
 
 		<% end %>
 
+    <input type="text" id="address" style="width: 500px;"></input>
+
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?key=<%= ENV["GOOGLE_MAPS_API_KEY"] %>&libraries=places&language=en-US&types=(cities)"></script>
+        <script>
+            var autocomplete = new google.maps.places.Autocomplete($("#address")[0], {});
+
+            google.maps.event.addListener(autocomplete, 'place_changed', function() {
+                var place = autocomplete.getPlace();
+                console.log(place);
+                console.log(place.geometry.location.lat());
+                console.log(place.geometry.location.lng());
+            });
+        </script>
+
 	</div>
 </div>
