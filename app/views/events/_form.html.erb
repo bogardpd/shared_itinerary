@@ -7,9 +7,30 @@
       <%= f.label :event_name %>
       <%= f.text_field :event_name, class: 'form-control' %>
 
+      <label for="location">Event city</label>
+      <input type="text" id="location" class="form-control autocomplete-field"></input>
+
+      <script>
+        $( function() {
+          var availableTags = [
+            "Albuquerque",
+            "Boston",
+            "Cincinnati",
+            "Denver",
+            "Euclid",
+            "Fort Lauderdale",
+            "Green Bay"
+          ];
+          $("#location").autocomplete({
+            source: availableTags
+          });
+        } );
+      </script>
+      
+      
       <%= f.label :timezone, "What time zone does the event take place in?" %>
       <%= f.select :timezone, Timezones::select_options, {include_blank: true}, {class: "form-control"} %>
-      
+            
       <div class="form-group">
         <%= f.label :note, "Note <small>(optional) (supports #{link_to("Markdown", "https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet")})".html_safe %>
         <%= f.text_area :note, class: 'form-control', rows: 5 %>
