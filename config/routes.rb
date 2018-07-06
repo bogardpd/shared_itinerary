@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   
   # Google Places proxy
   get "/api/google-places(/:google_session)" => "static_pages#google_places_api_proxy", as: :google_places_api
+  get "/api/google-timezone/:place_id/(/:google_session)" => "static_pages#google_timezone_api_proxy", as: :google_timezone_api
 
   # Certbot
   get "/.well-known/acme-challenge/:id" => "static_pages#letsencrypt"
