@@ -17,11 +17,14 @@ class StaticPagesController < ApplicationController
   # sharing the API key with client-side scripts
   def google_places_api_proxy
     require "net/http"
-
-    url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=#{URI.encode(params[:input])}&types=(cities)&key=#{ENV["GOOGLE_MAPS_API_KEY"]}"
-    uri = URI(url)
-    response = Net::HTTP.get(uri)
-    render json: response
+    if params[:term]
+      url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=#{URI.encode(params[:term])}&types=(cities)&key=#{ENV["GOOGLE_MAPS_API_KEY"]}"
+      uri = URI(url)
+      response = JSON.parse(Net::HTTP.get(uri))
+      render json: response["predictions"].map{|r| r["description"]}.to_json
+    else
+      render json: {}
+    end
   end
  
 end
