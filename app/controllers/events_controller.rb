@@ -27,6 +27,7 @@ class EventsController < ApplicationController
   
   def new
     @event = current_user.events.build
+    @google_session = SecureRandom.uuid
   end
   
   def create
@@ -41,6 +42,7 @@ class EventsController < ApplicationController
   
   def edit
     @event = Event.find(params[:id])
+    @google_session = SecureRandom.uuid
   end
   
   def update

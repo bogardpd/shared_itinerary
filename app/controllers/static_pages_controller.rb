@@ -19,7 +19,7 @@ class StaticPagesController < ApplicationController
   def google_places_api_proxy
     require "net/http"
     if params[:term]
-      url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=#{URI.encode(params[:term])}&types=(cities)&key=#{ENV["GOOGLE_MAPS_API_KEY"]}"
+      url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=#{URI.encode(params[:term])}&types=(cities)&key=#{ENV["GOOGLE_MAPS_API_KEY"]}&sessiontoken=#{params[:google_session]}"
       uri = URI(url)
       response = JSON.parse(Net::HTTP.get(uri))
       render json: response["predictions"].map{|r| {label: r["description"], value: r["place_id"]}}.to_json

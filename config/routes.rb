@@ -26,7 +26,7 @@ Rails.application.routes.draw do
   resources :airports, except: [:show]
   
   # Google Places proxy
-  get "/api/google-places/" => "static_pages#google_places_api_proxy", as: :google_places_api
+  get "/api/google-places(/:google_session)" => "static_pages#google_places_api_proxy", as: :google_places_api
 
   # Certbot
   get "/.well-known/acme-challenge/:id" => "static_pages#letsencrypt"

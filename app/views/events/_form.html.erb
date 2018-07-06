@@ -14,7 +14,7 @@
         $( function() {
           var location_field = $("#location")
           location_field.autocomplete({
-            source: "/api/google-places/",
+            source: "/api/google-places/<%= @google_session %>",
             select: function(event, ui) {
               $("#location").val(ui.item.label);
               console.log(ui.item.value);
