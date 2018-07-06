@@ -7,17 +7,26 @@
       <%= f.label :event_name %>
       <%= f.text_field :event_name, class: 'form-control' %>
 
-      <label for="location">Event city</label>
+      <label for="location">Event city</label> <%= image_tag("powered_by_google_on_white.png", class: "logo-right") %>
       <input type="text" id="location" class="form-control autocomplete-field"></input>
+      
 
       <script>
         $( function() {
           var location_field = $("#location")
           location_field.autocomplete({
             source: "/api/google-places/<%= @google_session %>",
+            focus: function(event, ui) {
+              $("#location").val(ui.item.label);
+              event.preventDefault();
+            },
             select: function(event, ui) {
               $("#location").val(ui.item.label);
-              console.log(ui.item.value);
+              var url = "/api/google-timezone/"+ui.item.value+"/<%= @google_session %>";
+              $.getJSON(url, function(data) {
+                var timeZoneId = data.timeZoneId;
+                $("#event_timezone").val(timeZoneId);
+              });
               event.preventDefault();
             }
           });
@@ -36,20 +45,6 @@
 			<%= f.submit yield(:form_button), class: "btn btn-primary" %>
 
 		<% end %>
-
-    <input type="text" id="address" style="width: 500px;"></input>
-
-        <script type="text/javascript" src="http://maps.google.com/maps/api/js?key=<%= ENV["GOOGLE_MAPS_API_KEY"] %>&libraries=places&language=en-US&types=(cities)"></script>
-        <script>
-            var autocomplete = new google.maps.places.Autocomplete($("#address")[0], {});
-
-            google.maps.event.addListener(autocomplete, 'place_changed', function() {
-                var place = autocomplete.getPlace();
-                console.log(place);
-                console.log(place.geometry.location.lat());
-                console.log(place.geometry.location.lng());
-            });
-        </script>
 
 	</div>
 </div>
