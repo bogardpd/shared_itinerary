@@ -53,6 +53,7 @@ module FlightXML
     end
     
     # Get data for airports:
+    flights = [flights] if flights.class == Hash
     airports = (flights.map{|f| f[:origin]} | flights.map{|f| f[:destination]}).uniq
     origin_airport_timezones = Hash.new
     airport_data = Hash.new
