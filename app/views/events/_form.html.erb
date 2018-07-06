@@ -17,11 +17,11 @@
           location_field.autocomplete({
             source: "/api/google-places/<%= @google_session %>",
             focus: function(event, ui) {
-              $("#location").val(ui.item.label);
+              location_field.val(ui.item.label);
               event.preventDefault();
             },
             select: function(event, ui) {
-              $("#location").val(ui.item.label);
+              location_field.val(ui.item.label);
               var url = "/api/google-timezone/"+ui.item.value+"/<%= @google_session %>";
               $.getJSON(url, function(data) {
                 var timeZoneId = data.timeZoneId;
