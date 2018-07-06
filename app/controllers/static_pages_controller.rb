@@ -1,5 +1,6 @@
 class StaticPagesController < ApplicationController
   before_action :admin_user, only: [:admin]
+  before_action :logged_in_user, only: [:google_places_api_proxy]
   
   def home
     redirect_to current_user if logged_in?
@@ -21,7 +22,7 @@ class StaticPagesController < ApplicationController
       url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=#{URI.encode(params[:term])}&types=(cities)&key=#{ENV["GOOGLE_MAPS_API_KEY"]}"
       uri = URI(url)
       response = JSON.parse(Net::HTTP.get(uri))
-      render json: response["predictions"].map{|r| r["description"]}.to_json
+      render json: response["predictions"].map{|r| {label: r["description"], value: r["place_id"]}}.to_json
     else
       render json: {}
     end

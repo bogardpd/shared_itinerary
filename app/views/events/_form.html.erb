@@ -12,17 +12,14 @@
 
       <script>
         $( function() {
-          var availableTags = [
-            "Albuquerque",
-            "Boston",
-            "Cincinnati",
-            "Denver",
-            "Euclid",
-            "Fort Lauderdale",
-            "Green Bay"
-          ];
-          $("#location").autocomplete({
-            source: "/api/google-places/"
+          var location_field = $("#location")
+          location_field.autocomplete({
+            source: "/api/google-places/",
+            select: function(event, ui) {
+              $("#location").val(ui.item.label);
+              console.log(ui.item.value);
+              event.preventDefault();
+            }
           });
         } );
       </script>
