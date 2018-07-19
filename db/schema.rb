@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_21_025054) do
+ActiveRecord::Schema.define(version: 2018_07_19_234039) do
 
   create_table "airlines", force: :cascade do |t|
     t.string "iata_code"
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 2018_06_21_025054) do
     t.string "share_link"
     t.text "note"
     t.string "timezone"
+    t.string "city"
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 

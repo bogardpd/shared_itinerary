@@ -61,6 +61,7 @@ An `Airport` is an airport which can be associated with flights. If a new flight
 | `note`       | string  | No        | Additional details about the event (supports Markdown) |
 | `share_link` | string  | No        | Hexadecimal string used to gain read-only access to the event |
 | `timezone`   | string  | No        | IANA Timezone string for the location the event takes place. If blank, `Etc/UTC` will be used. |
+| `city`       | string  | No        | The city that the event takes place in |
 | `user_id`    | integer | Yes       | [`User`](#user) that owns the event |
 
 | Relationship | Models |

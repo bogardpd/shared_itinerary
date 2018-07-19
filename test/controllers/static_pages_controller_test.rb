@@ -26,4 +26,14 @@ class StaticPagesControllerTest < ActionController::TestCase
     assert_redirected_to root_url
   end
 
+  test "should redirect google autocomplete api proxy when not logged in" do
+    get :google_places_api_proxy, params: {term: "tuc"}
+    assert_redirected_to login_url
+  end
+
+  test "should redirect google timezone api proxy when not logged in" do
+    get :google_timezone_api_proxy, params: {place_id: "ChIJK-0sC0Fl1oYRFccWTTgtw3M"}
+    assert_redirected_to login_url
+  end
+
 end

@@ -22,7 +22,13 @@
 
 <% end %>
 
-<h1><%= @event.event_name %></h1>
+<div class="title">
+  <h1><%= @event.event_name %></h1>
+  <% if @event.city? %>
+    <div class="subtitle"><%= @event.city %></div>
+  <% end %>
+</div>
+
 
 <% if @event.note? %>
   <div class="alert alert-info event-info"><%= markdown_text(@event.note) %></div>

@@ -27,6 +27,7 @@ class EventsController < ApplicationController
   
   def new
     @event = current_user.events.build
+    @google_session = SecureRandom.uuid
   end
   
   def create
@@ -41,6 +42,7 @@ class EventsController < ApplicationController
   
   def edit
     @event = Event.find(params[:id])
+    @google_session = SecureRandom.uuid
   end
   
   def update
@@ -72,7 +74,7 @@ class EventsController < ApplicationController
   private
   
     def event_params
-      params.require(:event).permit(:event_name, :timezone, :note)
+      params.require(:event).permit(:event_name, :timezone, :city, :note)
     end
     
     def correct_user

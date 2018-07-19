@@ -1,18 +1,18 @@
 Rails.application.routes.draw do
   
-  root 'static_pages#home'
+  root "static_pages#home"
   
-  get     'admin'  => 'static_pages#admin'
+  get     "admin"  => "static_pages#admin"
   
-  get     'signup' => 'users#new'
+  get     "signup" => "users#new"
   
-  get     'login'  => 'sessions#new'
-  post    'login'  => 'sessions#create'
-  delete  'logout' => 'sessions#destroy'
+  get     "login"  => "sessions#new"
+  post    "login"  => "sessions#create"
+  delete  "logout" => "sessions#destroy"
   
-  post    'share_link/:id', to: 'events#update_share_link', as: 'update_share_link'
+  post    "share_link/:id", to: "events#update_share_link", as: "update_share_link"
   
-  get     'events/:id/share/:share_link' => 'events#show'
+  get     "events/:id/share/:share_link" => "events#show"
   
   resources :users
   resources :events
@@ -25,7 +25,11 @@ Rails.application.routes.draw do
   resources :airlines, only: [:index, :edit, :update]
   resources :airports, except: [:show]
   
+  # Google Places proxy
+  get "/api/google-places(/:google_session)" => "static_pages#google_places_api_proxy", as: :google_places_api
+  get "/api/google-timezone/:place_id/(/:google_session)" => "static_pages#google_timezone_api_proxy", as: :google_timezone_api
+
   # Certbot
-  get '/.well-known/acme-challenge/:id' => 'static_pages#letsencrypt'
+  get "/.well-known/acme-challenge/:id" => "static_pages#letsencrypt"
   
 end
