@@ -7,13 +7,12 @@
       <%= f.label :event_name %>
       <%= f.text_field :event_name, class: 'form-control' %>
 
-      <label for="location">Event city</label> <%= image_tag("powered_by_google_on_white.png", class: "logo-right") %>
-      <input type="text" id="location" class="form-control autocomplete-field"></input>
-      
+      <%= f.label :city, "Event city" %> <%= image_tag("powered_by_google_on_white.png", class: "logo-right") %>
+      <%= f.text_field :city, class: "form-control" %>
 
       <script>
         $( function() {
-          var location_field = $("#location")
+          var location_field = $("#event_city")
           location_field.autocomplete({
             source: "/api/google-places/<%= @google_session %>",
             focus: function(event, ui) {
