@@ -30,9 +30,9 @@ gem 'sdoc', '0.4.0', group: :doc
 # Use savon for SOAP
 gem 'savon', '~> 2.11', '>= 2.11.1'
 
-# Force loofah to 2.2.1 for security update.
+# Force loofah to 2.2.3 for security update.
 # https://github.com/flavorjones/loofah/issues/144
-gem 'loofah', '~> 2.2.1'
+gem 'loofah', '~> 2.2.3'
 
 group :development, :test do
   # Use sqlite3 as the database for Active Record
