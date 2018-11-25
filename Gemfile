@@ -10,7 +10,7 @@ gem 'bcrypt', '3.1.7'
 # Use Bootstrap UI framework
 gem 'bootstrap', '~> 4.1', '>= 4.1.1'
 # Use SCSS for stylesheets
-gem 'sass-rails'
+gem 'sassc-rails', '~> 2.0'
 # Use redcarpet for markdown formatting
 gem 'redcarpet'
 
