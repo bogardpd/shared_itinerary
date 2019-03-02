@@ -13,7 +13,7 @@
     <th></th>
   </thead>
 <% @airlines.each do |airline| %>
-  <%= tr_open_needs_review(airline.needs_review) %>
+  <tr class="<%= tr_class_needs_review(airline.needs_review) %>">
     <td class="airline-logo"><%= airline_icon(airline.icao_code, show_blank_icon: true) %></td>
     <th scope="row"><%= airline.name %></td>
     <td><%= airline.iata_code %></td>

@@ -15,7 +15,7 @@
     <th></th>
   </thead>
 <% @airports.each do |airport| %>
-  <%= tr_open_needs_review(airport.needs_review) %>
+  <tr class="<%= tr_class_needs_review(airport.needs_review) %>">
     <th scope="row"><%= airport.name %></td>
     <td><%= airport.iata_code %></td>
     <td><%= airport.icao_code %></td>

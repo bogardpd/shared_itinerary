@@ -4,16 +4,16 @@ module ApplicationHelper
     return "" unless icao_code
     icon_path = Airline.icon_path(icao_code)
     if show_blank_icon
-      return image_tag(icon_path, class: "icon", onerror: "this.src='#{ExternalImage::ROOT_PATH}/flights/airline-icons/icao/unknown-airline.png';this.onerror='';").html_safe
+      return image_tag(icon_path, class: "icon", onerror: "this.src='#{ExternalImage::ROOT_PATH}/flights/airline-icons/icao/unknown-airline.png';this.onerror='';")
     else
-      return image_tag(icon_path, class: "icon", onerror: "this.style.display='none';this.onerror='';").html_safe
+      return image_tag(icon_path, class: "icon", onerror: "this.style.display='none';this.onerror='';")
     end
   end
   
   def admin_link
     count = Airline.where(name: nil).count + Airport.where(needs_review: true).count
     if count > 0
-      link_to(%Q(Admin <span class="badge badge-warning">#{count}</span>).html_safe, admin_path, class: "nav-link")
+      link_to(ActiveSupport::SafeBuffer.new + "Admin " + content_tag(:span, count, class: %w(badge badge-warning)), admin_path, class: "nav-link")
     else
       link_to "Admin", admin_path, class: "nav-link"
     end
@@ -34,22 +34,34 @@ module ApplicationHelper
     if page_meta_description.empty?
       ""
     else
-      "<meta name=\"description\" content=\"#{page_meta_description}\" />".html_safe
+      content_tag(:meta, nil, name: "description", content: page_meta_description)
     end
   end
   
   def octicon(icon)
     return image_tag("octicons/#{icon}.svg", class: "octicon")
   end
-  
-  def tr_open_needs_review(needs_review)
-    return "<tr>".html_safe unless needs_review
-    return %Q(<tr class="table-warning">).html_safe
+
+  def tr_class_needs_review(needs_review)
+    return needs_review ? "table-warning" : ""
   end
   
   def short_date_range(range)
     return "No flights" if range.nil?
-    return %Q(<div><span class="light">from</span> #{short_date_nonbreaking(range.begin)}</div><div><span class="light">to</span> #{short_date_nonbreaking(range.end)}</div>).html_safe
+    
+    html = ActiveSupport::SafeBuffer.new
+    html += content_tag(:div) do
+      concat(content_tag(:span, "from", class: "light"))
+      concat(" ")
+      concat(sanitize(short_date_nonbreaking(range.begin)))
+    end
+    html += content_tag(:div) do
+      concat(content_tag(:span, "to", class: "light"))
+      concat(" ")
+      concat(sanitize(short_date_nonbreaking(range.end)))
+    end
+    return html
+
   end
   
   def short_date(dt)
