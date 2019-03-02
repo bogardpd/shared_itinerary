@@ -1,4 +1,6 @@
 class Chart
+  include ActionView::Helpers
+  include ActionView::Context
   
   def initialize(event)
     @event               = event    
@@ -13,14 +15,14 @@ class Chart
   
   # Return HTML and SVG code for arrival and departure charts.
   def draw
-    html = String.new
+    html = ActiveSupport::SafeBuffer.new
     
-    html += "<h2>Arriving Flights</h2>\n"
+    html += content_tag(:h2, "Arriving Flights")
     html += draw_direction_charts(@flight_data_by_date, :arrivals)
-    html += "<h2>Departing Flights</h2>\n"
+    html += content_tag(:h2, "Departing Flights")
     html += draw_direction_charts(@flight_data_by_date, :departures)
     
-    return html.html_safe
+    return html
   end
   
   # Return the airport color array
@@ -169,82 +171,76 @@ class Chart
       number_of_rows = date_local_data[:travelers].count
       return nil unless number_of_rows > 0
       
-      html = String.new
+      html = ActiveSupport::SafeBuffer.new
       chart_height = @name_height * number_of_rows
       image_height = @chart_top + chart_height + @image_padding
       
-      html += %Q(<h3>#{date_local.strftime("%A, %-d %B %Y")}</h3>\n\n)
-      html += %Q(<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="#{@image_width}" height="#{image_height}">\n)
-      
-      # Draw background:
-      html += %Q(\t<rect width="#{@image_width}" height="#{image_height}" class="svg_background" />\n)
-      
-      # Draw legend:
-      @airport_hues.each_with_index do |(airport, hue), index|
-        legend_left = @chart_right - ((@airport_hues.length - index) * @legend_width)
-        text_left = legend_left + (@legend_box_size * 1.25)
-        arriving_departing = (direction == :arrivals) ? "Arriving at" : "Departing from"
-        html += %Q(\t<g cursor="default">\n)
-        html += %Q(\t\t<title>#{@airport_names[airport] || airport}</title>\n)
-        html += %Q(\t\t<rect width="#{@legend_box_size}" height="#{@legend_box_size}" x="#{legend_left}" y="#{@image_padding}" fill="hsl(#{hue},#{@saturation},#{@lightness_flight_fill})" fill-opacity="#{@bar_opacity}" stroke="hsl(#{hue},#{@saturation},#{@lightness_stroke})" stroke-opacity="#{@bar_opacity}"/>\n)
-        html += %Q(\t\t<text x="#{text_left}" y="#{@image_padding + @legend_box_size*0.75}" text-anchor="start">#{arriving_departing} #{airport}</text>\n)
-        html += %Q(\t</g>\n)
-      end
-      
-      # Draw chart grid:
-      key_airports = date_local_data[:travelers].map{|k,v| v[:key_code]}
-      prior_key_airport = nil
-      for x in 0..number_of_rows
-        current_key_airport = key_airports[x]
-        majmin = current_key_airport == prior_key_airport ? "minor" : "major"
-        prior_key_airport = current_key_airport
-        html += %Q(\t<line x1="#{@image_padding}" y1="#{@chart_top + x * @name_height}" x2="#{@image_padding + @name_width + 24 * @hour_width}" y2="#{@chart_top + x * @name_height}" class="svg_gridline_#{majmin}_horizontal" />\n)
-      end
-      day_time_range_utc = date_local_data[:start_time_utc]..date_local_data[:end_time_utc]
-      day_time_range_local = date_local_data[:start_time_utc].in_time_zone(@timezone)..date_local_data[:end_time_utc].in_time_zone(@timezone)
-            
-      if day_time_range_local.begin.gmt_offset == day_time_range_local.end.gmt_offset
-        # No DST switch; show one time label row
-        html += %Q(\t<text x="#{@image_padding}" y="#{@chart_top - @time_axis_padding}" text-anchor="left" class="svg_time_label">#{day_time_range_utc.begin.in_time_zone(@timezone).strftime("(%:z) %Z")}</text>\n)
-        for x in 0..24
-          html += %Q(\t<text x="#{@chart_left + (x * @hour_width)}" y="#{@chart_top - @time_axis_padding}" text-anchor="middle" class="svg_time_label">#{time_label(x)}</text>\n)
-          html += %Q(\t<line x1="#{@chart_left + (x * @hour_width)}" y1="#{@chart_top}" x2="#{@image_padding + @name_width + (x * @hour_width)}" y2="#{@chart_top + chart_height}" class="#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}" />\n)
-        end
-      else
-        # DST switch; show two time label rows
-        seconds_in_day = (day_time_range_utc.end - day_time_range_utc.begin).to_i
-        dst_hour_width = @chart_width/(seconds_in_day/3600.0) # Must use float to handle non-hour DST offset
-        hours_in_day = seconds_in_day/3600
+      html += content_tag(:h3, date_local.strftime("%A, %-d %B %Y"))
+      html += content_tag(:svg, xmlns: "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink", width: @image_width, height: image_height) do
+        # Draw background:
+        concat(content_tag(:rect, "", width: @image_width, height: image_height, class: "svg_background"))
 
-        html += %Q(\t<text x="#{@image_padding}" y="#{@chart_top - @time_axis_dst_height - @time_axis_padding}" text-anchor="left" class="svg_time_label">#{day_time_range_local.begin.strftime("(%:z) %Z")}</text>\n)
-        for x in 0..hours_in_day
-          this_time = day_time_range_utc.begin + x.hours
-          
-          html += %Q(\t<text x="#{@chart_left + (x * dst_hour_width)}" y="#{@chart_top - @time_axis_dst_height - @time_axis_padding}" text-anchor="middle" class="svg_time_label">#{time_label(x)}</text>\n)
-          
-          if this_time.in_time_zone(@timezone).gmt_offset != day_time_range_local.begin.gmt_offset
-            html += %Q(\t<line x1="#{@chart_left + (x * dst_hour_width)}" y1="#{@chart_top}" x2="#{@chart_left + (x * dst_hour_width)}" y2="#{@chart_top + chart_height}" class="svg_gridline_dst_switch" />\n)
-            switch_x = x
-            break
+        # Draw legend:
+        @airport_hues.each_with_index do |(airport, hue), index|
+          legend_left = @chart_right - ((@airport_hues.length - index) * @legend_width)
+          text_left = legend_left + (@legend_box_size * 1.25)
+          arriving_departing = (direction == :arrivals) ? "Arriving at" : "Departing from"
+          concat(content_tag(:g, cursor: "default") do
+            concat(content_tag(:title, @airport_names[airport] || airport))
+            concat(content_tag(:rect, "", width: @legend_box_size, height: @legend_box_size, x: legend_left, y: @image_padding, fill: "hsl(#{hue},#{@saturation},#{@lightness_flight_fill})", "fill-opacity": @bar_opacity, stroke: "hsl(#{hue},#{@saturation},#{@lightness_stroke})", "stroke-opacity": @bar_opacity))
+            concat(content_tag(:text, arriving_departing + " " + airport, x: text_left, y: @image_padding + @legend_box_size*0.75, "text-anchor": "start"))
+          end)
+        end
+
+        # Draw chart grid:
+        key_airports = date_local_data[:travelers].map{|k,v| v[:key_code]}
+        prior_key_airport = nil
+        for x in 0..number_of_rows
+          current_key_airport = key_airports[x]
+          majmin = current_key_airport == prior_key_airport ? "minor" : "major"
+          prior_key_airport = current_key_airport
+          html += %Q(\t<line x1="#{@image_padding}" y1="#{@chart_top + x * @name_height}" x2="#{@image_padding + @name_width + 24 * @hour_width}" y2="#{@chart_top + x * @name_height}" class="svg_gridline_#{majmin}_horizontal" />\n)
+        end
+        day_time_range_utc = date_local_data[:start_time_utc]..date_local_data[:end_time_utc]
+        day_time_range_local = date_local_data[:start_time_utc].in_time_zone(@timezone)..date_local_data[:end_time_utc].in_time_zone(@timezone)
+
+        if day_time_range_local.begin.gmt_offset == day_time_range_local.end.gmt_offset
+          # No DST switch; show one time label row
+          concat(content_tag(:text, day_time_range_utc.begin.in_time_zone(@timezone).strftime("(%:z) %Z"), x: @image_padding, y: @chart_top - @time_axis_padding, "text-anchor": "left", class: "svg_time_label"))
+          for x in 0..24
+            concat(content_tag(:text, time_label(x), x: @chart_left + (x * @hour_width), y: @chart_top - @time_axis_padding, "text-anchor": "middle", class: "svg_time_label"))
+            concat(content_tag(:line, nil, x1: @chart_left + (x * @hour_width), y1: @chart_top, x2: @image_padding + @name_width + (x * @hour_width), y2: @chart_top + chart_height, class: (x % 12 == 0 ? "svg_gridline_major" : "svg_gridline_minor")))
           end
-          html += %Q(\t<line x1="#{@chart_left + (x * dst_hour_width)}" y1="#{@chart_top}" x2="#{@chart_left + (x * dst_hour_width)}" y2="#{@chart_top + chart_height}" class="#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}" />\n)
-          
-        end
-        html += %Q(\t<text x="#{@image_padding}" y="#{@chart_top - @time_axis_padding}" text-anchor="left" class="svg_time_label">#{day_time_range_local.end.strftime("(%:z) %Z")}</text>\n)
-        for x in 0..(hours_in_day-switch_x)
-          this_time = day_time_range_utc.end - x.hours
-          html += %Q(\t<text x="#{@chart_right - (x * dst_hour_width)}" y="#{@chart_top - @time_axis_padding}" text-anchor="middle" class="svg_time_label">#{time_label(24-x)}</text>\n)
-          html += %Q(\t<line x1="#{@chart_right - (x * dst_hour_width)}" y1="#{@chart_top}" x2="#{@chart_right - (x * dst_hour_width)}" y2="#{@chart_top + chart_height}" class="#{x % 12 == 0 ? 'svg_gridline_major' : 'svg_gridline_minor'}" />\n) unless (x == hours_in_day-switch_x && seconds_in_day%3600 == 0)
-        end
+        else
+          # DST switch; show two time label rows
+          seconds_in_day = (day_time_range_utc.end - day_time_range_utc.begin).to_i
+          dst_hour_width = @chart_width/(seconds_in_day/3600.0) # Must use float to handle non-hour DST offset
+          hours_in_day = seconds_in_day/3600
 
+          concat(content_tag(:text, day_time_range_local.begin.strftime("(%:z) %Z"), x: @image_padding, y: @chart_top - @time_axis_dst_height - @time_axis_padding, "text-anchor": "let", class: "svg_time_label"))
+          for x in 0..hours_in_day
+            this_time = day_time_range_utc.begin + x.hours
+            concat(content_tag(:text, time_label(x), x: @chart_left + (x * dst_hour_width), y: @chart_top - @time_axis_dst_height - @time_axis_padding, "text-anchor": "middle", class: "svg_time_label"))
+            if this_time.in_time_zone(@timezone).gmt_offset != day_time_range_local.begin.gmt_offset
+              concat(content_tag(:line, nil, x1: @chart_left + (x * dst_hour_width), y1: @chart_top, x2: @chart_left + (x * dst_hour_width), y2: @chart_top + chart_height, class: "svg_gridline_dst_switch"))
+              switch_x = x
+              break
+            end
+            concat(content_tag(:line, nil, x1: @chart_left + (x * dst_hour_width), y1: @chart_top, x2: @chart_left + (x * dst_hour_width), y2: @chart_top + chart_height, class: (x % 12 == 0 ? "svg_gridline_major" : "svg_gridline_minor")))
+          end
+          concat(content_tag(:text, day_time_range_local.end.strftime("(%:z) %Z"), x: @image_padding, y: @chart_top - @time_axis_padding, "text-anchor": "left", class: "svg_time_label"))
+          for x in 0..(hours_in_day-switch_x)
+            this_time = day_time_range_utc.end - x.hours
+            concat(content_tag(:text, time_label(24-x), x: @chart_right - (x * dst_hour_width), y: @chart_top - @time_axis_padding, "text-anchor": "middle", class: "svg_time_label"))
+            concat(content_tag(:line, nil, x1: @chart_right - (x * dst_hour_width), y1: @chart_top, x2: @chart_right - (x * dst_hour_width), y2: @chart_top + chart_height, class: (x % 12 == 0 ? "svg_gridline_major" : "svg_gridline_minor"))) unless (x == hours_in_day-switch_x && seconds_in_day%3600 == 0)
+          end
+        end
+        
+        # Draw traveler rows:
+        date_local_data[:travelers].each_with_index do |(traveler_id, traveler), index|
+          concat(draw_row(direction, day_time_range_utc, traveler_id, traveler, index))
+        end
       end
-      
-      # Draw traveler rows:
-      date_local_data[:travelers].each_with_index do |(traveler_id, traveler), index|
-        html += draw_row(direction, day_time_range_utc, traveler_id, traveler, index)
-      end
-      
-      html += %Q(</svg>\n\n)
       
       return html
       
@@ -255,7 +251,7 @@ class Chart
     # +data_by_date+:: The hash generated by Event.flight_data_by_date
     # +direction+:: Arrivals (:arrivals) or departures (:departures)
     def draw_direction_charts(data_by_date, direction)
-      html = String.new
+      html = ActiveSupport::SafeBuffer.new
       
       if data_by_date[direction].any?
         data_by_date[direction].each do |date_local, date_local_data|
@@ -263,7 +259,7 @@ class Chart
         end
       else
         direction_text = direction == :arrivals ? "arriving" : "departing"
-        html += "<p>When #{direction_text} flights are added to any traveler, the flights will show up here.</p>\n"
+        html += content_tag(:p, "When #{direction_text} flights are added to any traveler, the flights will show up here.")
       end
         
       return html
@@ -276,7 +272,7 @@ class Chart
     # +hue+:: Hue value for this flight bar
     # +flight+:: Flight data hash to draw bar for
   	def draw_flight_bar(day_time_range_utc, row, hue, flight)
-      html = String.new
+      html = ActiveSupport::SafeBuffer.new
       
       flight_time_range_utc = flight[:origin_time_utc]..flight[:destination_time_utc]
       flight_time_range_local = flight[:origin_time_utc].in_time_zone(@timezone)..flight[:destination_time_utc].in_time_zone(@timezone)
@@ -288,29 +284,27 @@ class Chart
       right_side = bar_values[:right]
       width      = right_side - left_side
 
-      html  = %Q(\t<g id="flight-#{flight[:id]}" cursor="default">\n)
+      html += content_tag(:g, id: "flight-#{flight[:id]}", cursor: "default") do
+        # Draw tooltip:
+        title  = "#{flight[:airline_name]} #{flight[:flight_number]}\n"
+        title += "#{flight[:origin_time_local].strftime("%-l:%M%P %Z")}\t#{flight[:origin_name]} (#{flight[:origin_code]})\n"
+        title += "#{flight[:destination_time_local].strftime("%-l:%M%P %Z")}\t#{flight[:destination_name]} (#{flight[:destination_code]})\n"
+        concat(content_tag(:title, title))
 
-      # Draw tooltip:
-      html += "\t\t<title>"
-      html += "#{flight[:airline_name]} #{flight[:flight_number]}\n"
-      html += "#{flight[:origin_time_local].strftime("%-l:%M%P %Z")}\t#{flight[:origin_name]} (#{flight[:origin_code]})\n"
-      html += "#{flight[:destination_time_local].strftime("%-l:%M%P %Z")}\t#{flight[:destination_name]} (#{flight[:destination_code]})\n"
-      html += "(#{elapsed_time(flight_time_range_utc)})"
-      html += "</title>\n"
+        # Draw flight bar:
+        concat(content_tag(:polygon, nil, id: "flight-#{flight[:id]}", points: points, class: "svg_bar", fill: "hsl(#{hue},#{@saturation},#{@lightness_flight_fill})", stroke: "hsl(#{hue},#{@saturation},#{@lightness_stroke})", "fill-opacity": @bar_opacity, "stroke-opacity": @bar_opacity))
 
-      # Draw flight bar:
-      html += %Q(\t\t<polygon id="flight-#{flight[:id]}" points="#{points}" class="svg_bar" fill="hsl(#{hue},#{@saturation},#{@lightness_flight_fill})" stroke="hsl(#{hue},#{@saturation},#{@lightness_stroke})" fill-opacity="#{@bar_opacity}" stroke-opacity="#{@bar_opacity}" />\n)
-
-      # Draw flight number:
-      if width >= @flight_bar_no_text_width
-        if width < @flight_bar_line_break_width
-          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height * @bar_text_row_y_position[:double][0]}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_flight_text})" fill-opacity="#{@bar_text_opacity}">#{flight[:airline_code]}</text>\n)
-          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height * @bar_text_row_y_position[:double][1]}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_flight_text})" fill-opacity="#{@bar_text_opacity}">#{flight[:flight_number]}</text>\n)
-        else
-          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*@bar_text_row_y_position[:single][0]}" class="svg_flight_text" fill="hsl(#{hue},#{@saturation},#{@lightness_flight_text})" fill-opacity="#{@bar_text_opacity}">#{flight[:airline_code]} #{flight[:flight_number]}</text>\n)
+        # Draw flight number:
+        if width >= @flight_bar_no_text_width
+          if width < @flight_bar_line_break_width
+            concat(content_tag(:text, flight[:airline_code], x: (left_side + right_side) / 2, y: flight_bar_top(row) + @flight_bar_height * @bar_text_row_y_position[:double][0], class: "svg_flight_text", fill: "hsl(#{hue},#{@saturation},#{@lightness_flight_text})", "fill-opacity": @bar_text_opacity))
+            concat(content_tag(:text, flight[:flight_number], x: (left_side + right_side) / 2, y: flight_bar_top(row) + @flight_bar_height * @bar_text_row_y_position[:double][1], class: "svg_flight_text", fill: "hsl(#{hue},#{@saturation},#{@lightness_flight_text})", "fill-opacity": @bar_text_opacity))
+          else
+            concat(content_tag(:text, "#{flight[:airline_code]} #{flight[:flight_number]}", x: (left_side + right_side) / 2, y: flight_bar_top(row) + @flight_bar_height * @bar_text_row_y_position[:single][0], class: "svg_flight_text", fill: "hsl(#{hue},#{@saturation},#{@lightness_flight_text})", "fill-opacity": @bar_text_opacity))
+          end
         end
+
       end
-      html += "\t</g>\n"
       
       return html
     end
@@ -322,7 +316,7 @@ class Chart
     # +hue+:: Hue value for this layover bar
     # +layover+:: Layover data hash to draw bar for
     def draw_layover_bar(day_time_range_utc, row, hue, layover)
-      html = String.new
+      html = ActiveSupport::SafeBuffer.new
       
       layover_time_range_utc = layover[:start_time_utc]..layover[:end_time_utc]
       layover_time_range_local = layover[:start_time_local]..layover[:end_time_local]
@@ -333,39 +327,37 @@ class Chart
       left_side  = bar_values[:left]
       right_side = bar_values[:right]
       width      = right_side - left_side
-      
-      html  += %Q(\t<g cursor="default">\n)
 
-      # Draw tooltip:
-      html += %Q(\t\t<title>)
-      if layover[:start_code] == layover[:end_code]
-        html += "Layover at #{layover[:start_name]} (#{layover[:start_code]})\n"
-      else
-        html += "Layover between #{layover[:start_name]} (#{layover[:start_code]}) and #{layover[:end_name]} (#{layover[:end_code]})\n"
-      end
-      html += time_range(layover_time_range_local, layover_time_range_local.begin.strftime("%Z"))
-      html += %Q(</title>\n)
-
-      # Draw layover bar:
-      html += %Q(\t\t<polygon points="#{points}" class="svg_bar" fill="hsl(#{hue},#{@saturation},#{@lightness_layover_fill})" stroke="hsl(#{hue},#{@saturation},#{@lightness_stroke})" fill-opacity="#{@bar_opacity}" stroke-opacity="#{@bar_opacity}" />\n)
-
-      # Draw layover airport label:
-      if width >= @flight_bar_no_text_width
+      html += content_tag(:g, cursor: "default") do
+        # Draw tooltip:
         if layover[:start_code] == layover[:end_code]
-          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*@bar_text_row_y_position[:single][0]}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_layover_text})" fill-opacity="#{@bar_text_opacity}">#{layover[:start_code]}</text>\n)
+          title = "Layover at #{layover[:start_name]} (#{layover[:start_code]})\n"
         else
-          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*@bar_text_row_y_position[:double][0]}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_layover_text})" fill-opacity="#{@bar_text_opacity}">#{layover[:start_code]}</text>\n)
-          html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*@bar_text_row_y_position[:double][1]}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_layover_text})" fill-opacity="#{@bar_text_opacity}">#{layover[:end_code]}</text>\n)
+          title = "Layover between #{layover[:start_name]} (#{layover[:start_code]}) and #{layover[:end_name]} (#{layover[:end_code]})\n"
         end
-      else
-        if layover[:start_code] == layover[:end_code]
-          @bar_text_row_y_position[:triple].each_with_index do |ypos, index|
-            html += %Q(\t\t<text x="#{(left_side + right_side) / 2}" y="#{flight_bar_top(row) + @flight_bar_height*ypos}" class="svg_layover_text" fill="hsl(#{hue},#{@saturation},#{@lightness_layover_text})" fill-opacity="#{@bar_text_opacity}">#{layover[:start_code][index]}</text>\n)
+        title += time_range(layover_time_range_local, layover_time_range_local.begin.strftime("%Z"))
+        concat(content_tag(:title, title))
+
+        # Draw layover bar:
+        concat(content_tag(:polygon, nil, points: points, class: "svg_bar", fill: "hsl(#{hue},#{@saturation},#{@lightness_layover_fill})", stroke: "hsl(#{hue},#{@saturation},#{@lightness_stroke})", "fill-opacity": @bar_opacity, "stroke-opacity": @bar_opacity))
+
+        # Draw layover airport label:
+        if width >= @flight_bar_no_text_width
+          if layover[:start_code] == layover[:end_code]
+            concat(content_tag(:text, layover[:start_code], x: (left_side + right_side) / 2, y: flight_bar_top(row) + @flight_bar_height*@bar_text_row_y_position[:single][0], class: "svg_layover_text", fill: "hsl(#{hue},#{@saturation},#{@lightness_layover_text})", "fill-opacity": @bar_text_opacity))
+          else
+            concat(content_tag(:text, layover[:start_code], x: (left_side + right_side) / 2, y: flight_bar_top(row) + @flight_bar_height*@bar_text_row_y_position[:double][0], class: "svg_layover_text", fill: "hsl(#{hue},#{@saturation},#{@lightness_layover_text})", "fill-opacity": @bar_text_opacity))
+            concat(content_tag(:text, layover[:end_code], x: (left_side + right_side) / 2, y: flight_bar_top(row) + @flight_bar_height*@bar_text_row_y_position[:double][1], class: "svg_layover_text", fill: "hsl(#{hue},#{@saturation},#{@lightness_layover_text})", "fill-opacity": @bar_text_opacity))
+          end
+        else
+          if layover[:start_code] == layover[:end_code]
+            @bar_text_row_y_position[:triple].each_with_index do |ypos, index|
+              concat(content_tag(:text, layover[:start_code][index], x: (left_side + right_side) / 2, y: flight_bar_top(row) + @flight_bar_height*ypos, class: "svg_layover_text", fill: "hsl(#{hue},#{@saturation},#{@lightness_layover_text})", "fill-opacity": @bar_text_opacity))
+            end
           end
         end
-      end
 
-      html += %Q(\t</g>\n)
+      end
     
     	return html
     end
@@ -378,14 +370,14 @@ class Chart
     # +traveler_data+:: Hash of traveler data
     # +row_index+:: Which row the layover bar belongs in (zero-indexed)
     def draw_row(direction, day_time_range_utc, traveler_id, traveler_data, row_index)
-      html = String.new
+      html = ActiveSupport::SafeBuffer.new
       
       hue = @airport_hues[traveler_data[:key_code]]
 
-      html += %Q(\t<a xlink:href="#t-#{traveler_id}">\n)
-      html += %Q(\t\t<text x="#{@image_padding}" y="#{flight_bar_top(row_index) + (@flight_bar_height * 0.4)}" class="svg_person_name">#{traveler_data[:name]}</text>\n)
-      html += %Q(\t\t<text x="#{@image_padding}" y="#{flight_bar_top(row_index) + (@flight_bar_height * 0.9)}" class="svg_person_nickname">#{traveler_data[:note]}</text>\n)
-      html += %Q(\t</a>\n)
+      html += content_tag(:a, "xlink:href": "#t-#{traveler_id}") do
+        concat(content_tag(:text, traveler_data[:name], x: @image_padding, y: flight_bar_top(row_index) + (@flight_bar_height * 0.4), class: "svg_person_name"))
+        concat(content_tag(:text, traveler_data[:note], x: @image_padding, y: flight_bar_top(row_index) + (@flight_bar_height * 0.9), class: "svg_person_nickname"))
+      end
       
       # Draw flights:
       traveler_data[:flights].each do |flight|
@@ -409,18 +401,18 @@ class Chart
       start_x = x_position_in_local_day(day_time_range_utc, travel_start_time_utc)
       end_x   = x_position_in_local_day(day_time_range_utc, travel_end_time_utc)
       if start_x
-        html += %Q(<g cursor="default">\n)
-        html += %Q(<title>#{traveler_data[:flights].first[:origin_name]}</title>\n)
-        html += %Q(<text x="#{start_x - @airport_margin}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.42}" class="svg_airport_label svg_airport_block_start">#{traveler_data[:flights].first[:origin_code]}</text>\n)
-        html += %Q(<text x="#{start_x - @airport_margin}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.92}" class="svg_time_label svg_airport_block_start">#{format_time_short(travel_start_time_utc.in_time_zone(@timezone))}</text>\n)
-        html += %Q(</g>\n)
+        html += content_tag(:g, cursor: "default") do
+          concat(content_tag(:title, traveler_data[:flights].first[:origin_name]))
+          concat(content_tag(:text, traveler_data[:flights].first[:origin_code], x: start_x - @airport_margin, y: flight_bar_top(row_index) + @flight_bar_height * 0.42, class: %w(svg_airport_label svg_airport_block_start)))
+          concat(content_tag(:text, format_time_short(travel_start_time_utc.in_time_zone(@timezone)), x: start_x - @airport_margin, y: flight_bar_top(row_index) + @flight_bar_height * 0.92, class: %w(svg_time_label svg_airport_block_start)))
+        end
       end
       if end_x
-        html += %Q(<g cursor="default">\n)
-        html += %Q(<title>#{traveler_data[:flights].last[:destination_name]}</title>\n)
-        html += %Q(<text x="#{end_x + @airport_margin}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.42}" class="svg_airport_label svg_airport_block_end">#{traveler_data[:flights].last[:destination_code]}</text>\n)
-        html += %Q(<text x="#{end_x + @airport_margin}" y="#{flight_bar_top(row_index) + @flight_bar_height * 0.92}" class="svg_time_label svg_airport_block_end">#{format_time_short(travel_end_time_utc.in_time_zone(@timezone))}</text>\n)
-        html += %Q(</g>\n)
+        html += content_tag(:g, cursor: "default") do
+          concat(content_tag(:title, traveler_data[:flights].last[:destination_name]))
+          concat(content_tag(:text, traveler_data[:flights].last[:destination_code], x: end_x + @airport_margin, y: flight_bar_top(row_index) + @flight_bar_height * 0.42, class: %w(svg_airport_label svg_airport_block_end)))
+          concat(content_tag(:text, format_time_short(travel_end_time_utc.in_time_zone(@timezone)), x: end_x + @airport_margin, y: flight_bar_top(row_index) + @flight_bar_height * 0.92, class: %w(svg_time_label svg_airport_block_end)))
+        end
       end
       
       return html
