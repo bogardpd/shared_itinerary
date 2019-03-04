@@ -3,17 +3,24 @@ module EventsHelper
   def markdown_text(md_text)
     # Initializes a Markdown parser
     markdown ||= Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true)
-    markdown.render(md_text).html_safe
+    sanitize(markdown.render(md_text))
   end
   
   def highlight(hsl_colors)
     return "" if hsl_colors.nil?
-    return %Q( style="background-color: hsl(#{hsl_colors[:background]});").html_safe
+    return sanitize(%Q( style="background-color: hsl(#{hsl_colors[:background]});"))
   end
   
   def traveler_direction_title(direction, event_name)
-    html = direction == :arrivals ? "Arrival <small>at #{event_name}</small>" : "Departure <small>from #{event_name}</small>"
-    return html.html_safe
+    html = ActiveSupport::SafeBuffer.new
+    if direction == :arrivals
+      html += "Arrival "
+      html += content_tag(:small, "at " + event_name)
+    else
+      html += "Departure "
+      html += content_tag(:small, "from " + event_name)
+    end
+    return html
   end
 
   def sort_button(text)
