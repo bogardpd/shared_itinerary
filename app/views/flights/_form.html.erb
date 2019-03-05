@@ -15,11 +15,11 @@
             <table class="checkboxes">
               <tr>
                 <td><%= f.radio_button(:is_event_arrival, true, checked: is_arrival(f.object)) %></td>
-                <td><%= f.label(:is_event_arrival_true, "<strong>Arrival</strong>".html_safe + " – this flight brings #{@traveler.traveler_name} to #{@event.event_name}") %></td>
+                <td><%= f.label(:is_event_arrival_true, content_tag(:strong, "Arrival") + " – this flight brings #{@traveler.traveler_name} to #{@event.event_name}") %></td>
               </tr>
               <tr>
                 <td><%= f.radio_button(:is_event_arrival, false, checked: !is_arrival(f.object)) %></td>
-                <td><%= f.label(:is_event_arrival_false, "<strong>Departure</strong>".html_safe + " – this flight takes #{@traveler.traveler_name} home from #{@event.event_name}") %></td>
+                <td><%= f.label(:is_event_arrival_false, content_tag(:strong, "Departure") + " – this flight takes #{@traveler.traveler_name} home from #{@event.event_name}") %></td>
               </tr>
             </table>
           </div>
