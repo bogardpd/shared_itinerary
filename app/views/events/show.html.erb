@@ -64,7 +64,7 @@
         <div class="col-12">        
           <% if current_user?(@event.user) %>
             <div class="btn-group edit-button">
-              <%= link_to("Edit traveler".html_safe, edit_traveler_path(traveler_id), title: "Edit #{traveler[:traveler_name]}", class: "btn btn-sm btn-outline-primary") %> <%= link_to("Add flight", new_flight_search_path(id: traveler_id), title: "Add a new flight to #{traveler[:traveler_name]}’s itinerary", class: "btn btn-sm btn-outline-primary") %>
+              <%= link_to("Edit traveler", edit_traveler_path(traveler_id), title: "Edit #{traveler[:traveler_name]}", class: "btn btn-sm btn-outline-primary") %> <%= link_to("Add flight", new_flight_search_path(id: traveler_id), title: "Add a new flight to #{traveler[:traveler_name]}’s itinerary", class: "btn btn-sm btn-outline-primary") %>
             </div>
           <% end %>
           <h3><%= traveler[:traveler_name] %>&ensp;<small><%= traveler[:traveler_note] %></small></h3>
@@ -76,7 +76,7 @@
 
       <div class="row">
 		 
-        <%= [:arrivals, :departures].map{|dir| render partial: "traveler_direction", locals: { traveler_id: traveler_id, traveler: traveler, direction: dir }}.join.html_safe %>
+        <%= safe_join([:arrivals, :departures].map{|dir| render partial: "traveler_direction", locals: { traveler_id: traveler_id, traveler: traveler, direction: dir }}) %>
 
       </div>
       
