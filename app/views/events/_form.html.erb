@@ -37,7 +37,7 @@
       <%= f.select :timezone, Timezones::select_options, {include_blank: true}, {class: "form-control"} %>
             
       <div class="form-group">
-        <%= f.label :note, "Note <small>(optional) (supports #{link_to("Markdown", "https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet")})".html_safe %>
+        <%= f.label :note, ActiveSupport::SafeBuffer.new + "Note " + content_tag(:small, ActiveSupport::SafeBuffer.new + "(optional) (supports " + link_to("Markdown", "https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet", target: :_blank) + ")") %>
         <%= f.text_area :note, class: 'form-control', rows: 5 %>
       </div>
       
