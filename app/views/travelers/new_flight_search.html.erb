@@ -18,7 +18,7 @@
             <%= radio_button_tag(:is_event_arrival, true, params[:is_event_arrival] ? params[:is_event_arrival] == "true" : true) %>
           </td>
           <td>
-            <%= label_tag(:is_event_arrival_true, "<strong>Arrival</strong>".html_safe + " – this flight brings #{@traveler.traveler_name} to #{@event.event_name}") %>
+            <%= label_tag(:is_event_arrival_true, content_tag(:strong, "Arrival") + " – this flight brings #{@traveler.traveler_name} to #{@event.event_name}") %>
           </td>
         </tr>
         <tr>
@@ -26,7 +26,7 @@
             <%= radio_button_tag(:is_event_arrival, false, params[:is_event_arrival] ? params[:is_event_arrival] != "true" : false) %>
           </td>
           <td>
-            <%= label_tag(:is_event_arrival_false, "<strong>Departure</strong>".html_safe + " – this flight takes #{@traveler.traveler_name} home from #{@event.event_name}") %>
+            <%= label_tag(:is_event_arrival_false, content_tag(:strong, "Departure") + " – this flight takes #{@traveler.traveler_name} home from #{@event.event_name}") %>
           </td>
         </tr>
       </table>
