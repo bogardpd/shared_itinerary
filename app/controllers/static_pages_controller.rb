@@ -19,7 +19,7 @@ class StaticPagesController < ApplicationController
   def google_places_api_proxy
     require "net/http"
     if params[:term]
-      url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=#{URI.encode(params[:term])}&types=(cities)&key=#{ENV["GOOGLE_MAPS_API_KEY"]}&sessiontoken=#{params[:google_session]}"
+      url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=#{URI.encode(params[:term])}&types=(cities)&key=#{Rails.application.credentials[:google_maps][:api_key]}&sessiontoken=#{params[:google_session]}"
       uri = URI(url)
       response = JSON.parse(Net::HTTP.get(uri))
       render json: response["predictions"].map{|r| {label: r["description"], value: r["place_id"]}}.to_json
@@ -33,13 +33,13 @@ class StaticPagesController < ApplicationController
   def google_timezone_api_proxy
     require "net/http"
     if params[:place_id]
-      url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=#{params[:place_id]}&fields=geometry&key=#{ENV["GOOGLE_MAPS_API_KEY"]}&sessiontoken=#{params[:google_session]}"
+      url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=#{params[:place_id]}&fields=geometry&key=#{Rails.application.credentials[:google_maps][:api_key]}&sessiontoken=#{params[:google_session]}"
       uri = URI(url)
       response = JSON.parse(Net::HTTP.get(uri))
       if response["result"]
         latitude  = response.dig("result", "geometry", "location", "lat")
         longitude = response.dig("result", "geometry", "location", "lng")
-        tz_url = "https://maps.googleapis.com/maps/api/timezone/json?location=#{latitude},#{longitude}&timestamp=#{Time.now.to_i}&key=#{ENV["GOOGLE_MAPS_API_KEY"]}"
+        tz_url = "https://maps.googleapis.com/maps/api/timezone/json?location=#{latitude},#{longitude}&timestamp=#{Time.now.to_i}&key=#{Rails.application.credentials[:google_maps][:api_key]}"
         tz_uri = URI(tz_url)
         tz_response = Net::HTTP.get(tz_uri)
         render json: tz_response

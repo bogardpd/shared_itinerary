@@ -4,7 +4,7 @@ module FlightXML
   
   # Defines the Savon client to connect to the FlightXML API.
   def self.client
-    return Savon.client(wsdl: "https://flightxml.flightaware.com/soap/FlightXML2/wsdl", basic_auth: [ENV["FLIGHTAWARE_USERNAME"], ENV["FLIGHTAWARE_API_KEY"]])
+    return Savon.client(wsdl: "https://flightxml.flightaware.com/soap/FlightXML2/wsdl", basic_auth: [Rails.application.credentials[:flightaware][:username], Rails.application.credentials[:flightaware][:api_key]])
   end
   
   # Accepts an airline ICAO code, and returns a hash of info about the airport
