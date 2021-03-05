@@ -24,3 +24,7 @@ certbot.log
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+# Ignore OS files
+
+.DS_Store
