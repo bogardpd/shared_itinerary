@@ -5,7 +5,7 @@ ruby '2.7.1'
 gem 'rails', '~> 5.2', '>= 5.2.3'
 
 # Use bcrypt to hash passwords
-gem 'bcrypt', '3.1.7'
+gem 'bcrypt', '~> 3.1', '>= 3.1.12'
 
 # Use Bootstrap UI framework
 gem 'bootstrap', '~> 4.1', '>= 4.1.1'
