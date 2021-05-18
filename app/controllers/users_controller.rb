@@ -17,14 +17,16 @@ class UsersController < ApplicationController
   end
   
   def create
-    @user = User.new(user_params)
-    if @user.save
-      log_in @user
-      flash[:success] = "Welcome to Shared Itinerary!"
-      redirect_to @user
-    else
-      render 'new'
-    end
+    flash[:danger] = "Not currently accepting new users"
+    redirect_to root_url
+    # @user = User.new(user_params)
+    # if @user.save
+    #   log_in @user
+    #   flash[:success] = "Welcome to Shared Itinerary!"
+    #   redirect_to @user
+    # else
+    #   render 'new'
+    # end
   end
   
   def edit
