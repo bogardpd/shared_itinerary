@@ -59,6 +59,7 @@ GEM
     builder (3.2.4)
     concurrent-ruby (1.1.10)
     crass (1.0.6)
+    date (3.3.1)
     erubi (1.11.0)
     execjs (2.8.1)
     ffi (1.15.5)
@@ -81,7 +82,7 @@ GEM
       thor (>= 0.14, < 2.0)
     jquery-ui-rails (6.0.1)
       railties (>= 3.2.16)
-    loofah (2.19.0)
+    loofah (2.19.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.8.0)
@@ -101,11 +102,12 @@ GEM
       builder
       minitest (>= 5.0)
       ruby-progressbar
-    net-imap (0.3.1)
+    net-imap (0.3.2)
+      date
       net-protocol
     net-pop (0.1.2)
       net-protocol
-    net-protocol (0.2.0)
+    net-protocol (0.2.1)
       timeout
     net-smtp (0.3.3)
       net-protocol
@@ -145,8 +147,8 @@ GEM
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.4.3)
-      loofah (~> 2.3)
+    rails-html-sanitizer (1.4.4)
+      loofah (~> 2.19, >= 2.19.1)
     rails_12factor (0.0.2)
       rails_serve_static_assets
       rails_stdout_logging
