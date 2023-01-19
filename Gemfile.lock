@@ -59,11 +59,11 @@ GEM
     builder (3.2.4)
     concurrent-ruby (1.1.10)
     crass (1.0.6)
-    date (3.3.1)
-    erubi (1.11.0)
+    date (3.3.3)
+    erubi (1.12.0)
     execjs (2.8.1)
     ffi (1.15.5)
-    globalid (1.0.0)
+    globalid (1.0.1)
       activesupport (>= 5.0)
     guard-compat (1.2.1)
     guard-minitest (2.4.6)
@@ -85,7 +85,7 @@ GEM
     loofah (2.19.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
-    mail (2.8.0)
+    mail (2.8.0.1)
       mini_mime (>= 0.1.1)
       net-imap
       net-pop
@@ -93,8 +93,8 @@ GEM
     marcel (1.0.2)
     method_source (1.0.0)
     mini_mime (1.1.2)
-    mini_portile2 (2.8.0)
-    minitest (5.16.3)
+    mini_portile2 (2.8.1)
+    minitest (5.17.0)
     minitest-fail-fast (0.1.0)
       minitest (~> 5)
     minitest-reporters (1.5.0)
@@ -102,7 +102,7 @@ GEM
       builder
       minitest (>= 5.0)
       ruby-progressbar
-    net-imap (0.3.2)
+    net-imap (0.3.4)
       date
       net-protocol
     net-pop (0.1.2)
@@ -112,10 +112,10 @@ GEM
     net-smtp (0.3.3)
       net-protocol
     nio4r (2.5.8)
-    nokogiri (1.13.10)
+    nokogiri (1.14.0)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
-    nokogiri (1.13.10-x86_64-linux)
+    nokogiri (1.14.0-x86_64-linux)
       racc (~> 1.4)
     nori (2.6.0)
     pg (0.18.4)
@@ -123,8 +123,8 @@ GEM
     public_suffix (5.0.1)
     puma (4.3.12)
       nio4r (~> 2.0)
-    racc (1.6.1)
-    rack (2.2.4)
+    racc (1.6.2)
+    rack (2.2.6.2)
     rack-test (2.0.2)
       rack (>= 1.3)
     rails (5.2.8.1)
@@ -172,7 +172,7 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
-    savon (2.13.1)
+    savon (2.14.0)
       akami (~> 1.2)
       builder (>= 2.1.2)
       gyoku (~> 1.2)
@@ -182,9 +182,9 @@ GEM
       nori (~> 2.4)
       wasabi (~> 3.4)
     spring (2.1.1)
-    sprockets (4.1.1)
+    sprockets (4.2.0)
       concurrent-ruby (~> 1.0)
-      rack (> 1, < 3)
+      rack (>= 2.2.4, < 4)
     sprockets-rails (3.4.2)
       actionpack (>= 5.2)
       activesupport (>= 5.2)
