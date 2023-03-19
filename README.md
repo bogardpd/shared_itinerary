@@ -1,4 +1,4 @@
-# Shared Itinerary
+# Shared Itinerary [DEPRECATED]
 
 **[https://www.shareditinerary.com](https://www.shareditinerary.com)**
 
